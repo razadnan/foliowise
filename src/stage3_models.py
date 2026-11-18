@@ -33,6 +33,8 @@ from sklearn.linear_model import RidgeCV
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
 import xgboost as xgb
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 warnings.filterwarnings("ignore")

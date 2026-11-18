@@ -25,6 +25,8 @@ import sys
 import warnings
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from sklearn.covariance import LedoitWolf
 from scipy.optimize import minimize

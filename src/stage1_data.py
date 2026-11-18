@@ -18,6 +18,8 @@ import warnings
 import numpy as np
 import pandas as pd
 import yfinance as yf
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 warnings.filterwarnings("ignore")
