@@ -1,0 +1,7 @@
+{
+  "mean_sharpe_difference_s4_minus_s1": -0.385,
+  "ci_95_lower": -0.812,
+  "ci_95_upper": 0.031,
+  "probability_s4_beats_s1": 3.4,
+  "statistical_significance": "S1 statistically superior or equal to S4 (CI entirely below or spanning zero)"
+}

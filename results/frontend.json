@@ -1,0 +1,185 @@
+{
+  "stocks": [
+    {
+      "name": "Reliance Industries",
+      "sector": "Energy",
+      "m": 0.096,
+      "v": 0.2417
+    },
+    {
+      "name": "Tata Consultancy Services",
+      "sector": "IT",
+      "m": 0.0881,
+      "v": 0.3001
+    },
+    {
+      "name": "HDFC Bank",
+      "sector": "Banking",
+      "m": 0.0443,
+      "v": 0.231
+    },
+    {
+      "name": "Infosys",
+      "sector": "IT",
+      "m": 0.1081,
+      "v": 0.3171
+    },
+    {
+      "name": "ICICI Bank",
+      "sector": "Banking",
+      "m": 0.1434,
+      "v": 0.211
+    },
+    {
+      "name": "Hindustan Unilever",
+      "sector": "FMCG",
+      "m": 0.04,
+      "v": 0.2253
+    },
+    {
+      "name": "ITC",
+      "sector": "FMCG",
+      "m": 0.0462,
+      "v": 0.227
+    },
+    {
+      "name": "Sun Pharma",
+      "sector": "Pharma",
+      "m": 0.1316,
+      "v": 0.1967
+    },
+    {
+      "name": "Larsen & Toubro",
+      "sector": "Industrials",
+      "m": 0.1072,
+      "v": 0.257
+    },
+    {
+      "name": "Maruti Suzuki",
+      "sector": "Auto",
+      "m": 0.0879,
+      "v": 0.2479
+    },
+    {
+      "name": "Bharti Airtel",
+      "sector": "Telecom",
+      "m": 0.079,
+      "v": 0.2181
+    },
+    {
+      "name": "Titan",
+      "sector": "Consumer",
+      "m": 0.2132,
+      "v": 0.2406
+    },
+    {
+      "name": "Nestle India",
+      "sector": "FMCG",
+      "m": 0.1537,
+      "v": 0.2287
+    },
+    {
+      "name": "Axis Bank",
+      "sector": "Banking",
+      "m": 0.1346,
+      "v": 0.2527
+    },
+    {
+      "name": "Kotak Mahindra Bank",
+      "sector": "Banking",
+      "m": 0.139,
+      "v": 0.2193
+    },
+    {
+      "name": "Bajaj Finance",
+      "sector": "Banking",
+      "m": 0.1583,
+      "v": 0.3232
+    },
+    {
+      "name": "Wipro",
+      "sector": "IT",
+      "m": 0.0893,
+      "v": 0.2684
+    },
+    {
+      "name": "HCL Technologies",
+      "sector": "IT",
+      "m": 0.1521,
+      "v": 0.3058
+    },
+    {
+      "name": "UltraTech Cement",
+      "sector": "Industrials",
+      "m": 0.1161,
+      "v": 0.2416
+    },
+    {
+      "name": "Asian Paints",
+      "sector": "Consumer",
+      "m": 0.1327,
+      "v": 0.2483
+    },
+    {
+      "name": "Tech Mahindra",
+      "sector": "IT",
+      "m": 0.2093,
+      "v": 0.2982
+    },
+    {
+      "name": "Power Grid",
+      "sector": "Energy",
+      "m": 0.0929,
+      "v": 0.2102
+    },
+    {
+      "name": "NTPC",
+      "sector": "Energy",
+      "m": 0.1003,
+      "v": 0.1982
+    },
+    {
+      "name": "ONGC",
+      "sector": "Energy",
+      "m": 0.0947,
+      "v": 0.2417
+    },
+    {
+      "name": "Coal India",
+      "sector": "Energy",
+      "m": 0.1688,
+      "v": 0.2411
+    },
+    {
+      "name": "Bajaj Finserv",
+      "sector": "Banking",
+      "m": 0.0692,
+      "v": 0.2516
+    },
+    {
+      "name": "Dr. Reddy's Laboratories",
+      "sector": "Pharma",
+      "m": 0.1433,
+      "v": 0.2421
+    }
+  ],
+  "nifty": {
+    "m": 0.1137,
+    "v": 0.1774
+  },
+  "rho": 0.22,
+  "last_data_date": "2026-11-13",
+  "test_summary": {
+    "test_period": "2020-01 to 2026-11",
+    "benchmark_sharpe": 0.32,
+    "equal_weight_sharpe": 0.66,
+    "ml_strategy_sharpe": 0.21,
+    "ml_max_drawdown": -34.86,
+    "base_transaction_cost": "0.2%",
+    "cost_sensitivity": {
+      "s4_sharpe_at_0.1pct": 0.23,
+      "s4_sharpe_at_0.2pct": 0.21,
+      "s4_sharpe_at_0.3pct": 0.19
+    }
+  }
+}

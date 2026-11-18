@@ -1,0 +1,7 @@
+strategy,strategy_name,transaction_cost_pct,cagr,vol,sharpe,max_dd
+S1,Equal Weight (1/N),0.1,16.9,16.33,0.67,-33.1
+S4,Max Sharpe (ML Predicted + Blend),0.1,10.49,18.11,0.25,-34.8
+S1,Equal Weight (1/N),0.2,16.81,16.33,0.66,-33.11
+S4,Max Sharpe (ML Predicted + Blend),0.2,9.81,18.11,0.21,-34.86
+S1,Equal Weight (1/N),0.3,16.72,16.33,0.66,-33.11
+S4,Max Sharpe (ML Predicted + Blend),0.3,9.12,18.11,0.17,-34.92

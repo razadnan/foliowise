@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FolioWise – Where should I invest?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F2F6F8;--card:#fff;--ink:#12263A;--mut:#5B6B7B;--line:#D9E2E8;--brand:#0F6E63;--brand-ink:#fff;--soft:#E3F1EE;--warn:#B7791F;--warnbg:#FBF1DC;--bad:#B94331;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1A24;--card:#16263A;--ink:#EAF1F6;--mut:#9DB0C0;--line:#26405A;--brand:#3CB9A5;--brand-ink:#06201C;--soft:#17383A;--warn:#E5B04F;--warnbg:#3A2F17;--bad:#F08A78;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E1A24;--card:#16263A;--ink:#EAF1F6;--mut:#9DB0C0;--line:#26405A;--brand:#3CB9A5;--brand-ink:#06201C;--soft:#17383A;--warn:#E5B04F;--warnbg:#3A2F17;--bad:#F08A78;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 "Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-variant-numeric:tabular-nums}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+a{color:var(--brand)}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px;border-radius:6px}
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+.logo{font-weight:800;font-size:20px;letter-spacing:-.02em}.logo b{color:var(--brand)}
+nav a{margin-left:20px;text-decoration:none;color:var(--mut);font-weight:600;font-size:15px}
+.demo{background:var(--warnbg);color:var(--warn);font-size:14px;font-weight:600;text-align:center;padding:8px 16px}
+.hero{display:grid;grid-template-columns:1fr 1.05fr;gap:40px;align-items:start;padding:36px 0 28px}
+h1{font-size:clamp(32px,4.6vw,52px);line-height:1.08;letter-spacing:-.03em;margin:0 0 16px;font-weight:800}
+.lead{color:var(--mut);font-size:18px;max-width:46ch;margin:0 0 22px}
+.trust{list-style:none;padding:0;margin:0;display:grid;gap:10px;font-weight:600;font-size:15px}
+.trust li::before{content:"✓";display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--soft);color:var(--brand);margin-right:10px;font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px}
+.planner h2{margin:0 0 4px;font-size:22px}.planner>p{margin:0 0 18px;color:var(--mut);font-size:15px}
+.q{margin-bottom:22px}.q>label,.q>.ql{display:block;font-weight:700;margin-bottom:8px}
+.q small{display:block;color:var(--mut);font-weight:500;margin-top:6px;font-size:14px}
+.amt{display:flex;align-items:center;border:1.5px solid var(--line);border-radius:12px;padding:0 14px;background:var(--bg)}
+.amt span{font-weight:700;color:var(--mut);margin-right:6px}
+.amt input{border:0;background:transparent;color:var(--ink);font:700 22px "Plus Jakarta Sans",system-ui,sans-serif;padding:12px 0;width:100%;outline:0}
+.amt:focus-within{border-color:var(--brand)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chips button,.chips label{border:1.5px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:7px 14px;font:600 14px "Plus Jakarta Sans",system-ui,sans-serif;cursor:pointer}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips input:checked+span,.chips button.on{background:var(--brand);color:var(--brand-ink)}
+.chips label:has(input:checked),.chips button.on{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.chips label:has(input:focus-visible){outline:3px solid var(--brand);outline-offset:2px}
+.chips button:hover,.chips label:hover{border-color:var(--brand)}
+.risk output{display:flex;justify-content:space-between;align-items:baseline;font-weight:800;font-size:20px;margin-bottom:4px}
+.risk output em{font-style:normal;font-size:13px;font-weight:600;color:var(--mut)}
+input[type=range]{width:100%;accent-color:var(--brand);height:28px}
+.ends{display:flex;justify-content:space-between;color:var(--mut);font-size:13px;font-weight:600}
+details.more{border-top:1px solid var(--line);padding-top:14px;margin-bottom:18px}
+details.more summary{cursor:pointer;font-weight:700;list-style:none}
+details.more summary::before{content:"+ ";color:var(--brand)}details.more[open] summary::before{content:"– "}
+.more .q{margin:16px 0 0}
+select,.sip{font:600 15px "Plus Jakarta Sans",system-ui,sans-serif;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:9px 12px;width:100%}
+.btn{display:block;width:100%;border:0;border-radius:12px;background:var(--brand);color:var(--brand-ink);font:800 17px "Plus Jakarta Sans",system-ui,sans-serif;padding:15px;cursor:pointer}
+.btn:hover{filter:brightness(1.07)}
+.btn.ghost{background:transparent;color:var(--brand);border:1.5px solid var(--brand);width:auto;display:inline-block;font-size:15px;padding:10px 18px}
+#result{display:none;padding:12px 0 30px}
+#result h2{font-size:clamp(24px,3vw,32px);letter-spacing:-.02em;margin:0 0 6px}
+.sum{font-size:18px;max-width:70ch;color:var(--mut);margin:0 0 22px}.sum b{color:var(--ink)}
+.grid2{display:grid;grid-template-columns:1fr 1.3fr;gap:20px}
+.donutbox{display:flex;flex-direction:column;align-items:center;gap:14px}
+.donutbox svg{width:100%;max-width:250px}
+.meter{width:100%}.meter .bar{height:10px;border-radius:99px;background:linear-gradient(90deg,#3CB98A,#E5B04F,#D9644F);position:relative}
+.meter .bar i{position:absolute;top:-5px;width:6px;height:20px;border-radius:4px;background:var(--ink);transform:translateX(-50%)}
+.meter p{display:flex;justify-content:space-between;margin:8px 0 0;font-size:13px;font-weight:600;color:var(--mut)}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{text-align:left;font-size:13px;color:var(--mut);font-weight:600;padding:0 8px 8px}
+td{padding:10px 8px;border-top:1px solid var(--line);vertical-align:top}
+td.r,th.r{text-align:right}
+.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:8px}
+.nm{font-weight:700}.sub{display:block;color:var(--mut);font-size:13px}
+.tag{font-size:12px;font-weight:700;border-radius:99px;padding:2px 9px;background:var(--soft);color:var(--brand);white-space:nowrap}
+.tw{overflow-x:auto}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0}
+.fact b{display:block;font-size:26px;letter-spacing:-.02em}.fact span{color:var(--mut);font-size:14px}
+.fact.neg b{color:var(--bad)}
+.sec{margin-top:20px}.sec h3{margin:0 0 4px;font-size:19px}.sec>p{margin:0 0 14px;color:var(--mut);font-size:14px}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:13px;font-weight:600;color:var(--mut);margin-top:8px}
+.cmp{display:grid;gap:14px}.cmp .row{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:center;font-size:14px;font-weight:600}
+.cmp .track{background:var(--bg);border-radius:8px;height:30px;position:relative;overflow:hidden}
+.cmp .fill{height:100%;background:var(--brand);border-radius:8px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;color:var(--brand-ink);font-size:13px;font-weight:700;min-width:44px}
+.cmp .row.o .fill{background:#6B7A8C;color:#fff}
+.cmp small{display:block;color:var(--mut);font-weight:500;font-size:12px}
+.acts{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:18px}
+#msg{color:var(--mut);font-size:14px;font-weight:600}
+.how{padding:30px 0}.how h2,.faq h2{font-size:28px;letter-spacing:-.02em;margin:0 0 18px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;counter-reset:s;padding:0;list-style:none;margin:0}
+.steps li{counter-increment:s}.steps li::before{content:counter(s);display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--brand);color:var(--brand-ink);font-weight:800;margin-bottom:10px}
+.steps b{display:block;margin-bottom:4px}.steps span{color:var(--mut);font-size:15px}
+.faq{padding-bottom:20px}.faq details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-bottom:10px}
+.faq summary{cursor:pointer;font-weight:700}.faq p{color:var(--mut);margin:10px 0 0}
+footer{border-top:1px solid var(--line);padding:22px 0 34px;color:var(--mut);font-size:13px}
+@media (max-width:860px){.hero,.grid2{grid-template-columns:1fr}.steps,.facts{grid-template-columns:1fr}.cmp .row{grid-template-columns:1fr;gap:4px}nav{display:none}}
+[hidden]{display:none!important}.mode{margin-bottom:18px}.mode label{flex:1;text-align:center;padding:10px 12px}.hrow{display:grid;grid-template-columns:1fr 130px 34px;gap:8px;margin-bottom:8px}.hrow .x{border:1.5px solid var(--line);background:transparent;color:var(--mut);border-radius:10px;cursor:pointer}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="demo">Demo mode: figures use sample market data, not live prices.</div>
+<div class="wrap">
+<header><div class="logo">Folio<b>Wise</b></div><nav><a href="#plan">Plan</a><a href="#how">How it works</a><a href="#faq">Questions</a></nav></header>
+
+<section class="hero" id="plan">
+<div>
+<h1>Not sure where to invest? Answer three questions.</h1>
+<p class="lead">Tell us how much you have, how long you can wait, and how much ups and downs you can handle. We'll suggest how to split your money across large Indian companies.</p>
+<ul class="trust">
+<li>No finance knowledge needed</li>
+<li>Already invested? See exactly what to buy, sell or keep</li>
+<li>Plain-language results, with rupee amounts</li>
+<li>Shows the good case and the tough case, not just the best one</li>
+</ul>
+</div>
+
+<form class="card planner" id="f" onsubmit="return false">
+<div class="chips mode" role="radiogroup" aria-label="Which describes you?"><label><input type="radio" name="mode" value="new" checked><span>I'm new to investing</span></label><label><input type="radio" name="mode" value="ex"><span>I already invest</span></label></div>
+<h2>Build my plan</h2><p>It takes about 30 seconds.</p>
+<div class="q" id="holdQ" hidden><span class="ql">What do you own today?</span><div id="hrows"></div><button type="button" class="btn ghost" id="addH" style="padding:8px 14px;font-size:14px">+ Add a holding</button><small>Enter the current value of each holding. Sample holdings are filled in so you can try it.</small></div>
+<div class="q"><label for="amt" id="amtL">How much do you want to invest?</label>
+<div class="amt"><span>₹</span><input id="amt" type="text" inputmode="numeric" value="5,00,000" autocomplete="off"></div>
+<div class="chips" id="amtChips"><button type="button" data-v="25000">₹25,000</button><button type="button" data-v="100000">₹1 lakh</button><button type="button" data-v="500000" class="on">₹5 lakh</button><button type="button" data-v="1000000">₹10 lakh</button></div></div>
+<div class="q"><span class="ql" id="hl">How long can you leave it invested?</span>
+<div class="chips" role="radiogroup" aria-labelledby="hl">
+<label><input type="radio" name="yrs" value="1"><span>1 year</span></label>
+<label><input type="radio" name="yrs" value="3"><span>3 years</span></label>
+<label><input type="radio" name="yrs" value="5" checked><span>5 years</span></label>
+<label><input type="radio" name="yrs" value="10"><span>10 years</span></label></div>
+<small>Stocks need time. Under 3 years, expect bumpy results.</small></div>
+<div class="q risk"><label for="risk">How do you feel when your money drops 10%?</label>
+<output id="riskOut"></output>
+<input type="range" id="risk" min="1" max="5" step="1" value="3" aria-describedby="riskHelp">
+<div class="ends"><span>I'd panic</span><span>I'd stay calm</span></div>
+<small id="riskHelp"></small></div>
+<details class="more"><summary>More options (optional)</summary>
+<div class="q"><label for="cap">Most money in any one company</label>
+<select id="cap"><option value="0.10">10%: very spread out</option><option value="0.15">15%</option><option value="0.20" selected>20%: balanced</option><option value="0.30">30%: more concentrated</option></select></div>
+<div class="q" id="nsQ" hidden><label style="display:flex;gap:10px;align-items:center;font-weight:600"><input type="checkbox" id="nosell"> Don't sell anything. Use only new money to rebalance.</label></div>
+<div class="q"><label for="sip">Add every month (optional)</label>
+<div class="amt"><span>₹</span><input class="sip" id="sip" type="text" inputmode="numeric" value="0" style="border:0;background:transparent;padding:10px 0"></div></div>
+<div class="q"><span class="ql" id="xl">Leave out these sectors</span>
+<div class="chips" id="excl" aria-labelledby="xl"></div></div></details>
+<button class="btn" id="go">Show my plan</button>
+</form>
+</section>
+
+<section id="result" aria-live="polite">
+<h2 id="rh">Your suggested plan</h2>
+<p class="sum" id="sum"></p>
+<div class="grid2">
+<div class="card donutbox"><svg id="donut" viewBox="0 0 120 120" role="img" aria-label="Share of money in each company"></svg>
+<div class="meter" id="meter"></div></div>
+<div class="card tw"><table><thead><tr id="thr"><th>Company</th><th class="r">Share</th><th class="r">Amount</th></tr></thead><tbody id="tb"></tbody></table></div>
+</div>
+<div class="facts card" id="facts"></div>
+<div class="card sec" id="insC" hidden><h3>What we noticed in your holdings</h3><ul id="ins" style="margin:8px 0 0;padding-left:20px"></ul></div>
+<div class="card sec"><h3>How your money could grow</h3><p>The shaded band is the likely range. Real results can fall outside it.</p>
+<svg id="chart" viewBox="0 0 640 270" style="width:100%;height:auto" role="img" aria-label="Projected growth of your investment"></svg>
+<div class="legend" id="legend"></div></div>
+<div class="card sec"><h3>How this mix compares</h3><p>Expected yearly return. The line below each shows a rough year (about 1 in 20).</p><div class="cmp" id="cmp"></div></div>
+<div class="acts"><button class="btn ghost" id="copy">Copy my plan</button><button class="btn ghost" id="again">Change my answers</button><span id="msg"></span></div>
+</section>
+
+<section class="how" id="how"><h2>How it works</h2>
+<ol class="steps">
+<li><b>We study past prices</b><span>A computer model looks at how large Indian companies have moved over the past decade.</span></li>
+<li><b>We estimate what may come next</b><span>Machine learning estimates which companies look stronger or steadier. These are estimates, not promises.</span></li>
+<li><b>We split your money to match your comfort</b><span>An optimiser picks the mix that aims for the best return for the risk you chose, and never puts too much in one place.</span></li></ol></section>
+
+<section class="faq" id="faq"><h2>Common questions</h2>
+<details><summary>Is this financial advice?</summary><p>No. This is an educational tool built for a college project. Please talk to a SEBI-registered adviser before investing real money.</p></details>
+<details><summary>I already own stocks. Do I have to sell?</summary><p>No. Choose "I already invest" and tick "Don't sell anything". We'll then show how to use only new money to move closer to a better mix. Selling at a profit can trigger capital gains tax, so check before you sell.</p></details>
+<details><summary>Why does a higher comfort level mean more risk?</summary><p>Companies with higher expected returns usually swing more in price. If you stay calm during drops, we lean toward them. If not, we lean toward steadier companies.</p></details>
+<details><summary>What does "a rough year" mean?</summary><p>It's a bad-but-possible outcome, one that happens about once in 20 years in our estimate. It is not the worst case.</p></details>
+<details><summary>Are these live prices?</summary><p>Not yet. This demo uses sample figures for 27 large companies. A live version would load fresh prices and the model's latest estimates.</p></details>
+</section>
+<footer>FolioWise is a student project for learning. Past performance does not guarantee future results. Investments in the stock market carry risk, including loss of money.</footer>
+</div>
+
+<script>
+const S=[["Reliance Industries","Energy",0.0960,0.2417],["Tata Consultancy Services","IT",0.0881,0.3001],["HDFC Bank","Banking",0.0443,0.2310],["Infosys","IT",0.1081,0.3171],["ICICI Bank","Banking",0.1434,0.2110],["Hindustan Unilever","FMCG",0.0400,0.2253],["ITC","FMCG",0.0462,0.2270],["Sun Pharma","Pharma",0.1316,0.1967],["Larsen & Toubro","Industrials",0.1072,0.2570],["Maruti Suzuki","Auto",0.0879,0.2479],["Bharti Airtel","Telecom",0.0790,0.2181],["Titan","Consumer",0.2132,0.2406],["Nestle India","FMCG",0.1537,0.2287],["Axis Bank","Banking",0.1346,0.2527],["Kotak Mahindra Bank","Banking",0.1390,0.2193],["Bajaj Finance","Banking",0.1583,0.3232],["Wipro","IT",0.0893,0.2684],["HCL Technologies","IT",0.1521,0.3058],["UltraTech Cement","Industrials",0.1161,0.2416],["Asian Paints","Consumer",0.1327,0.2483],["Tech Mahindra","IT",0.2093,0.2982],["Power Grid","Energy",0.0929,0.2102],["NTPC","Energy",0.1003,0.1982],["ONGC","Energy",0.0947,0.2417],["Coal India","Energy",0.1688,0.2411],["Bajaj Finserv","Banking",0.0692,0.2516],["Dr. Reddy's Laboratories","Pharma",0.1433,0.2421]].map(a=>({n:a[0],s:a[1],m:a[2],v:a[3]}));
+const RHO=0.22,NIFTY={m:0.1137,v:0.1774},COL=["#0F7B6C","#2F6FDE","#E0A100","#C2410C","#7C5CBF","#0E9AA7","#B5457B","#6B7A8C"];
+const RL=[["Very safe","Steady companies, smaller swings, smaller gains."],["Careful","Mostly steady companies with a little growth."],["Balanced","A middle path between steady and growing."],["Growth","More growing companies, bigger ups and downs."],["Aggressive","Chases higher returns and accepts big swings."]];
+const $=id=>document.getElementById(id),inr=n=>new Intl.NumberFormat("en-IN",{maximumFractionDigits:0}).format(Math.round(n));
+const sh=v=>v>=1e7?(v/1e7).toFixed(1)+" Cr":v>=1e5?(v/1e5).toFixed(1)+" L":Math.round(v/1e3)+"K";
+const num=s=>+String(s).replace(/[^0-9]/g,"")||0;
+let excl=new Set(),shown=false,last="";
+[...new Set(S.map(x=>x.s))].forEach(s=>{const b=document.createElement("button");b.type="button";b.textContent=s;b.onclick=()=>{excl.has(s)?excl.delete(s):excl.add(s);b.classList.toggle("on");upd()};$("excl").append(b)});
+function capNorm(w,cap){let f=new Array(w.length).fill(false);for(let k=0;k<20;k++){let fs=0,fr=0;w.forEach((x,i)=>{if(f[i])fs+=x;else fr+=x});if(fr<=0)break;const sc=(1-fs)/fr;let hit=false;w=w.map((x,i)=>{if(f[i])return x;const y=x*sc;if(y>cap){f[i]=true;hit=true;return cap}return y});if(!hit)break}return w}
+function build(r,cap){let L=S.filter(x=>!excl.has(x.s));if(L.length<3)return null;cap=Math.max(cap,1/L.length+.001);
+const mean=a=>a.reduce((p,c)=>p+c,0)/a.length,sd=(a,m)=>Math.sqrt(mean(a.map(x=>(x-m)**2)))||1;
+const mm=mean(L.map(x=>x.m)),ms=sd(L.map(x=>x.m),mm),vm=mean(L.map(x=>x.v)),vs=sd(L.map(x=>x.v),vm);
+const a=.2+1.6*r,b=1.8-1.6*r;let w=L.map(x=>Math.exp(a*(x.m-mm)/ms-b*(x.v-vm)/vs));let t=w.reduce((p,c)=>p+c,0);w=capNorm(w.map(x=>x/t),cap);
+w=w.map(x=>x<.015?0:x);t=w.reduce((p,c)=>p+c,0);w=capNorm(w.map(x=>x/t),cap);
+return{L,w,cap}}
+function stats(L,w){const m=L.reduce((p,x,i)=>p+w[i]*x.m,0),sw=L.reduce((p,x,i)=>p+w[i]*x.v,0),q=L.reduce((p,x,i)=>p+(w[i]*x.v)**2,0);return{m,v:Math.sqrt((1-RHO)*q+RHO*sw*sw)}}
+function fv(V,sip,g,T){const rm=Math.pow(1+g,1/12)-1,n=T*12;return V*Math.pow(1+g,T)+(rm>1e-9?sip*(Math.pow(1+rm,n)-1)/rm:sip*n)}
+function upd(){const i=+$("risk").value;$("riskOut").innerHTML=RL[i-1][0]+"<em>"+i+" of 5</em>";$("riskHelp").textContent=RL[i-1][1];if(shown)run(false)}
+function run(scroll){const fresh=num($("amt").value),cur=curArr(),amt=MODE=="ex"?cur.reduce((p,c)=>p+c,0)+fresh:fresh,sip=num($("sip").value),T=+document.querySelector("[name=yrs]:checked").value,r=(+$("risk").value-1)/4,cap=+$("cap").value;
+if(MODE=="ex"&&amt==fresh){alert("Add at least one holding you already own.");return}if(amt<1000){$("msg").textContent="";alert("Enter at least ₹1,000 to invest.");return}
+const B=build(r,cap);if(!B){alert("Too many sectors are left out. Keep at least 3 companies available.");return}
+let{L,w}=B;const EX=MODE=="ex"?exCalc(B.L,B.w,cur,fresh):null;if(EX){L=S;w=EX.aw}const CS=EX?stats(S,cur.map(v=>v/(amt-fresh))):null,P=stats(L,w),ew=L.map(()=>1/L.length),E=stats(L,ew),rough=P.m-1.65*P.v;
+const rows=L.map((x,i)=>({x,w:w[i]})).filter(o=>o.w>0).sort((a,b)=>b.w-a.w);
+const tone=x=>x.v<.19?"Steady":x.m>=.14?"Growth":"Balanced";
+$("tb").innerHTML=EX?exTable(EX,cur):rows.map((o,i)=>`<tr><td><span class="dot" style="background:${COL[Math.min(i,7)]}"></span><span class="nm">${o.x.n}</span><span class="sub">${o.x.s} <span class="tag">${tone(o.x)}</span></span></td><td class="r"><b>${(o.w*100).toFixed(1)}%</b></td><td class="r">₹${inr(o.w*amt)}</td></tr>`).join("");
+let off=0;const C=2*Math.PI*40;$("donut").innerHTML=`<circle cx="60" cy="60" r="40" fill="none" stroke="var(--line)" stroke-width="18"/>`+rows.map((o,i)=>{const d=o.w*C,s=`<circle cx="60" cy="60" r="40" fill="none" stroke="${COL[Math.min(i,7)]}" stroke-width="18" stroke-dasharray="${d} ${C-d}" stroke-dashoffset="${-off}" transform="rotate(-90 60 60)"/>`;off+=d;return s}).join("")+`<text x="60" y="58" text-anchor="middle" font-size="16" font-weight="800" fill="var(--ink)">${rows.length}</text><text x="60" y="71" text-anchor="middle" font-size="7" fill="var(--mut)">companies</text>`;
+const pos=Math.min(100,Math.max(0,(P.v-.12)/.14*100)),lvl=P.v<.15?"Lower":P.v<.19?"Medium":"Higher";
+$("meter").innerHTML=`<div class="bar"><i style="left:${pos}%"></i></div><p><span>Calmer</span><b style="color:var(--ink)">${lvl} swings</b><span>Bumpier</span></p>`;
+const gE=P.m,gB=Math.max(-.5,P.m-P.v/Math.sqrt(T)),gG=P.m+P.v/Math.sqrt(T),vE=fv(amt,sip,gE,T),vB=fv(amt,sip,gB,T),vG=fv(amt,sip,gG,T),inv=amt+sip*12*T;
+$("sum").innerHTML=EX?exSum(P,CS,EX,fresh):`Based on your answers, here's a mix of <b>${rows.length} companies</b>. If markets behave as expected, <b>₹${inr(amt)}</b>${sip?` plus ₹${inr(sip)} a month`:""}  could grow to about <b>₹${inr(vE)}</b> in ${T} year${T>1?"s":""}. In a tougher stretch it may be closer to ₹${inr(vB)}, so only invest money you won't need soon.`;
+$("facts").innerHTML=EX?exFacts(P,CS,EX,cur):`<div class="fact"><b>${(P.m*100).toFixed(1)}%</b><span>Expected return per year</span></div><div class="fact ${rough<0?"neg":""}"><b>${(rough*100).toFixed(1)}%</b><span>A rough year (about 1 in 20) could look like this</span></div><div class="fact"><b>${(Math.max(...rows.map(o=>o.w))*100).toFixed(0)}%</b><span>Most money in one company</span></div>`;
+// chart
+const W=640,H=270,pl=52,pr=12,pt=12,pb=30,n=T*12,mx=Math.max(vG,inv)*1.05,X=k=>pl+(W-pl-pr)*k/n,Y=v=>H-pb-(H-pt-pb)*v/mx;
+const ser=g=>Array.from({length:n+1},(_,k)=>fv(amt,sip,g,k/12)),sB=ser(gB),sE=ser(gE),sG=ser(gG);
+const path=s=>s.map((v,k)=>(k?"L":"M")+X(k).toFixed(1)+" "+Y(v).toFixed(1)).join("");
+const band=path(sG)+sB.map((v,k)=>"L"+X(n-k).toFixed(1)+" "+Y(sB[n-k]).toFixed(1)).join("")+"Z";
+const inS=Array.from({length:n+1},(_,k)=>amt+sip*k);
+let g="";[0,.5,1].forEach(f=>{const v=mx*f;g+=`<line x1="${pl}" x2="${W-pr}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${pl-8}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--mut)">₹${sh(v)}</text>`});
+g+=`<text x="${pl}" y="${H-8}" font-size="11" fill="var(--mut)">Today</text><text x="${W-pr}" y="${H-8}" text-anchor="end" font-size="11" fill="var(--mut)">${T} year${T>1?"s":""}</text>`;
+$("chart").innerHTML=g+`<path d="${band}" fill="var(--brand)" opacity=".16"/><path d="${path(inS)}" fill="none" stroke="var(--mut)" stroke-width="2" stroke-dasharray="5 5"/><path d="${path(sE)}" fill="none" stroke="var(--brand)" stroke-width="3"/>`;
+$("legend").innerHTML=`<span style="color:var(--brand)">━ Expected: ₹${inr(vE)}</span><span>▒ Range: ₹${inr(vB)} to ₹${inr(vG)}</span><span>┅ You put in: ₹${inr(inv)}</span>`;
+const R=[["Your suggested mix",P,0],...(EX?[["Your current mix",CS,1]]:[["Equal split, same companies",E,1]]),["NIFTY 50 index",NIFTY,1]],top=Math.max(...R.map(a=>a[1].m))*1.15;
+$("cmp").innerHTML=R.map(a=>`<div class="row ${a[2]?"o":""}"><div>${a[0]}<small>Rough year: ${((a[1].m-1.65*a[1].v)*100).toFixed(1)}%</small></div><div class="track"><div class="fill" style="width:${a[1].m/top*100}%">${(a[1].m*100).toFixed(1)}%</div></div></div>`).join("");
+last=`FolioWise plan for ₹${inr(amt)} over ${T} year(s), comfort ${RL[+$("risk").value-1][0]}:\n`+rows.map(o=>`${o.x.n}: ${(o.w*100).toFixed(1)}% (₹${inr(o.w*amt)})`).join("\n")+`\nExpected return ${(P.m*100).toFixed(1)}%/yr. Educational demo, not advice.`;
+$("result").style.display="block";shown=true;if(scroll)$("result").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"})}
+$("go").onclick=()=>run(true);
+$("again").onclick=()=>$("plan").scrollIntoView();
+$("copy").onclick=async()=>{try{await navigator.clipboard.writeText(last);$("msg").textContent="Plan copied."}catch(e){$("msg").textContent="Couldn't copy. Select the table and copy it instead."}};
+$("amt").addEventListener("input",e=>{const v=num(e.target.value);e.target.value=v?inr(v):"";document.querySelectorAll("#amtChips button").forEach(b=>b.classList.toggle("on",+b.dataset.v===v));if(shown)run(false)});
+$("sip").addEventListener("input",e=>{const v=num(e.target.value);e.target.value=inr(v);if(shown)run(false)});
+document.querySelectorAll("#amtChips button").forEach(b=>b.onclick=()=>{$("amt").value=inr(+b.dataset.v);document.querySelectorAll("#amtChips button").forEach(x=>x.classList.toggle("on",x===b));if(shown)run(false)});
+["risk","cap"].forEach(id=>$(id).addEventListener("input",upd));document.querySelectorAll("[name=yrs]").forEach(x=>x.addEventListener("change",()=>shown&&run(false)));
+let MODE="new";
+function curArr(){const c=S.map(()=>0);if(MODE=="ex")document.querySelectorAll("#hrows .hrow").forEach(r=>{c[+r.querySelector("select").value]+=num(r.querySelector("input").value)});return c}
+function addRow(i,v){const d=document.createElement("div");d.className="hrow";d.innerHTML=`<select aria-label="Company">${S.map((x,k)=>`<option value="${k}"${k==i?" selected":""}>${x.n}</option>`).join("")}</select><input class="sip" inputmode="numeric" aria-label="Amount in rupees" value="${v?inr(v):""}" placeholder="₹ amount"><button type="button" class="x" aria-label="Remove holding">✕</button>`;d.querySelector("input").addEventListener("input",e=>{const n=num(e.target.value);e.target.value=n?inr(n):"";if(shown)run(false)});d.querySelector("select").addEventListener("change",()=>shown&&run(false));d.querySelector(".x").onclick=()=>{d.remove();if(shown)run(false)};$("hrows").append(d)}
+function setMode(m){MODE=m;const e=m=="ex";$("holdQ").hidden=!e;$("nsQ").hidden=!e;$("insC").hidden=!e;$("amtChips").hidden=e;$("amtL").textContent=e?"Any new money to add? (optional)":"How much do you want to invest?";$("amt").value=e?"":"5,00,000";$("amt").placeholder="0";document.querySelectorAll("#amtChips button").forEach(b=>b.classList.toggle("on",+b.dataset.v===500000));$("thr").innerHTML=e?"<th>Company</th><th class='r'>You hold</th><th class='r'>Suggested</th><th class='r'>What to do</th>":"<th>Company</th><th class='r'>Share</th><th class='r'>Amount</th>";$("rh").textContent=e?"Your portfolio checkup":"Your suggested plan";$("go").textContent=e?"Check my portfolio":"Show my plan";$("result").style.display="none";shown=false;if(e&&!$("hrows").children.length)[[6,250000],[0,150000],[1,100000]].forEach(a=>addRow(a[0],a[1]))}
+function exCalc(Lb,wb,cur,fresh){const sc=cur.reduce((p,c)=>p+c,0),tot=sc+fresh,tw=S.map(x=>{const j=Lb.indexOf(x);return j<0?0:wb[j]}),t=tw.map(v=>v*tot);let after,d;if($("nosell").checked){const sf=t.map((v,i)=>Math.max(0,v-cur[i])),ss=sf.reduce((p,c)=>p+c,0);d=sf.map(v=>ss?fresh*v/ss:0);after=cur.map((c,i)=>c+d[i])}else{after=t;d=t.map((v,i)=>v-cur[i])}const sa=after.reduce((p,c)=>p+c,0);return{after,d,aw:after.map(v=>v/sa),total:tot,cur:sc,sell:d.reduce((p,c)=>p+(c<0?-c:0),0),buy:d.reduce((p,c)=>p+(c>0?c:0),0)}}
+function exTable(E,cur){const th=Math.max(1000,E.total*.01);return S.map((x,i)=>({x,i,c:cur[i],a:E.after[i],d:E.d[i]})).filter(o=>o.c>0||o.a>0).sort((a,b)=>b.a-a.a).map(o=>{const act=Math.abs(o.d)<th?'<span class="tag">Keep</span>':o.d>0?`<b style="color:var(--brand)">Buy ₹${inr(o.d)}</b>`:`<b style="color:var(--bad)">Sell ₹${inr(-o.d)}</b>`;return `<tr><td><span class="nm">${o.x.n}</span><span class="sub">${o.x.s}</span></td><td class="r">₹${inr(o.c)}<span class="sub">${(o.c/E.cur*100).toFixed(0)}%</span></td><td class="r"><b>${(E.aw[o.i]*100).toFixed(1)}%</b><span class="sub">₹${inr(o.a)}</span></td><td class="r">${act}</td></tr>`}).join("")}
+function exSum(P,CS,E,fresh){const r=s=>((s.m-1.65*s.v)*100).toFixed(1);return `Your current mix is expected to earn about <b>${(CS.m*100).toFixed(1)}%</b> a year, and a rough year could be near ${r(CS)}%. With our changes it's about <b>${(P.m*100).toFixed(1)}%</b>, with a rough year near ${r(P)}%. ${E.sell>1?`That means selling about <b>₹${inr(E.sell)}</b> and buying about <b>₹${inr(E.buy)}</b>${fresh?`, including your ₹${inr(fresh)} of new money`:""}.`:`No selling is needed${fresh?`. Your ₹${inr(fresh)} of new money goes into the companies marked Buy`:""}.`} Trading costs would be roughly ₹${inr((E.sell+E.buy)*.002)}.${E.sell>1?" Selling at a profit can trigger capital gains tax, so check that before you act.":""}`}
+function exFacts(P,CS,E,cur){insights(cur);const f=s=>((s.m-1.65*s.v)*100).toFixed(1)+"%";return `<div class="fact"><b>${(CS.m*100).toFixed(1)}% → ${(P.m*100).toFixed(1)}%</b><span>Expected return per year: now → suggested</span></div><div class="fact"><b>${f(CS)} → ${f(P)}</b><span>A rough year (about 1 in 20): now → suggested</span></div><div class="fact"><b>₹${inr(E.sell+E.buy)}</b><span>Total to buy and sell</span></div>`}
+function insights(cur){const sc=cur.reduce((p,c)=>p+c,0),cap=+$("cap").value,o=[];cur.forEach((c,i)=>{if(c/sc>cap)o.push(`${S[i].n} is ${Math.round(c/sc*100)}% of your money. We suggest no more than ${Math.round(cap*100)}%.`)});const sec={};cur.forEach((c,i)=>sec[S[i].s]=(sec[S[i].s]||0)+c);for(const k in sec)if(sec[k]/sc>.4)o.push(`${k} makes up ${Math.round(sec[k]/sc*100)}% of your holdings. One bad turn in that sector would hurt a lot.`);const n=cur.filter(c=>c>0).length;if(n<5)o.push(`You hold only ${n} compan${n==1?"y":"ies"}. Spreading across more softens the blow if one falls.`);cur.forEach((c,i)=>{if(c>0&&excl.has(S[i].s))o.push(`You asked to avoid ${S[i].s}, but you hold ${S[i].n}.`)});if(!o.length)o.push("Your mix is already fairly well spread. We only suggest small changes.");$("ins").innerHTML=o.map(t=>`<li>${t}</li>`).join("")}
+document.querySelectorAll("[name=mode]").forEach(x=>x.addEventListener("change",e=>setMode(e.target.value)));
+$("addH").onclick=()=>addRow(0,0);$("nosell").addEventListener("change",()=>shown&&run(false));
+upd();
+</script>
+</body>
+</html>

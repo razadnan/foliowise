@@ -1,0 +1,42 @@
+{
+  "random_seed": 42,
+  "features": [
+    "f_ret_1",
+    "f_ret_5",
+    "f_ret_21",
+    "f_ret_63",
+    "f_vol_21",
+    "f_vol_63",
+    "f_mom_126_21",
+    "f_rsi_14",
+    "f_volchg",
+    "f_dist_52wh",
+    "f_rel_nifty"
+  ],
+  "purge_trading_days": 21,
+  "ridge": {
+    "alphas": [
+      0.01,
+      0.1,
+      1.0,
+      10.0,
+      100.0,
+      1000.0
+    ],
+    "cv": 3
+  },
+  "random_forest": {
+    "n_estimators": 100,
+    "max_depth": 3,
+    "min_samples_leaf": 20,
+    "random_state": 42
+  },
+  "xgboost": {
+    "n_estimators": 100,
+    "max_depth": 3,
+    "learning_rate": 0.03,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "random_state": 42
+  }
+}

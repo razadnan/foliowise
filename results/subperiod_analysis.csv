@@ -1,0 +1,25 @@
+subperiod,strategy,days,cagr,vol,sharpe,max_dd
+Full Test Period,S0,1677,11.71,17.81,0.32,-37.63
+Full Test Period,S1,1677,16.84,16.32,0.66,-33.11
+Full Test Period,S2,1677,12.76,14.42,0.47,-25.73
+Full Test Period,S4,1677,9.84,18.11,0.21,-34.86
+Full Test Period,S5,1677,22.28,23.21,0.7,-28.72
+Full Test Period,S6,1677,15.27,15.22,0.61,-29.8
+COVID Crash & Recovery,S0,228,18.02,32.59,0.37,-37.63
+COVID Crash & Recovery,S1,228,27.07,29.63,0.71,-33.11
+COVID Crash & Recovery,S2,228,31.04,25.7,0.97,-25.73
+COVID Crash & Recovery,S4,228,7.09,31.04,0.03,-34.86
+COVID Crash & Recovery,S5,228,31.0,40.47,0.62,-28.72
+COVID Crash & Recovery,S6,228,28.76,27.27,0.83,-29.8
+Post-COVID Bull & Volatility,S0,496,14.03,16.5,0.49,-17.23
+Post-COVID Bull & Volatility,S1,496,19.92,15.18,0.92,-15.64
+Post-COVID Bull & Volatility,S2,496,10.6,13.48,0.34,-16.3
+Post-COVID Bull & Volatility,S4,496,10.47,17.12,0.26,-22.92
+Post-COVID Bull & Volatility,S5,496,35.81,20.71,1.44,-23.79
+Post-COVID Bull & Volatility,S6,496,18.14,14.28,0.85,-14.4
+Recent Market Regime,S0,953,9.07,12.77,0.24,-15.77
+Recent Market Regime,S1,953,12.98,11.82,0.59,-14.87
+Recent Market Regime,S2,953,9.88,10.66,0.36,-25.31
+Recent Market Regime,S4,953,10.18,13.97,0.3,-24.53
+Recent Market Regime,S5,953,13.89,18.28,0.43,-21.32
+Recent Market Regime,S6,953,10.83,11.15,0.43,-19.29

@@ -1,0 +1,14 @@
+--- frontend/FolioWise_baseline.html
++++ frontend/index.html
+@@ -172,3 +172,3 @@
+ <details><summary>What does "a rough year" mean?</summary><p>It's a bad-but-possible outcome, one that happens about once in 20 years in our estimate. It is not the worst case.</p></details>
+-<details><summary>Are these live prices?</summary><p>Not yet. This demo uses sample figures for 13 large companies. A live version would load fresh prices and the model's latest estimates.</p></details>
++<details><summary>Are these live prices?</summary><p>Not yet. This demo uses sample figures for 27 large companies. A live version would load fresh prices and the model's latest estimates.</p></details>
+ </section>
+@@ -178,4 +178,4 @@
+ <script>
+-const S=[["Reliance Industries","Energy",.12,.24],["Tata Consultancy Services","IT",.11,.21],["HDFC Bank","Banking",.12,.20],["Infosys","IT",.11,.23],["ICICI Bank","Banking",.14,.24],["Hindustan Unilever","FMCG",.09,.16],["ITC","FMCG",.11,.18],["Sun Pharma","Pharma",.14,.24],["Larsen & Toubro","Industrials",.15,.26],["Maruti Suzuki","Auto",.13,.25],["Bharti Airtel","Telecom",.14,.25],["Titan","Consumer",.16,.30],["Nestlé India","FMCG",.08,.15]].map(a=>({n:a[0],s:a[1],m:a[2],v:a[3]}));
+-const RHO=.45,NIFTY={m:.11,v:.15},COL=["#0F7B6C","#2F6FDE","#E0A100","#C2410C","#7C5CBF","#0E9AA7","#B5457B","#6B7A8C"];
++const S=[["Reliance Industries","Energy",0.0960,0.2417],["Tata Consultancy Services","IT",0.0881,0.3001],["HDFC Bank","Banking",0.0443,0.2310],["Infosys","IT",0.1081,0.3171],["ICICI Bank","Banking",0.1434,0.2110],["Hindustan Unilever","FMCG",0.0400,0.2253],["ITC","FMCG",0.0462,0.2270],["Sun Pharma","Pharma",0.1316,0.1967],["Larsen & Toubro","Industrials",0.1072,0.2570],["Maruti Suzuki","Auto",0.0879,0.2479],["Bharti Airtel","Telecom",0.0790,0.2181],["Titan","Consumer",0.2132,0.2406],["Nestle India","FMCG",0.1537,0.2287],["Axis Bank","Banking",0.1346,0.2527],["Kotak Mahindra Bank","Banking",0.1390,0.2193],["Bajaj Finance","Banking",0.1583,0.3232],["Wipro","IT",0.0893,0.2684],["HCL Technologies","IT",0.1521,0.3058],["UltraTech Cement","Industrials",0.1161,0.2416],["Asian Paints","Consumer",0.1327,0.2483],["Tech Mahindra","IT",0.2093,0.2982],["Power Grid","Energy",0.0929,0.2102],["NTPC","Energy",0.1003,0.1982],["ONGC","Energy",0.0947,0.2417],["Coal India","Energy",0.1688,0.2411],["Bajaj Finserv","Banking",0.0692,0.2516],["Dr. Reddy's Laboratories","Pharma",0.1433,0.2421]].map(a=>({n:a[0],s:a[1],m:a[2],v:a[3]}));
++const RHO=0.22,NIFTY={m:0.1137,v:0.1774},COL=["#0F7B6C","#2F6FDE","#E0A100","#C2410C","#7C5CBF","#0E9AA7","#B5457B","#6B7A8C"];
+ const RL=[["Very safe","Steady companies, smaller swings, smaller gains."],["Careful","Mostly steady companies with a little growth."],["Balanced","A middle path between steady and growing."],["Growth","More growing companies, bigger ups and downs."],["Aggressive","Chases higher returns and accepts big swings."]];

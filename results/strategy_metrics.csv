@@ -1,0 +1,8 @@
+strategy,strategy_name,cost,cagr,vol,sharpe,max_dd,calmar,avg_turnover
+S0,NIFTY 50 Index (Benchmark),0.002,11.71,17.81,0.32,-37.63,0.31,0.0
+S1,Equal Weight (1/N),0.002,16.84,16.32,0.66,-33.11,0.51,6.07
+S2,Minimum Variance,0.002,12.76,14.42,0.47,-25.73,0.5,22.01
+S3,Max Sharpe (Historical),0.002,10.16,17.63,0.24,-32.73,0.31,49.89
+S4,Max Sharpe (ML Predicted + Blend),0.002,9.84,18.11,0.21,-34.86,0.28,50.02
+S5,Top-5 ML Equal Weight,0.002,22.28,23.21,0.7,-28.72,0.78,87.51
+S6,Hierarchical Risk Parity (HRP),0.002,15.27,15.22,0.61,-29.8,0.51,21.27
