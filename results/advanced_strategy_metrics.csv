@@ -1,0 +1,9 @@
+strategy,strategy_name,cagr,vol,sharpe,sortino,max_dd,max_dd_duration_days,tracking_error_pct,information_ratio,avg_turnover
+S0,NIFTY 50 TRI (Benchmark),13.27,17.81,0.41,0.38,-37.54,264,0.0,0.0,0.0
+S1,Equal Weight (1/N),17.07,16.34,0.68,0.63,-33.18,526,4.78,0.8,0.12
+S2,Minimum Variance,13.21,14.51,0.5,0.48,-25.94,526,9.08,-0.01,0.51
+S3,Max Sharpe (Historical),9.24,17.68,0.18,0.17,-33.4,525,10.75,-0.37,1.2
+S4,Max Sharpe (ML Predicted + Blend),13.89,17.13,0.46,0.43,-29.02,526,9.58,0.06,1.44
+S5,Top-5 ML Equal Weight,24.0,23.34,0.77,0.76,-28.52,557,14.58,0.74,2.14
+S6,Hierarchical Risk Parity (HRP),16.09,15.18,0.66,0.62,-29.8,525,6.38,0.44,0.48
+S7,Top-5 Momentum Equal Weight,6.14,21.3,0.01,0.01,-40.48,527,13.53,-0.53,1.24

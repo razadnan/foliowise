@@ -74,7 +74,7 @@ def run_stage2(base_dir="."):
         {
             "test_date": d,
             "tickers_tested": len(piv_prices.columns),
-            "features_tested": 11,
+            "features_tested": 13,
             "status": "PASS",
             "max_difference": 0.0
         }

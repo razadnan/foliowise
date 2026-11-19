@@ -238,18 +238,18 @@ svg text { font-family: var(--sans); }
       </div>
       <div class="card kpi-card">
         <div class="kpi-title">Equal Weight (S1) Sharpe</div>
-        <div class="kpi-value" style="color:var(--good)">0.66</div>
-        <div class="kpi-sub">CAGR: 16.84% | Vol: 16.32% | DD: -33.1%</div>
+        <div class="kpi-value" style="color:var(--good)">0.68</div>
+        <div class="kpi-sub">CAGR: 17.07% | Vol: 16.34% | DD: -33.2%</div>
       </div>
       <div class="card kpi-card">
         <div class="kpi-title">ML Max Sharpe (S4) Sharpe</div>
-        <div class="kpi-value" style="color:var(--warn)">0.21</div>
-        <div class="kpi-sub">CAGR: 9.84% | Vol: 18.11% | DD: -34.9%</div>
+        <div class="kpi-value" style="color:var(--warn)">0.46</div>
+        <div class="kpi-sub">CAGR: 13.89% | Vol: 17.13% | DD: -29.0%</div>
       </div>
       <div class="card kpi-card">
-        <div class="kpi-title">NIFTY 50 Benchmark (S0)</div>
-        <div class="kpi-value">0.32</div>
-        <div class="kpi-sub">CAGR: 11.71% | Vol: 17.81% | DD: -37.6%</div>
+        <div class="kpi-title">NIFTY 50 TRI Benchmark (S0)</div>
+        <div class="kpi-value">0.41</div>
+        <div class="kpi-sub">CAGR: 13.27% | Vol: 17.81% | DD: -37.5%</div>
       </div>
     </div>
 
@@ -551,33 +551,49 @@ svg text { font-family: var(--sans); }
             </thead>
             <tbody>
               <tr>
-                <td><span class="strat-tag">Ridge</span> (Selected for S4)</td>
-                <td class="r bold" style="color:var(--good)">+0.0454</td>
-                <td class="r">1.52</td>
-                <td class="r">56.06%</td>
+                <td><span class="strat-tag">Ridge</span> (Selected for S4/S5)</td>
+                <td class="r bold" style="color:var(--good)">+0.0382</td>
+                <td class="r">1.55 (NW)</td>
+                <td class="r">56.29%</td>
                 <td class="r">0.0821</td>
-                <td class="r bold">+1.90%</td>
+                <td class="r bold">+1.38%</td>
               </tr>
               <tr>
-                <td><span class="strat-tag">XGBoost</span></td>
-                <td class="r">+0.0112</td>
-                <td class="r">0.41</td>
-                <td class="r">56.10%</td>
-                <td class="r">0.0820</td>
-                <td class="r">+0.80%</td>
+                <td><span class="strat-tag">Gradient Boosting</span></td>
+                <td class="r">+0.0006</td>
+                <td class="r">0.02</td>
+                <td class="r">55.60%</td>
+                <td class="r">0.0818</td>
+                <td class="r">+0.47%</td>
               </tr>
               <tr>
                 <td><span class="strat-tag">Random Forest</span></td>
-                <td class="r">+0.0086</td>
-                <td class="r">0.30</td>
-                <td class="r">55.97%</td>
+                <td class="r" style="color:var(--bad)">-0.0161</td>
+                <td class="r">-0.59</td>
+                <td class="r">54.82%</td>
                 <td class="r">0.0822</td>
-                <td class="r">+0.93%</td>
+                <td class="r">+0.81%</td>
+              </tr>
+              <tr>
+                <td><span class="strat-tag">Neural Network (MLP)</span></td>
+                <td class="r" style="color:var(--bad)">-0.0171</td>
+                <td class="r">-0.62</td>
+                <td class="r">53.04%</td>
+                <td class="r">0.0924</td>
+                <td class="r">+0.71%</td>
+              </tr>
+              <tr>
+                <td><span class="strat-tag">Momentum Baseline</span></td>
+                <td class="r" style="color:var(--bad)">-0.0113</td>
+                <td class="r">-0.35</td>
+                <td class="r">50.53%</td>
+                <td class="r">0.0842</td>
+                <td class="r">-0.04%</td>
               </tr>
               <tr>
                 <td><span class="strat-tag">Naive Baseline</span></td>
                 <td class="r" style="color:var(--bad)">-0.0327</td>
-                <td class="r">-1.12</td>
+                <td class="r">-1.11</td>
                 <td class="r">56.15%</td>
                 <td class="r">0.0827</td>
                 <td class="r">-0.44%</td>
@@ -649,15 +665,16 @@ svg text { font-family: var(--sans); }
 </div>
 
 <script>
-// Strategy Overview Data
+// Strategy Overview Data (v2.0 Next-Day Execution Baseline)
 const STRAT_DATA = [
-  { id: "S0", name: "NIFTY 50 Index (Benchmark)", cagr: 11.71, vol: 17.81, sharpe: 0.32, maxDd: -37.63, calmar: 0.31, turnover: 0.0, color: "#6B7280" },
-  { id: "S1", name: "Equal Weight (1/N)", cagr: 16.84, vol: 16.32, sharpe: 0.66, maxDd: -33.11, calmar: 0.51, turnover: 6.07, color: "#0F766E" },
-  { id: "S2", name: "Minimum Variance", cagr: 12.76, vol: 14.42, sharpe: 0.47, maxDd: -25.73, calmar: 0.50, turnover: 22.01, color: "#2563EB" },
-  { id: "S3", name: "Max Sharpe (Historical)", cagr: 10.16, vol: 17.63, sharpe: 0.24, maxDd: -32.73, calmar: 0.31, turnover: 49.89, color: "#D97706" },
-  { id: "S4", name: "Max Sharpe (ML Predicted + Blend)", cagr: 9.84, vol: 18.11, sharpe: 0.21, maxDd: -34.86, calmar: 0.28, turnover: 50.02, color: "#DC2626" },
-  { id: "S5", name: "Top-5 ML Equal Weight", cagr: 22.28, vol: 23.21, sharpe: 0.70, maxDd: -28.72, calmar: 0.78, turnover: 87.51, color: "#7C3AED" },
-  { id: "S6", name: "Hierarchical Risk Parity (HRP)", cagr: 15.27, vol: 15.22, sharpe: 0.61, maxDd: -29.80, calmar: 0.51, turnover: 21.27, color: "#059669" }
+  { id: "S0", name: "NIFTY 50 TRI (Benchmark)", cagr: 13.27, vol: 17.81, sharpe: 0.41, maxDd: -37.54, calmar: 0.35, turnover: 0.0, color: "#6B7280" },
+  { id: "S1", name: "Equal Weight (1/N)", cagr: 17.07, vol: 16.34, sharpe: 0.68, maxDd: -33.18, calmar: 0.51, turnover: 0.12, color: "#0F766E" },
+  { id: "S2", name: "Minimum Variance", cagr: 13.21, vol: 14.51, sharpe: 0.50, maxDd: -25.94, calmar: 0.51, turnover: 0.51, color: "#2563EB" },
+  { id: "S3", name: "Max Sharpe (Historical)", cagr: 9.24, vol: 17.68, sharpe: 0.18, maxDd: -33.40, calmar: 0.28, turnover: 1.20, color: "#D97706" },
+  { id: "S4", name: "Max Sharpe (ML Predicted + Blend)", cagr: 13.89, vol: 17.13, sharpe: 0.46, maxDd: -29.02, calmar: 0.48, turnover: 1.44, color: "#DC2626" },
+  { id: "S5", name: "Top-5 ML Equal Weight", cagr: 24.00, vol: 23.34, sharpe: 0.77, maxDd: -28.52, calmar: 0.84, turnover: 2.14, color: "#7C3AED" },
+  { id: "S6", name: "Hierarchical Risk Parity (HRP)", cagr: 16.09, vol: 15.18, sharpe: 0.66, maxDd: -29.80, calmar: 0.54, turnover: 0.48, color: "#059669" },
+  { id: "S7", name: "Top-5 Momentum Equal Weight", cagr: 6.14, vol: 21.30, sharpe: 0.01, maxDd: -40.48, calmar: 0.15, turnover: 1.24, color: "#DB2777" }
 ];
 
 const SUBPERIODS = [

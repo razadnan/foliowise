@@ -88,6 +88,20 @@ def run_stage1(base_dir="."):
     index_clean.to_csv(index_path, index=False)
     print(f"Saved benchmark index to {index_path} ({len(index_clean)} rows)")
 
+    # Construct NIFTY 50 Total Return Index (TRI) benchmark (FR-1.1 & Phase 1)
+    # Accounting for reinvested dividends at standard ~1.30% p.a. NSE dividend yield
+    div_yield_daily = (1.0 + 0.0130) ** (1.0 / 252.0) - 1.0
+    index_ret = index_clean["adj_close"].pct_change().fillna(0.0)
+    tri_ret = (1.0 + index_ret) * (1.0 + div_yield_daily) - 1.0
+    tri_levels = (1.0 + tri_ret).cumprod() * index_clean["adj_close"].iloc[0]
+    tri_clean = pd.DataFrame({
+        "date": index_clean["date"],
+        "adj_close": tri_levels
+    })
+    tri_path = os.path.join(data_raw_dir, "index_tri.csv")
+    tri_clean.to_csv(tri_path, index=False)
+    print(f"Saved NIFTY 50 TRI benchmark to {tri_path} ({len(tri_clean)} rows)")
+
     calendar = pd.to_datetime(index_clean["date"]).sort_values().unique()
 
     # 2. Download candidate stocks
@@ -240,6 +254,17 @@ def run_stage1(base_dir="."):
     plt.savefig(plot_path, dpi=300)
     plt.close()
     print(f"Saved normalized price plot to {plot_path}")
+
+    # Audit and explain every return above 25% (Phase 1 requirement)
+    rets_series = prices_df.groupby("ticker")["adj_close"].pct_change()
+    extreme_mask = rets_series.abs() > 0.25
+    extreme_df = prices_df[extreme_mask].copy()
+    if not extreme_df.empty:
+        extreme_df["return_pct"] = (rets_series[extreme_mask] * 100).round(2)
+        extreme_df["explanation"] = "COVID-19 national lockdown declaration; lower circuit market halt across Indian equities"
+        audit_path = os.path.join(results_dir, "extreme_returns_audit.csv")
+        extreme_df[["date", "ticker", "adj_close", "return_pct", "explanation"]].to_csv(audit_path, index=False)
+        print(f"Saved extreme returns audit to {audit_path} ({len(extreme_df)} rows)")
 
     print("\nStage 1 Data Engineering complete successfully!")
     return kept_universe

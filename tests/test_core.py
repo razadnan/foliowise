@@ -16,8 +16,8 @@ import pandas as pd
 
 
 def compute_turnover(target_w: np.ndarray, current_w: np.ndarray) -> float:
-    """Computes L1 norm turnover between target weights and current weights."""
-    return float(np.sum(np.abs(target_w - current_w)))
+    """Computes one-way turnover (0.5 * L1 norm) between target and current weights."""
+    return float(0.5 * np.sum(np.abs(target_w - current_w)))
 
 
 def compute_drifted_weights(weights: np.ndarray, returns: np.ndarray) -> np.ndarray:
@@ -40,20 +40,20 @@ def compute_net_return(gross_ret: float, turnover: float, cost: float = 0.002) -
 # ---------------------------------------------------------------------------
 
 def test_turnover_and_cost_rebalancing():
-    """Weights [0.5, 0.5] going to [1.0, 0.0] yield turnover 1.0 and cost 0.002."""
+    """Weights [0.5, 0.5] going to [1.0, 0.0] yield one-way turnover 0.5 and cost 0.001."""
     current_w = np.array([0.5, 0.5])
     target_w = np.array([1.0, 0.0])
     
     turnover = compute_turnover(target_w, current_w)
-    assert turnover == pytest.approx(1.0, abs=1e-7)
+    assert turnover == pytest.approx(0.5, abs=1e-7)
     
     cost = 0.002 # 20 bps
     cost_penalty = cost * turnover
-    assert cost_penalty == pytest.approx(0.002, abs=1e-7)
+    assert cost_penalty == pytest.approx(0.001, abs=1e-7)
     
     gross_ret = 0.010
     net_ret = compute_net_return(gross_ret, turnover, cost)
-    assert net_ret == pytest.approx(0.008, abs=1e-7)
+    assert net_ret == pytest.approx(0.009, abs=1e-7)
 
 
 def test_zero_turnover_when_unchanged():
@@ -112,6 +112,7 @@ def test_backtest_weights_file_invariants():
     assert max_weights["S4"] <= 0.1501
     assert max_weights["S5"] <= 0.2001
     assert max_weights["S6"] <= 0.1501
+    assert max_weights["S7"] <= 0.2001
 
 
 def test_data_schema_and_date_synchronization():

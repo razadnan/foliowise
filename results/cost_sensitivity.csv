@@ -1,7 +1,13 @@
 strategy,strategy_name,transaction_cost_pct,cagr,vol,sharpe,max_dd
-S1,Equal Weight (1/N),0.1,16.9,16.33,0.67,-33.1
-S4,Max Sharpe (ML Predicted + Blend),0.1,10.49,18.11,0.25,-34.8
-S1,Equal Weight (1/N),0.2,16.81,16.33,0.66,-33.11
-S4,Max Sharpe (ML Predicted + Blend),0.2,9.81,18.11,0.21,-34.86
-S1,Equal Weight (1/N),0.3,16.72,16.33,0.66,-33.11
-S4,Max Sharpe (ML Predicted + Blend),0.3,9.12,18.11,0.17,-34.92
+S1,Equal Weight (1/N),0.1,17.11,16.34,0.68,-33.17
+S4,Max Sharpe (ML Predicted + Blend),0.1,14.3,17.13,0.48,-29.01
+S5,Top-5 ML Equal Weight,0.1,24.66,23.35,0.8,-28.48
+S7,Top-5 Momentum Equal Weight,0.1,6.47,21.29,0.02,-40.47
+S1,Equal Weight (1/N),0.2,17.07,16.34,0.68,-33.18
+S4,Max Sharpe (ML Predicted + Blend),0.2,13.89,17.13,0.46,-29.02
+S5,Top-5 ML Equal Weight,0.2,24.0,23.34,0.77,-28.52
+S7,Top-5 Momentum Equal Weight,0.2,6.14,21.3,0.01,-40.48
+S1,Equal Weight (1/N),0.3,17.04,16.34,0.68,-33.18
+S4,Max Sharpe (ML Predicted + Blend),0.3,13.47,17.14,0.44,-29.04
+S5,Top-5 ML Equal Weight,0.3,23.33,23.33,0.74,-28.55
+S7,Top-5 Momentum Equal Weight,0.3,5.81,21.3,-0.01,-40.5

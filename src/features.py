@@ -226,6 +226,31 @@ def compute_rel_nifty(
     return rel
 
 
+def compute_mkt_volatility(
+    nifty_returns: pd.Series,
+    window: int = 21
+) -> pd.Series:
+    """
+    Compute backward-looking rolling market volatility of NIFTY 50 returns.
+    """
+    vol = nifty_returns.rolling(window=window, min_periods=window).std()
+    vol.name = f"f_mkt_vol_{window}"
+    return vol
+
+
+def compute_mkt_correlation(
+    stock_returns: pd.Series,
+    nifty_returns: pd.Series,
+    window: int = 63
+) -> pd.Series:
+    """
+    Compute backward-looking rolling correlation between stock and market.
+    """
+    corr = stock_returns.rolling(window=window, min_periods=window).corr(nifty_returns).fillna(0.0)
+    corr.name = f"f_mkt_corr_{window}"
+    return corr
+
+
 def build_target(prices: pd.Series, horizon: int = 21) -> pd.Series:
     """
     Compute the forward return target for supervised learning.
@@ -405,6 +430,8 @@ def build_features_table(
         "f_volchg",
         "f_dist_52wh",
         "f_rel_nifty",
+        "f_mkt_vol_21",
+        "f_mkt_corr_63",
     ]
 
     for ticker in tickers:
@@ -427,11 +454,13 @@ def build_features_table(
         volchg = compute_volume_change(volume, short_w=21, long_w=63)
         dist_52wh = compute_dist_52wh(prices)
         rel_nifty = compute_rel_nifty(daily_returns, nifty_ret)
+        mkt_vol = compute_mkt_volatility(nifty_ret, window=21)
+        mkt_corr = compute_mkt_correlation(daily_returns, nifty_ret, window=63)
         target = build_target(prices, horizon=21)
 
         # Combine into a ticker-level DataFrame
         ticker_df = pd.concat(
-            [past_ret, rolling_vol, mom, rsi, volchg, dist_52wh, rel_nifty, target],
+            [past_ret, rolling_vol, mom, rsi, volchg, dist_52wh, rel_nifty, mkt_vol, mkt_corr, target],
             axis=1
         )
         ticker_df.columns = feature_cols + ["target_21d"]

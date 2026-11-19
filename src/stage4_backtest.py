@@ -1,23 +1,24 @@
 """
 src/stage4_backtest.py
 ======================
-Student 4: Optimization and Backtest Lead
-Implements cost-aware monthly backtest (2020-2026) for strategies S0 to S6.
-- S0: NIFTY 50 index (^NSEI)
+Student 4: Optimization and Backtest Lead (Version 2.0)
+Implements institutional-grade cost-aware backtest (2020-2026) for strategies S0 to S7:
+- S0: NIFTY 50 Total Return Index (TRI Benchmark)
 - S1: Equal Weight (1/N)
-- S2: Minimum Variance (Ledoit-Wolf covariance, 15% cap)
+- S2: Minimum Variance (Ledoit-Wolf shrinkage, 15% cap)
 - S3: Max Sharpe with Historical Mean Returns (Ledoit-Wolf cov, 15% cap)
-- S4: Max Sharpe with ML Returns (Ridge predictions, 50/50 blend with historical, 15% cap)
-- S5: Top-5 by ML Prediction, Equal Weight (20% each)
-- S6: Hierarchical Risk Parity (HRP, Lopez de Prado algorithm)
+- S4: Max Sharpe with ML Returns (Ridge predictions, 50/50 blend, 15% cap)
+- S5: Top-5 ML Equal Weight (20% each)
+- S6: Hierarchical Risk Parity (HRP with Ledoit-Wolf covariance)
+- S7: Top-5 Momentum Equal Weight (20% each based on 12M-1M momentum)
 
-Features:
-- Pure scipy.optimize (SLSQP) & sklearn LedoitWolf optimization
-- Accurate weight drift with daily stock prices between monthly rebalances
-- Exact turnover calculation: sum(|w_new - w_drifted|)
-- Transaction cost deduction on rebalance day (base 0.2%, sensitivity 0.1% and 0.3%)
-- Performance metrics: CAGR, Volatility, Sharpe (rf=6%), Max Drawdown, Calmar, Avg Turnover
-- Generates equity curves, drawdowns, weights over time plots
+Methodology Baseline (v2.0):
+1. Next-day execution: Signals form at month-end close T, trades execute at T+1 close.
+2. Standardized units: 21-day returns converted via (1+r)^12 - 1; covariance annualized (daily * 252).
+3. One-way turnover: 0.5 * sum(|w_target - w_drifted|).
+4. Indian cost model: 0.20% base rate per one-way turnover; 0.10% and 0.30% sensitivity.
+5. Fallback logging: All optimizer fallbacks recorded in results/fallback_log.csv.
+6. Portfolio diagnostics: HHI, Effective N, risk contributions, efficient frontier plot.
 """
 
 import os
@@ -37,20 +38,22 @@ warnings.filterwarnings("ignore")
 
 RISK_FREE_RATE = 0.06
 WEIGHT_CAP = 0.15
-BASE_COST = 0.002 # 0.2%
+BASE_COST = 0.002 # 0.2% per unit of one-way turnover
+
 
 def get_ledoit_wolf_cov(returns_window):
     """Compute annualised Ledoit-Wolf shrinkage covariance matrix."""
     lw = LedoitWolf()
     lw.fit(returns_window)
     cov_df = pd.DataFrame(lw.covariance_, index=returns_window.columns, columns=returns_window.columns)
-    return cov_df * 252
+    return cov_df * 252.0
+
 
 def cap_and_normalize(weights_dict, cap=0.15):
     """Enforce long-only, max cap per asset, and sum to 1."""
     weights = pd.Series(weights_dict).clip(lower=0.0)
     if weights.sum() == 0:
-        return pd.Series(1.0 / len(weights), index=weights.index)
+        return pd.Series(1.0 / len(weights), index=weights.index).to_dict()
     weights = weights / weights.sum()
 
     for _ in range(50):
@@ -67,7 +70,8 @@ def cap_and_normalize(weights_dict, cap=0.15):
 
     return (weights / weights.sum()).to_dict()
 
-def optimize_min_variance(cov_matrix, tickers, cap=0.15):
+
+def optimize_min_variance(cov_matrix, tickers, cap=0.15, fallback_log=None, rebal_date=None, strat_name="S2"):
     """Compute Minimum Variance portfolio weights with cap via SLSQP."""
     cov = cov_matrix.loc[tickers, tickers].values
     n = len(tickers)
@@ -78,18 +82,25 @@ def optimize_min_variance(cov_matrix, tickers, cap=0.15):
     def objective(w):
         return float(w @ cov @ w)
 
-    res = minimize(objective, w0, method="SLSQP", bounds=bounds, constraints=constraints)
+    res = minimize(objective, w0, method="SLSQP", bounds=bounds, constraints=constraints, options={"maxiter": 200})
     if res.success:
         w_res = res.x
     else:
-        # Fallback to analytical inverse-volatility
+        if fallback_log is not None:
+            fallback_log.append({
+                "date": str(rebal_date)[:10],
+                "strategy": strat_name,
+                "reason": f"SLSQP non-convergence: {res.message}",
+                "fallback_action": "Inverse-volatility proportional allocation"
+            })
         diag = np.diag(cov)
         inv_vol = 1.0 / np.sqrt(np.maximum(diag, 1e-6))
         w_res = inv_vol / np.sum(inv_vol)
 
     return cap_and_normalize(dict(zip(tickers, w_res)), cap)
 
-def optimize_max_sharpe(expected_returns, cov_matrix, tickers, cap=0.15, rf=0.06):
+
+def optimize_max_sharpe(expected_returns, cov_matrix, tickers, cap=0.15, rf=0.06, fallback_log=None, rebal_date=None, strat_name="S3"):
     """Compute Max Sharpe portfolio weights with cap via SLSQP."""
     cov = cov_matrix.loc[tickers, tickers].values
     mu = expected_returns.reindex(tickers).values
@@ -103,14 +114,21 @@ def optimize_max_sharpe(expected_returns, cov_matrix, tickers, cap=0.15, rf=0.06
         port_vol = float(np.sqrt(np.maximum(w @ cov @ w, 1e-8)))
         return -(port_ret - rf) / port_vol
 
-    res = minimize(neg_sharpe, w0, method="SLSQP", bounds=bounds, constraints=constraints)
+    res = minimize(neg_sharpe, w0, method="SLSQP", bounds=bounds, constraints=constraints, options={"maxiter": 200})
     if res.success:
         w_res = res.x
     else:
-        # Fallback to min variance
-        return optimize_min_variance(cov_matrix, tickers, cap)
+        if fallback_log is not None:
+            fallback_log.append({
+                "date": str(rebal_date)[:10],
+                "strategy": strat_name,
+                "reason": f"SLSQP non-convergence: {res.message}",
+                "fallback_action": "Minimum-variance optimization fallback"
+            })
+        return optimize_min_variance(cov_matrix, tickers, cap, fallback_log, rebal_date, strat_name)
 
     return cap_and_normalize(dict(zip(tickers, w_res)), cap)
+
 
 def get_quasi_diag(link):
     """Quasi-diagonalization of hierarchical clustering tree."""
@@ -128,6 +146,7 @@ def get_quasi_diag(link):
         sort_ix.index = range(sort_ix.shape[0])
     return sort_ix.tolist()
 
+
 def get_rec_bipart(cov, sort_ix):
     """Recursive bisection for HRP weights."""
     w = pd.Series(1.0, index=sort_ix)
@@ -139,31 +158,30 @@ def get_rec_bipart(cov, sort_ix):
             c_items1 = c_items[i + 1]
             cov0 = cov.iloc[c_items0, c_items0]
             cov1 = cov.iloc[c_items1, c_items1]
-            # Cluster variance via inverse variance weighting
             ivp0 = 1.0 / np.diag(cov0)
             ivp0 /= ivp0.sum()
             v0 = ivp0 @ cov0.values @ ivp0
-
             ivp1 = 1.0 / np.diag(cov1)
             ivp1 /= ivp1.sum()
             v1 = ivp1 @ cov1.values @ ivp1
-
             alpha = 1.0 - v0 / (v0 + v1)
             w[c_items0] *= alpha
             w[c_items1] *= 1.0 - alpha
     return w
 
+
 def optimize_hrp(returns_window, cap=0.15):
-    """Hierarchical Risk Parity (Lopez de Prado) with 15% cap."""
-    cov = returns_window.cov() * 252
-    corr = returns_window.corr()
+    """Hierarchical Risk Parity (HRP) using Ledoit-Wolf covariance."""
+    cov = get_ledoit_wolf_cov(returns_window)
     tickers = returns_window.columns.tolist()
+    std_diag = np.sqrt(np.diag(cov))
+    corr = cov.values / np.outer(std_diag, std_diag)
+    np.fill_diagonal(corr, 1.0)
+    corr = pd.DataFrame(corr, index=tickers, columns=tickers)
 
     try:
-        # Distance matrix
         dist = np.sqrt(np.clip(0.5 * (1.0 - corr.values), 0, 1))
         np.fill_diagonal(dist, 0.0)
-        # Condensed distance
         dist_condensed = squareform(dist)
         link = linkage(dist_condensed, method="single")
         sort_ix = get_quasi_diag(link)
@@ -173,12 +191,12 @@ def optimize_hrp(returns_window, cap=0.15):
         hrp_dict = dict(zip(sorted_tickers, hrp_weights.values))
         return cap_and_normalize(hrp_dict, cap)
     except Exception:
-        # Equal weight fallback
         return {t: 1.0 / len(tickers) for t in tickers}
+
 
 def run_stage4(base_dir="."):
     print("=" * 60)
-    print("STAGE 4: OPTIMIZATION & BACKTESTING (Student 4)")
+    print("STAGE 4: OPTIMIZATION & BACKTESTING (Student 4 - v2.0)")
     print("=" * 60)
 
     data_raw_dir = os.path.join(base_dir, "data", "raw")
@@ -193,7 +211,12 @@ def run_stage4(base_dir="."):
     returns_df["date"] = pd.to_datetime(returns_df["date"])
     piv_returns = returns_df.pivot(index="date", columns="ticker", values="ret_1d").sort_index()
 
-    index_df = pd.read_csv(os.path.join(data_raw_dir, "index.csv"))
+    # Load NIFTY 50 TRI benchmark (v2.0)
+    tri_path = os.path.join(data_raw_dir, "index_tri.csv")
+    if os.path.exists(tri_path):
+        index_df = pd.read_csv(tri_path)
+    else:
+        index_df = pd.read_csv(os.path.join(data_raw_dir, "index.csv"))
     index_df["date"] = pd.to_datetime(index_df["date"])
     index_df = index_df.sort_values("date").set_index("date")
     index_returns = index_df["adj_close"].pct_change().dropna()
@@ -201,87 +224,123 @@ def run_stage4(base_dir="."):
     preds_df = pd.read_csv(os.path.join(results_dir, "predictions.csv"))
     preds_df["date"] = pd.to_datetime(preds_df["date"])
 
-    # Best ML model based on IC is Ridge (+0.0454 IC, t=1.52)
+    # Ridge predictions for S4 and S5
     ml_preds = preds_df[preds_df["model"] == "Ridge"].copy()
     ml_pred_piv = ml_preds.pivot(index="date", columns="ticker", values="pred")
 
-    # Monthly rebalance dates in test period (2020-01 to 2026-11)
+    # Rebalance schedule
     all_dates = piv_prices.index
     df_dates = pd.DataFrame({"date": all_dates, "ym": all_dates.to_period("M")})
     rebalance_dates = df_dates.groupby("ym")["date"].max().values
     rebalance_dates = pd.to_datetime(rebalance_dates).sort_values()
     rebalance_dates = [d for d in rebalance_dates if d >= pd.Timestamp("2020-01-01") and d <= all_dates.max()]
 
-    print(f"Backtest period: {rebalance_dates[0].strftime('%Y-%m-%d')} to {all_dates.max().strftime('%Y-%m-%d')}")
+    print(f"Test period: {rebalance_dates[0].strftime('%Y-%m-%d')} to {all_dates.max().strftime('%Y-%m-%d')}")
     print(f"Total rebalance cycles: {len(rebalance_dates)}")
 
     tickers = piv_prices.columns.tolist()
     N = len(tickers)
 
-    strategies = ["S0", "S1", "S2", "S3", "S4", "S5", "S6"]
+    strategies = ["S0", "S1", "S2", "S3", "S4", "S5", "S6", "S7"]
     strategy_names = {
-        "S0": "NIFTY 50 Index (Benchmark)",
+        "S0": "NIFTY 50 TRI (Benchmark)",
         "S1": "Equal Weight (1/N)",
         "S2": "Minimum Variance",
         "S3": "Max Sharpe (Historical)",
         "S4": "Max Sharpe (ML Predicted + Blend)",
         "S5": "Top-5 ML Equal Weight",
-        "S6": "Hierarchical Risk Parity (HRP)"
+        "S6": "Hierarchical Risk Parity (HRP)",
+        "S7": "Top-5 Momentum Equal Weight"
     }
 
-    all_weights_records = []
+    fallback_records = []
     rebal_weights = {s: {} for s in strategies if s != "S0"}
+    rebal_exec_map = {} # Maps signal date T to execution date T+1
 
+    # Pre-compute next trading day execution dates for each rebalance date
+    for i, rebal_date in enumerate(rebalance_dates):
+        future_dates = all_dates[all_dates > rebal_date]
+        if len(future_dates) == 0:
+            exec_date = rebal_date
+        else:
+            exec_date = future_dates[0]
+        rebal_exec_map[rebal_date] = exec_date
+
+    # 1. Compute Portfolio Weights at Each Month-End Close (Date T)
     for rebal_date in rebalance_dates:
-        # History up to rebalance date (lookback 252 days)
+        exec_date = rebal_exec_map[rebal_date]
         hist_returns = piv_returns.loc[:rebal_date].iloc[-252:]
         if len(hist_returns) < 126:
             continue
 
         cov_matrix = get_ledoit_wolf_cov(hist_returns)
-        hist_mean_ann = hist_returns.mean() * 252
+        hist_mean_ann = hist_returns.mean() * 252.0
 
         # S1: Equal Weight
         w_s1 = {t: 1.0 / N for t in tickers}
-        rebal_weights["S1"][rebal_date] = w_s1
+        rebal_weights["S1"][exec_date] = w_s1
 
         # S2: Min Variance
-        w_s2 = optimize_min_variance(cov_matrix, tickers, cap=WEIGHT_CAP)
-        rebal_weights["S2"][rebal_date] = w_s2
+        w_s2 = optimize_min_variance(cov_matrix, tickers, cap=WEIGHT_CAP, fallback_log=fallback_records, rebal_date=rebal_date, strat_name="S2")
+        rebal_weights["S2"][exec_date] = w_s2
 
         # S3: Max Sharpe Historical
-        w_s3 = optimize_max_sharpe(hist_mean_ann, cov_matrix, tickers, cap=WEIGHT_CAP, rf=RISK_FREE_RATE)
-        rebal_weights["S3"][rebal_date] = w_s3
+        w_s3 = optimize_max_sharpe(hist_mean_ann, cov_matrix, tickers, cap=WEIGHT_CAP, rf=RISK_FREE_RATE, fallback_log=fallback_records, rebal_date=rebal_date, strat_name="S3")
+        rebal_weights["S3"][exec_date] = w_s3
 
-        # S4: Max Sharpe ML (50/50 blend per SRS FR-4.3)
+        # S4: Max Sharpe ML (Annualized prediction conversion)
         if rebal_date in ml_pred_piv.index:
-            m_preds_raw = ml_pred_piv.loc[rebal_date].reindex(tickers).fillna(0.0)
-            ml_mean_ann = (1.0 + m_preds_raw).clip(lower=-0.5, upper=1.0) ** 12 - 1.0
-            blended_returns = 0.5 * ml_mean_ann + 0.5 * hist_mean_ann
-            w_s4 = optimize_max_sharpe(blended_returns, cov_matrix, tickers, cap=WEIGHT_CAP, rf=RISK_FREE_RATE)
+            ml_21d = ml_pred_piv.loc[rebal_date].reindex(tickers).fillna(0.0)
+            ml_ann = (1.0 + ml_21d) ** 12.0 - 1.0 # Standard compounding conversion
+            blend_returns = 0.5 * ml_ann + 0.5 * hist_mean_ann
         else:
-            w_s4 = w_s3
-        rebal_weights["S4"][rebal_date] = w_s4
+            blend_returns = hist_mean_ann
+        w_s4 = optimize_max_sharpe(blend_returns, cov_matrix, tickers, cap=WEIGHT_CAP, rf=RISK_FREE_RATE, fallback_log=fallback_records, rebal_date=rebal_date, strat_name="S4")
+        rebal_weights["S4"][exec_date] = w_s4
 
-        # S5: Top-5 ML Equal Weight (20% each in top 5 predicted stocks)
+        # S5: Top-5 ML Equal Weight (20% per stock)
         if rebal_date in ml_pred_piv.index:
-            top5_tickers = ml_pred_piv.loc[rebal_date].nlargest(5).index.tolist()
-            w_s5 = {t: (0.20 if t in top5_tickers else 0.0) for t in tickers}
+            top5_ml = ml_pred_piv.loc[rebal_date].reindex(tickers).nlargest(5).index.tolist()
+            w_s5 = {t: (0.20 if t in top5_ml else 0.0) for t in tickers}
         else:
-            top5_tickers = hist_mean_ann.nlargest(5).index.tolist()
-            w_s5 = {t: (0.20 if t in top5_tickers else 0.0) for t in tickers}
-        rebal_weights["S5"][rebal_date] = w_s5
+            top5_hist = hist_mean_ann.nlargest(5).index.tolist()
+            w_s5 = {t: (0.20 if t in top5_hist else 0.0) for t in tickers}
+        rebal_weights["S5"][exec_date] = w_s5
 
-        # S6: HRP
+        # S6: HRP with Ledoit-Wolf covariance
         w_s6 = optimize_hrp(hist_returns, cap=WEIGHT_CAP)
-        rebal_weights["S6"][rebal_date] = w_s6
+        rebal_weights["S6"][exec_date] = w_s6
 
-        for s in strategies:
-            if s == "S0":
-                continue
-            for t, w in rebal_weights[s][rebal_date].items():
+        # S7: Top-5 Momentum Equal Weight (12M minus 1M price momentum)
+        mom_hist = piv_prices.loc[:rebal_date]
+        if len(mom_hist) >= 252:
+            # 12M minus 1M momentum: price(t-21) / price(t-252) - 1
+            p_t_minus_21 = mom_hist.iloc[-21]
+            p_t_minus_252 = mom_hist.iloc[-252]
+            mom_scores = (p_t_minus_21 / p_t_minus_252 - 1.0).reindex(tickers).fillna(-999.0)
+            top5_mom = mom_scores.nlargest(5).index.tolist()
+        else:
+            top5_mom = hist_mean_ann.nlargest(5).index.tolist()
+        w_s7 = {t: (0.20 if t in top5_mom else 0.0) for t in tickers}
+        rebal_weights["S7"][exec_date] = w_s7
+
+    # Save fallback log
+    fallback_df = pd.DataFrame(fallback_records if fallback_records else [
+        {"date": "None", "strategy": "None", "reason": "All SLSQP optimizations converged successfully", "fallback_action": "None"}
+    ])
+    fallback_path = os.path.join(results_dir, "fallback_log.csv")
+    fallback_df.to_csv(fallback_path, index=False)
+    print(f"Saved fallback log to {fallback_path} ({len(fallback_records)} fallbacks logged)")
+
+    # Save weights.csv
+    all_weights_records = []
+    for s in strategies:
+        if s == "S0":
+            continue
+        for exec_d, w_dict in rebal_weights[s].items():
+            for t, w in w_dict.items():
                 all_weights_records.append({
-                    "date": rebal_date.strftime("%Y-%m-%d"),
+                    "date": exec_d.strftime("%Y-%m-%d"),
                     "strategy": s,
                     "ticker": t,
                     "weight": round(w, 6)
@@ -292,9 +351,10 @@ def run_stage4(base_dir="."):
     weights_df.to_csv(weights_path, index=False)
     print(f"Saved rebalance weights to {weights_path} ({len(weights_df)} rows)")
 
-    # Simulate Daily Returns with Drift & Transaction Costs
-    start_sim_date = rebalance_dates[0]
+    # 2. Daily Simulation with Next-Day Execution & One-Way Turnover
+    start_sim_date = list(rebal_weights["S1"].keys())[0]
     test_calendar = all_dates[all_dates >= start_sim_date]
+    execution_dates_set = set(rebal_weights["S1"].keys())
 
     daily_results = {s: [] for s in strategies}
 
@@ -316,15 +376,17 @@ def run_stage4(base_dir="."):
         for i, d in enumerate(test_calendar):
             day_returns = piv_returns.loc[d].reindex(tickers).fillna(0.0)
 
+            # Rebalance occurs at close of execution day d
             turnover = 0.0
-            if d in rebalance_dates and i > 0:
+            if d in execution_dates_set and i > 0:
                 target_w = pd.Series(rebal_weights[s][d])
-                turnover = np.sum(np.abs(target_w - current_weights))
+                # One-way turnover: 0.5 * sum(|w_target - w_drifted|)
+                turnover = 0.5 * np.sum(np.abs(target_w - current_weights))
                 current_weights = target_w.copy()
             elif i == 0:
-                turnover = 1.0
+                turnover = 1.0 # Initial setup
 
-            gross_ret = np.sum(current_weights * day_returns)
+            gross_ret = float(np.sum(current_weights * day_returns))
             cost_penalty = BASE_COST * turnover if turnover > 0 and i > 0 else 0.0
             net_ret = gross_ret - cost_penalty
 
@@ -352,150 +414,188 @@ def run_stage4(base_dir="."):
     daily_returns_df.to_csv(daily_ret_path, index=False)
     print(f"Saved daily returns to {daily_ret_path} ({len(daily_returns_df)} rows)")
 
+    # 3. Strategy Metrics Calculation
     def calc_metrics(ret_series, turnover_series, cost=BASE_COST):
         cum_ret = (1.0 + ret_series).cumprod()
         total_days = len(ret_series)
         years = total_days / 252.0
         cagr = (cum_ret.iloc[-1] ** (1.0 / years)) - 1.0
-        ann_vol = ret_series.std() * np.sqrt(252)
-        excess_ret = cagr - RISK_FREE_RATE
-        sharpe = excess_ret / ann_vol if ann_vol > 0 else 0.0
+        ann_vol = ret_series.std() * np.sqrt(252.0)
+        sharpe = (cagr - RISK_FREE_RATE) / ann_vol if ann_vol > 0 else 0.0
 
-        peak = cum_ret.cummax()
-        dd = (cum_ret - peak) / peak
-        max_dd = dd.min()
-        calmar = cagr / abs(max_dd) if max_dd < 0 else 0.0
-        avg_turnover = turnover_series[turnover_series > 0].mean() if (turnover_series > 0).any() else 0.0
+        cum_max = cum_ret.cummax()
+        drawdown = (cum_ret - cum_max) / cum_max
+        max_dd = drawdown.min()
+        calmar = cagr / abs(max_dd) if abs(max_dd) > 0 else 0.0
+
+        # One-way turnover percentage
+        avg_turnover = turnover_series.iloc[1:].mean() * 100.0 if len(turnover_series) > 1 else 0.0
 
         return {
-            "cagr": cagr,
-            "vol": ann_vol,
-            "sharpe": sharpe,
-            "max_dd": max_dd,
-            "calmar": calmar,
-            "avg_turnover": avg_turnover
+            "cagr": round(cagr * 100, 2),
+            "vol": round(ann_vol * 100, 2),
+            "sharpe": round(sharpe, 2),
+            "max_dd": round(max_dd * 100, 2),
+            "calmar": round(calmar, 2),
+            "avg_turnover": round(avg_turnover, 2)
         }
 
-    strat_metrics = []
-    print("\nStrategy Performance Summary (2020-2026, Net of 0.2% Cost):")
+    summary_records = []
+    print("\nBacktest Summary (2020-2026, Next-Day Execution, 20 bps cost):")
     print("-" * 88)
-
     for s in strategies:
-        s_df = daily_returns_df[daily_returns_df["strategy"] == s].set_index("date")
+        s_df = daily_returns_df[daily_returns_df["strategy"] == s]
         m = calc_metrics(s_df["net_ret"], s_df["turnover"])
-        strat_metrics.append({
+        record = {
             "strategy": s,
             "strategy_name": strategy_names[s],
             "cost": BASE_COST,
-            "cagr": round(m["cagr"] * 100, 2),
-            "vol": round(m["vol"] * 100, 2),
-            "sharpe": round(m["sharpe"], 2),
-            "max_dd": round(m["max_dd"] * 100, 2),
-            "calmar": round(m["calmar"], 2),
-            "avg_turnover": round(m["avg_turnover"] * 100, 2)
-        })
-        print(f"{s:2s} ({strategy_names[s][:28]:28s}) | CAGR: {m['cagr']*100:5.2f}% | Vol: {m['vol']*100:5.2f}% | Sharpe: {m['sharpe']:4.2f} | MaxDD: {m['max_dd']*100:6.2f}% | Turnover: {m['avg_turnover']*100:5.1f}%")
+            **m
+        }
+        summary_records.append(record)
+        print(f"{s} | {strategy_names[s]:32s} | CAGR: {m['cagr']:5.2f}% | Vol: {m['vol']:5.2f}% | Sharpe: {m['sharpe']:4.2f} | MaxDD: {m['max_dd']:6.2f}% | Turn: {m['avg_turnover']:5.2f}%")
 
-    strategy_metrics_df = pd.DataFrame(strat_metrics)
-    strat_metrics_path = os.path.join(results_dir, "strategy_metrics.csv")
-    strategy_metrics_df.to_csv(strat_metrics_path, index=False)
-    print(f"\nSaved strategy metrics to {strat_metrics_path}")
+    metrics_df = pd.DataFrame(summary_records)
+    metrics_path = os.path.join(results_dir, "strategy_metrics.csv")
+    metrics_df.to_csv(metrics_path, index=False)
+    print(f"\nSaved strategy metrics to {metrics_path}")
 
-    # Cost Sensitivity Analysis
-    cost_sensitivity_records = []
+    # 4. Cost Sensitivity (0.1%, 0.2%, 0.3%) for S1, S4, S5, S7
+    cost_records = []
     for cost in [0.001, 0.002, 0.003]:
-        for s in ["S1", "S4"]:
+        for s in ["S1", "S4", "S5", "S7"]:
             s_df = daily_returns_df[daily_returns_df["strategy"] == s].copy()
-            rebal_cost = cost * s_df["turnover"]
-            net_r = s_df["gross_ret"] - rebal_cost
-            m = calc_metrics(net_r, s_df["turnover"], cost=cost)
-            cost_sensitivity_records.append({
+            # Recompute net return for this cost
+            gross = s_df["gross_ret"].values
+            turn = s_df["turnover"].values
+            net = [g - (cost * t if t > 0 and k > 0 else 0.0) for k, (g, t) in enumerate(zip(gross, turn))]
+            m = calc_metrics(pd.Series(net), s_df["turnover"], cost=cost)
+            cost_records.append({
                 "strategy": s,
                 "strategy_name": strategy_names[s],
-                "transaction_cost_pct": cost * 100,
-                "cagr": round(m["cagr"] * 100, 2),
-                "vol": round(m["vol"] * 100, 2),
-                "sharpe": round(m["sharpe"], 2),
-                "max_dd": round(m["max_dd"] * 100, 2)
+                "transaction_cost_pct": round(cost * 100, 1),
+                "cagr": m["cagr"],
+                "vol": m["vol"],
+                "sharpe": m["sharpe"],
+                "max_dd": m["max_dd"]
             })
 
-    cost_df = pd.DataFrame(cost_sensitivity_records)
+    cost_df = pd.DataFrame(cost_records)
     cost_path = os.path.join(results_dir, "cost_sensitivity.csv")
     cost_df.to_csv(cost_path, index=False)
-    print(f"Saved cost sensitivity analysis to {cost_path}")
+    print(f"Saved cost sensitivity to {cost_path}")
 
-    # Visualizations
-    palette = {
-        "S0": "#111111",
-        "S1": "#2b5c8f",
-        "S2": "#3c8d5c",
-        "S3": "#d9822b",
-        "S4": "#0F6E63",
-        "S5": "#b94331",
-        "S6": "#7c5cbf"
+    # 5. Charts: Equity Curves and Drawdowns
+    plt.figure(figsize=(14, 7))
+    colors = {
+        "S0": "#4B5563",
+        "S1": "#0F766E",
+        "S2": "#2563EB",
+        "S3": "#D97706",
+        "S4": "#DC2626",
+        "S5": "#7C3AED",
+        "S6": "#059669",
+        "S7": "#DB2777"
     }
 
-    # 1. Equity Curves
-    plt.figure(figsize=(12, 7))
     for s in strategies:
         s_df = daily_returns_df[daily_returns_df["strategy"] == s]
-        cum = (1.0 + s_df["net_ret"]).cumprod()
-        dates_dt = pd.to_datetime(s_df["date"])
-        lw = 2.5 if s in ("S0", "S1", "S4") else 1.5
-        ls = "--" if s == "S0" else "-"
-        plt.plot(dates_dt, cum, label=f"{s}: {strategy_names[s]}", color=palette[s], linewidth=lw, linestyle=ls)
+        cum_ret = (1.0 + s_df["net_ret"]).cumprod()
+        dates = pd.to_datetime(s_df["date"])
+        lw = 2.5 if s in ("S1", "S4", "S0") else 1.5
+        plt.plot(dates, cum_ret, label=f"{s}: {strategy_names[s]}", color=colors.get(s, "black"), linewidth=lw)
 
-    plt.title("Cumulative Portfolio Performance (Net of 0.2% Cost, 2020 - 2026)", fontsize=13, fontweight="bold")
+    plt.title("Out-of-Sample Cumulative Equity Curves (2020-2026, Net of 20 bps Cost)", fontsize=13, fontweight="bold")
     plt.xlabel("Date", fontsize=11)
     plt.ylabel("Portfolio Value (Base = 1.0)", fontsize=11)
-    plt.legend(loc="upper left", fontsize=9.5)
     plt.grid(True, linestyle="--", alpha=0.5)
+    plt.legend(bbox_to_anchor=(1.02, 1), loc="upper left", fontsize=9)
     plt.tight_layout()
-    eq_path = os.path.join(results_dir, "equity_curves.png")
-    plt.savefig(eq_path, dpi=300)
+    equity_path = os.path.join(results_dir, "equity_curves.png")
+    plt.savefig(equity_path, dpi=300)
     plt.close()
-    print(f"Saved equity curves plot to {eq_path}")
+    print(f"Saved equity curves to {equity_path}")
 
-    # 2. Drawdowns
-    plt.figure(figsize=(12, 6))
-    for s in ["S0", "S1", "S2", "S4"]:
+    # Drawdown chart
+    plt.figure(figsize=(14, 6))
+    for s in ["S0", "S1", "S4", "S6"]:
         s_df = daily_returns_df[daily_returns_df["strategy"] == s]
-        cum = (1.0 + s_df["net_ret"]).cumprod()
-        peak = cum.cummax()
-        dd = (cum - peak) / peak * 100
-        dates_dt = pd.to_datetime(s_df["date"])
-        plt.plot(dates_dt, dd, label=f"{s}: {strategy_names[s]}", color=palette[s], linewidth=1.5)
+        cum_ret = (1.0 + s_df["net_ret"]).cumprod()
+        cum_max = cum_ret.cummax()
+        dd = (cum_ret - cum_max) / cum_max * 100.0
+        dates = pd.to_datetime(s_df["date"])
+        plt.plot(dates, dd, label=f"{s}: {strategy_names[s]}", color=colors.get(s, "black"), linewidth=1.8)
 
-    plt.title("Underwater Drawdown (%) Over Time", fontsize=13, fontweight="bold")
+    plt.title("Portfolio Drawdown Over Time (%)", fontsize=13, fontweight="bold")
     plt.xlabel("Date", fontsize=11)
     plt.ylabel("Drawdown (%)", fontsize=11)
-    plt.legend(loc="lower left", fontsize=9.5)
     plt.grid(True, linestyle="--", alpha=0.5)
+    plt.legend(loc="lower left", fontsize=10)
     plt.tight_layout()
     dd_path = os.path.join(results_dir, "drawdown_chart.png")
     plt.savefig(dd_path, dpi=300)
     plt.close()
     print(f"Saved drawdown chart to {dd_path}")
 
-    # 3. Weights Over Time (S4)
-    plt.figure(figsize=(13, 6))
-    w_s4_df = weights_df[weights_df["strategy"] == "S4"].pivot(index="date", columns="ticker", values="weight").fillna(0.0)
-    w_dates = pd.to_datetime(w_s4_df.index)
-    plt.stackplot(w_dates, w_s4_df.T.values, labels=w_s4_df.columns, alpha=0.85)
-    plt.title("S4: ML-Driven Asset Allocations Over Time (Capped at 15%)", fontsize=13, fontweight="bold")
-    plt.xlabel("Rebalance Date", fontsize=11)
-    plt.ylabel("Portfolio Weight", fontsize=11)
-    plt.ylim(0, 1.0)
-    plt.legend(bbox_to_anchor=(1.02, 1), loc="upper left", fontsize=7.5, ncol=1)
+    # Weights over time plot
+    plt.figure(figsize=(14, 6))
+    w_s4_df = weights_df[weights_df["strategy"] == "S4"].copy()
+    w_piv = w_s4_df.pivot(index="date", columns="ticker", values="weight").fillna(0.0)
+    plt.stackplot(pd.to_datetime(w_piv.index), w_piv.values.T, labels=w_piv.columns, alpha=0.85)
+    plt.title("S4 Max Sharpe (ML Blend) Allocation Weights Over Time", fontsize=13, fontweight="bold")
+    plt.xlabel("Date", fontsize=11)
+    plt.ylabel("Weight", fontsize=11)
+    plt.grid(True, linestyle="--", alpha=0.5)
     plt.tight_layout()
-    wt_path = os.path.join(results_dir, "weights_over_time.png")
-    plt.savefig(wt_path, dpi=300)
+    w_plot_path = os.path.join(results_dir, "weights_over_time.png")
+    plt.savefig(w_plot_path, dpi=300)
     plt.close()
-    print(f"Saved weights over time plot to {wt_path}")
+    print(f"Saved weights over time plot to {w_plot_path}")
+
+    # 6. Efficient Frontier Plot (Phase 4)
+    print("Generating Markowitz Efficient Frontier...")
+    hist_all = piv_returns.iloc[-504:]
+    lw_cov = get_ledoit_wolf_cov(hist_all).values
+    hist_mu = (hist_all.mean() * 252.0).values
+    n_assets = len(tickers)
+
+    target_mus = np.linspace(hist_mu.min() * 0.8, hist_mu.max() * 0.8, 30)
+    frontier_vols = []
+    frontier_rets = []
+
+    for target_r in target_mus:
+        cons = [
+            {"type": "eq", "fun": lambda w: np.sum(w) - 1.0},
+            {"type": "eq", "fun": lambda w, r=target_r: w @ hist_mu - r}
+        ]
+        bnds = [(0.0, WEIGHT_CAP) for _ in range(n_assets)]
+        res_ef = minimize(lambda w: float(w @ lw_cov @ w), np.ones(n_assets)/n_assets, bounds=bnds, constraints=cons)
+        if res_ef.success:
+            frontier_vols.append(np.sqrt(res_ef.fun) * 100.0)
+            frontier_rets.append(target_r * 100.0)
+
+    plt.figure(figsize=(9, 6))
+    if frontier_vols:
+        plt.plot(frontier_vols, frontier_rets, "b-", linewidth=2.5, label="Constrained Efficient Frontier (15% Cap)")
+    
+    # Plot strategy points
+    for s in ["S1", "S2", "S3", "S4", "S6"]:
+        m_row = metrics_df[metrics_df["strategy"] == s].iloc[0]
+        plt.scatter(m_row["vol"], m_row["cagr"], color=colors[s], s=90, zorder=5, label=f"{s} ({m_row['strategy_name'][:12]})")
+
+    plt.title("Markowitz Efficient Frontier vs Realized Strategy Portfolios", fontsize=12, fontweight="bold")
+    plt.xlabel("Annualized Volatility (%)", fontsize=11)
+    plt.ylabel("Annualized Return (CAGR %)", fontsize=11)
+    plt.grid(True, linestyle="--", alpha=0.5)
+    plt.legend(loc="upper left", fontsize=9)
+    plt.tight_layout()
+    ef_path = os.path.join(results_dir, "efficient_frontier.png")
+    plt.savefig(ef_path, dpi=300)
+    plt.close()
+    print(f"Saved efficient frontier plot to {ef_path}")
 
     print("\nStage 4 Optimization and Backtesting complete successfully!")
-    return strategy_metrics_df
+
 
 if __name__ == "__main__":
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    run_stage4(base_dir)
+    run_stage4(".")

@@ -3,183 +3,183 @@
     {
       "name": "Reliance Industries",
       "sector": "Energy",
-      "m": 0.096,
+      "m": 0.0915,
       "v": 0.2417
     },
     {
       "name": "Tata Consultancy Services",
       "sector": "IT",
-      "m": 0.0881,
+      "m": 0.0981,
       "v": 0.3001
     },
     {
       "name": "HDFC Bank",
       "sector": "Banking",
-      "m": 0.0443,
+      "m": 0.0319,
       "v": 0.231
     },
     {
       "name": "Infosys",
       "sector": "IT",
-      "m": 0.1081,
+      "m": 0.1196,
       "v": 0.3171
     },
     {
       "name": "ICICI Bank",
       "sector": "Banking",
-      "m": 0.1434,
+      "m": 0.1341,
       "v": 0.211
     },
     {
       "name": "Hindustan Unilever",
       "sector": "FMCG",
-      "m": 0.0336,
+      "m": 0.0244,
       "v": 0.2253
     },
     {
       "name": "ITC",
       "sector": "FMCG",
-      "m": 0.0462,
+      "m": 0.0427,
       "v": 0.227
     },
     {
       "name": "Sun Pharma",
       "sector": "Pharma",
-      "m": 0.1316,
+      "m": 0.1335,
       "v": 0.1967
     },
     {
       "name": "Larsen & Toubro",
       "sector": "Industrials",
-      "m": 0.1072,
+      "m": 0.097,
       "v": 0.257
     },
     {
       "name": "Maruti Suzuki",
       "sector": "Auto",
-      "m": 0.0879,
+      "m": 0.0817,
       "v": 0.2479
     },
     {
       "name": "Bharti Airtel",
       "sector": "Telecom",
-      "m": 0.079,
+      "m": 0.076,
       "v": 0.2181
     },
     {
       "name": "Titan",
       "sector": "Consumer",
-      "m": 0.2132,
+      "m": 0.2059,
       "v": 0.2406
     },
     {
       "name": "Nestle India",
       "sector": "FMCG",
-      "m": 0.1537,
+      "m": 0.1663,
       "v": 0.2287
     },
     {
       "name": "Axis Bank",
       "sector": "Banking",
-      "m": 0.1346,
+      "m": 0.127,
       "v": 0.2527
     },
     {
       "name": "Kotak Mahindra Bank",
       "sector": "Banking",
-      "m": 0.139,
+      "m": 0.1375,
       "v": 0.2193
     },
     {
       "name": "Bajaj Finance",
       "sector": "Banking",
-      "m": 0.1583,
+      "m": 0.1476,
       "v": 0.3232
     },
     {
       "name": "Wipro",
       "sector": "IT",
-      "m": 0.0893,
+      "m": 0.0954,
       "v": 0.2684
     },
     {
       "name": "HCL Technologies",
       "sector": "IT",
-      "m": 0.1521,
+      "m": 0.1635,
       "v": 0.3058
     },
     {
       "name": "UltraTech Cement",
       "sector": "Industrials",
-      "m": 0.1161,
+      "m": 0.1029,
       "v": 0.2416
     },
     {
       "name": "Asian Paints",
       "sector": "Consumer",
-      "m": 0.1327,
+      "m": 0.1234,
       "v": 0.2483
     },
     {
       "name": "Tech Mahindra",
       "sector": "IT",
-      "m": 0.2093,
+      "m": 0.2158,
       "v": 0.2982
     },
     {
       "name": "Power Grid",
       "sector": "Energy",
-      "m": 0.0929,
+      "m": 0.0939,
       "v": 0.2102
     },
     {
       "name": "NTPC",
       "sector": "Energy",
-      "m": 0.1003,
+      "m": 0.1025,
       "v": 0.1982
     },
     {
       "name": "ONGC",
       "sector": "Energy",
-      "m": 0.0947,
+      "m": 0.112,
       "v": 0.2417
     },
     {
       "name": "Coal India",
       "sector": "Energy",
-      "m": 0.1688,
+      "m": 0.1835,
       "v": 0.2411
     },
     {
       "name": "Bajaj Finserv",
       "sector": "Banking",
-      "m": 0.0692,
+      "m": 0.0549,
       "v": 0.2516
     },
     {
       "name": "Dr. Reddy's Laboratories",
       "sector": "Pharma",
-      "m": 0.1433,
+      "m": 0.153,
       "v": 0.2421
     }
   ],
   "nifty": {
-    "m": 0.1137,
-    "v": 0.1774
+    "m": 0.1327,
+    "v": 0.1781
   },
   "rho": 0.22,
   "last_data_date": "2026-11-13",
   "test_summary": {
     "test_period": "2020-01 to 2026-11",
-    "benchmark_sharpe": 0.32,
-    "equal_weight_sharpe": 0.66,
-    "ml_strategy_sharpe": 0.21,
-    "ml_max_drawdown": -34.86,
+    "benchmark_sharpe": 0.41,
+    "equal_weight_sharpe": 0.68,
+    "ml_strategy_sharpe": 0.46,
+    "ml_max_drawdown": -29.02,
     "base_transaction_cost": "0.2%",
     "cost_sensitivity": {
-      "s4_sharpe_at_0.1pct": 0.23,
-      "s4_sharpe_at_0.2pct": 0.21,
-      "s4_sharpe_at_0.3pct": 0.19
+      "s4_sharpe_at_0.1pct": 0.48,
+      "s4_sharpe_at_0.2pct": 0.46,
+      "s4_sharpe_at_0.3pct": 0.43
     }
   }
 }
