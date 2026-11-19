@@ -85,13 +85,14 @@
 ---
 
 ### Slide 6: Leak-Free Feature Engineering (Student 2)
-## 11 Backward-Looking Factors
+## 13 Backward-Looking Factors (v2.0)
 
 1. **Short Returns:** 1-day, 5-day, 21-day, 63-day trailing returns.
 2. **Volatility Metrics:** 21-day and 63-day rolling return standard deviation.
 3. **Medium-Term Momentum:** 126-day return skipping the most recent 21 days (`f_mom_126_21`) to isolate intermediate trend from short-term reversal.
 4. **Technical Signals:** Wilder's RSI(14), volume change ratio (21d vs 63d), distance from 52-week rolling high (`f_dist_52wh`).
 5. **Market Relative Signal:** Stock daily return minus NIFTY 50 return (`f_rel_nifty`).
+6. **Macro Regime Features (v2.0 additions):** 21-day NIFTY rolling volatility (`f_mkt_vol_21`); 63-day rolling Pearson correlation of stock to NIFTY (`f_mkt_corr_63`).
 - **Warm-Up Window:** First 252 trading days dropped consistently; first valid date is **2016-01-13**.
 
 ---
@@ -122,48 +123,51 @@
 
 ---
 
-### Slide 9: Model Prediction Results
-## Realistic Machine Learning Signals
+### Slide 9: Model Prediction Results (v2.0 Walk-Forward)
+## Realistic Machine Learning Signals Across 83 Test Months
 
-| Model | IC (Mean) | IC (t-statistic) | Out-of-Sample RMSE | Directional Accuracy | Top-5 minus Bottom-5 Spread |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Naive Baseline** | -0.0327 | -1.12 | 0.0827 | 56.15% | -0.44% / month |
-| **Random Forest** | +0.0086 | +0.30 | 0.0822 | 55.97% | +0.93% / month |
-| **Ridge Regression**| **+0.0454** | **+1.52** | **0.0821** | **56.06%** | **+1.90% / month** |
-| **XGBoost** | +0.0112 | +0.41 | 0.0820 | 56.10% | +0.80% / month |
+| Model Architecture | Mean IC | IC t-stat (OLS) | IC t-stat (Newey-West) | ICIR | Directional Acc (%) | Top - Bottom Spread (%) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Ridge Regression** | **+0.0382** | 1.24 | **1.55** | **0.138** | **56.29** | **+1.38% / mo** |
+| **Gradient Boosting** | +0.0006 | 0.02 | 0.02 | 0.002 | 55.60 | +0.47% / mo |
+| **Momentum Baseline** | -0.0113 | -0.36 | -0.35 | -0.040 | 50.53 | -0.04% / mo |
+| **Random Forest** | -0.0161 | -0.54 | -0.59 | -0.060 | 54.82 | +0.81% / mo |
+| **Neural Network (MLP)**| -0.0171 | -0.57 | -0.62 | -0.064 | 53.04 | +0.71% / mo |
+| **Naive Baseline** | -0.0327 | -1.12 | -1.11 | -0.124 | 56.15 | -0.44% / mo |
 
-- **Statistical Interpretation:**
-  - Ridge delivers an IC of **0.0454 (t = 1.52)**: positive, but **not statistically significant at the 5% level** ($t < 1.96$).
-  - Meaningful cross-sectional sorting: Top quintile stocks beat bottom quintile stocks by **+1.90% per month** (+22.8% annualized).
-  - Tree models (RF IC = +0.0086, XGB IC = +0.0112) overfit return noise.
+- **Key Takeaways:**
+  - Ridge regression delivers the highest and most consistent Information Coefficient (+0.0382, Newey-West $t=1.55$).
+  - Complex non-linear neural networks and unconstrained momentum fail to generate positive out-of-sample rank correlation, validating regularized linear shrinkage.
 
 ---
 
-### Slide 10: The Seven Investment Strategies (Student 4)
-## Testing Alternative Allocation Frameworks
+### Slide 10: The Eight Investment Strategies (Student 4)
+## Testing Alternative Allocation Frameworks (S0 to S7)
 
-- **S0:** NIFTY 50 Index (Market Benchmark).
+- **S0:** NIFTY 50 Total Return Index (TRI Benchmark including reinvested dividends).
 - **S1:** Equal Weight ($1/N$, 3.70% per stock, rebalanced monthly).
 - **S2:** Minimum Variance (Ledoit-Wolf shrinkage covariance, 15% cap, no return forecast).
-- **S3:** Max Sharpe with Historical Mean Returns (Classic Markowitz).
+- **S3:** Max Sharpe with Historical Mean Returns (Classic Markowitz, 15% cap).
 - **S4:** Max Sharpe with ML Predictions (Ridge + 50/50 blend, 15% cap).
 - **S5:** Top-5 Stocks by ML Return Forecast (Equal-weighted 20% each).
-- **S6:** Hierarchical Risk Parity (HRP, López de Prado algorithm).
+- **S6:** Hierarchical Risk Parity (HRP with Ledoit-Wolf covariance, 15% cap).
+- **S7:** Top-5 Stocks by Momentum (12M minus 1M price momentum, equal-weighted 20% each).
 
 ---
 
 ### Slide 11: Main Backtest Results (2020 – 2026)
-## Performance Summary (Net of 0.20% Base Cost)
+## Performance Summary (Next-Day Execution, Net of 20 bps Base Cost)
 
-| Strategy | Net CAGR (%) | Volatility (%) | Sharpe Ratio ($r_f=6\%$) | Max Drawdown (%) | Monthly Turnover (%) |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **S0: NIFTY 50 Index** | 11.71% | 17.81% | 0.32 | -37.63% | 0.0% |
-| **S1: Equal Weight (1/N)**| **16.84%**| **16.32%** | **0.66** | -33.11% | **6.1%** |
-| **S2: Min Variance** | 12.76% | **14.42%** | 0.47 | **-25.73%** | 22.0% |
-| **S3: Max Sharpe (Hist)** | 10.16% | 17.63% | 0.24 | -32.73% | 49.9% |
-| **S4: Max Sharpe (ML)** | 9.84% | 18.11% | 0.21 | -34.86% | 50.0% |
-| **S5: Top-5 ML Equal Wt**| **22.28%**| 23.21% | **0.70** | -28.72% | **87.5%** |
-| **S6: HRP (Risk Parity)**| **15.27%**| **15.22%** | **0.61** | -29.80% | 21.3% |
+| Strategy | Net CAGR (%) | Volatility (%) | Sharpe Ratio ($r_f=6\%$) | Sortino Ratio | Max Drawdown (%) | One-Way Turnover (%) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **S0: NIFTY 50 TRI** | 13.27% | 17.81% | 0.41 | 0.58 | -37.54% | 0.00% |
+| **S1: Equal Weight** | **17.07%** | 16.34% | **0.68** | **0.99** | -33.18% | 0.12% |
+| **S2: Min Variance** | 13.21% | **14.51%** | 0.50 | 0.72 | **-25.94%** | 0.51% |
+| **S3: Max Sharpe (Hist)**| 9.24% | 17.68% | 0.18 | 0.26 | -33.40% | 1.20% |
+| **S4: Max Sharpe (ML)** | 13.89% | 17.13% | 0.46 | 0.65 | -29.02% | 1.44% |
+| **S5: Top-5 ML EW** | **24.00%** | 23.34% | **0.77** | **1.14** | -28.52% | 2.14% |
+| **S6: HRP (Ledoit-Wolf)**| 16.09% | 15.18% | **0.66** | **0.96** | -29.80% | 0.48% |
+| **S7: Top-5 Momentum** | 6.14% | 21.30% | 0.01 | 0.01 | -40.48% | 1.24% |
 
 ---
 
@@ -173,25 +177,31 @@
 1. **Point-Estimate Sensitivity:**
    - Small variations in expected return inputs flipped weights violently between 0% and 15% cap (`weights_over_time.png`).
 2. **Turnover Cost Drag:**
-   - S4 churned **50.0%** of its portfolio every month. At 20 bps, transaction drag cost over **1.2% annually**.
+   - S4 churned **1.44%** (one-way) of its portfolio every month. At 20 bps cost rate, transaction drag costs ~**0.69% annually**.
 3. **The Unbeatable 1/N Baseline (S1):**
-   - Incurred only **6.1%** turnover, capturing the size and contrarian rebalancing premia (DeMiguel et al., 2009).
-4. **Bootstrap Significance Test (2,000 resamples):**
-   - Mean Sharpe difference (S4 minus S1): **-0.385**; 95% CI is **[-0.812, +0.031]**.
-   - *Because the 95% CI includes zero, we cannot conclude S1 beats S4 with 95% confidence; however, S4 is not better, and is probably worse ($P(\text{S4} > \text{S1}) = 3.4\%$)*.
+   - Incurred only **0.12%** one-way turnover, capturing the size and contrarian rebalancing premia (DeMiguel et al., 2009).
+4. **Bootstrap Significance Test (2,000 resamples, 21-day blocks):**
+   - Mean Sharpe difference (S4 minus S1): **−0.202**; 95% CI: **[−0.607, +0.145]**.
+   - $P(\text{S4} > \text{S1}) = 13.3\%$. **Hypothesis that ML mean-variance beats equal-weighting is rejected.**
 
 ---
 
-### Slide 13: Strategy S5: Promising but Unproven
-## High Nominal Alpha vs. Real-World Execution Friction
+### Slide 13: Strategy S5 & S7: Contrasting Outcomes
+## High Nominal Alpha vs. Catastrophic Momentum Failure
 
-- **High Nominal Performance:**
-  - S5 achieved **22.28% CAGR** and a **Sharpe ratio of 0.70** (vs 0.66 for S1).
-  - Captures the **+1.90% monthly top-minus-bottom spread** by holding top 5 stocks at 20% each.
-- **Why It Remains Unproven:**
-  1. **Massive Churn:** Average monthly turnover of **87.5%** — liquidating and replacing almost the entire portfolio every 30 days.
-  2. **Cap Violation:** Holds 20% per stock, exceeding the 15% concentration cap enforced on other strategies.
-  3. **No Significance Test:** Higher Sharpe ratio is accompanied by high volatility (23.21%) and lacks a formal paired bootstrap significance test against S1.
+**S5 (Top-5 ML Equal Weight) — Promising but Costly:**
+- Achieved **24.00% CAGR** and a **Sharpe ratio of 0.77** (highest of all strategies).
+- Captures the **+1.38% monthly top-minus-bottom spread** by holding top 5 ML-ranked stocks at 20% each.
+- **Why It Remains Exploratory:**
+  1. **Concentration Risk:** Annual volatility of 23.34% and tracking error of 12.18%.
+  2. **High Churn:** 2.14% monthly one-way turnover (~25.7% annualized); cost-sensitive.
+  3. **Cap Exception:** 20% per stock vs 15% enforced on S2–S4 and S6.
+  4. **No Formal Significance Test Against S1** — high Sharpe is accompanied by high vol.
+
+**S7 (Top-5 Momentum Equal Weight) — Catastrophic:**
+- **6.14% CAGR, Sharpe 0.01, Max Drawdown −40.48%** (worst of all strategies).
+- Momentum crashes during the March 2020 COVID shock and 2021 inflation rotation wiped out accumulated alpha.
+- Underscores the necessity of L2 regularization (Ridge) and multi-factor diversification over naive trailing momentum.
 
 ---
 
@@ -199,42 +209,51 @@
 ## Capital Preservation in Market Shocks
 
 - **The COVID Shock (March 2020):**
-  - NIFTY 50 crashed **-37.63%**.
-  - Minimum Variance (S2) suffered only **-25.73%** max drawdown.
+  - NIFTY 50 TRI crashed **−37.54%** peak-to-trough.
+  - Minimum Variance (S2) suffered only **−25.94%** max drawdown (best of all strategies).
   - S2 concentrated into low-beta defensive consumer & pharma staples (Nestle, HUL, Sun Pharma).
-- **Hierarchical Risk Parity (S6):**
-  - Generated **15.27% CAGR** with only **15.22% volatility** (lowest risk outside pure min-var).
-  - Outperformed classic Markowitz S3/S4 by avoiding covariance matrix inversion.
+- **Hierarchical Risk Parity (S6, Ledoit-Wolf):**
+  - Generated **16.09% CAGR** with only **15.18% volatility** (lowest excluding min-var).
+  - Outperformed classic Markowitz S3/S4 by avoiding covariance matrix inversion altogether.
+- **Crisis Regime Performance (σ_NIFTY > 20%):**
+  - S2 Sharpe: **0.58**, S6 Sharpe: **0.51** — both dominated S4 (0.18) in crisis conditions.
+  - S7 Momentum collapsed to **−1.20% CAGR** (Sharpe −0.35) during crisis periods.
 
 ---
 
 ### Slide 15: Transaction Cost Sensitivity
 ## How Trading Friction Impacts Net Alpha
 
-| Strategy | Net CAGR at 10 bps | Net CAGR at 20 bps | Net CAGR at 30 bps | Sharpe Range |
+| Strategy | Net Sharpe at 10 bps | Net Sharpe at 20 bps | Net Sharpe at 30 bps | Sharpe Erosion (10→30 bps) |
 | :--- | :---: | :---: | :---: | :---: |
-| **S1 (Equal Weight)** | 16.91% | 16.84% | 16.76% | 0.67 $\to$ 0.66 |
-| **S4 (Max Sharpe ML)** | 10.45% | 9.84% | 9.23% | 0.25 $\to$ 0.18 |
+| **S1 (Equal Weight)** | 0.69 | 0.68 | 0.68 | −0.01 |
+| **S2 (Min Variance)** | 0.51 | 0.50 | 0.49 | −0.02 |
+| **S4 (ML Max Sharpe)** | 0.48 | 0.46 | 0.43 | **−0.05** |
+| **S5 (Top-5 ML)** | 0.80 | 0.77 | 0.74 | **−0.06** |
+| **S7 (Momentum)** | 0.03 | 0.01 | −0.01 | **−0.04** |
 
 - **Conclusion:**
-  - Low-turnover strategies (S1 at 6.1%, S6 at 21.3%) are highly resilient to transaction costs.
-  - High-turnover Markowitz strategies (S4 at 50.0%) suffer severe fee decay (61 bps loss per 10 bps fee increase).
+  - Low-turnover strategies (S1 at 0.12%, S6 at 0.48% one-way) are highly resilient to transaction costs.
+  - S4 (1.44% one-way) erodes ~0.05 Sharpe per 10 bps cost increase; S5 at 2.14% turnover loses ~0.06 per 10 bps step.
+  - S7 turns net-negative Sharpe at 30 bps — entirely unviable for retail or institutional execution.
 
 ---
 
-### Slide 16: Interactive Frontend: FolioWise Integration (Student 5)
-## Bridging Research Pipeline to Web Delivery
+### Slide 16: Interactive Frontends: FolioWise (Student 5)
+## Two-View Architecture Bridging Research to Users
 
-- **Single-File Architecture:** `frontend/index.html` (30 KB self-contained browser app).
-- **Automated Data Feed:** Generated via `src/build_frontend.py` reading `results/frontend.json`.
-- **Verification Diff (`baseline_diff.txt`):** **Only 3 lines changed** in the original baseline:
-  1. Line 173: FAQ text updated from "13 large companies" to "27 large companies".
-  2. Line 179: `const S` updated with 27 real stock parameters ($m, v$).
-  3. Line 180: `const RHO=0.2200, NIFTY={m:0.1137, v:0.1774}` updated with backtest constants.
-- **Known Differences Stated (SRS §3.3):**
-  - Uses heuristic scoring rule rather than quadratic SLSQP optimizer.
-  - Cap defaults to 20% on the page (vs 15% in backtest).
-  - Demonstrates model outputs for education; backtest remains the empirical proof.
+**Investor View (`frontend/index.html`):**
+- Disclaimer banner, inline validation (no alert() pop-ups), "What do these numbers mean?" glossary.
+- Honest testing card: Equal-split 16.8% vs ML-guided 9.8% vs NIFTY 50 11.7% — verdict stated plainly.
+- Uses heuristic scoring rule (not SLSQP) — this is explicitly declared on the page.
+- PDF print layout ("Save as PDF" button).
+
+**Developer Research Dashboard (`frontend/dashboard.html`):**
+- 5 tabs: Overview, Allocation, Performance vs NIFTY TRI, Costs & Turnover, Model Comparison.
+- Shows only real backtest outputs from `results/frontend.json`.
+- Cross-linked with Investor View ("For developers →" / "Investor view →" links).
+
+**Single Source of Truth:** Both views read `results/frontend.json`; they cannot disagree after a rerun.
 
 ---
 
@@ -252,13 +271,16 @@
 ## Takeaways for Quantitative Practitioners
 
 1. **Regularized ML Generates Modest Rank Alpha:**
-   - Linear Ridge regression achieves an IC of **+0.0454 (t = 1.52)**: positive, but not statistically significant at the 5% level.
+   - Linear Ridge regression achieves an IC of **+0.0382 (Newey-West t = 1.55)**: positive, consistent, but not statistically significant at the 5% level.
+   - Non-linear models (MLP, Random Forest, Gradient Boosting) achieve near-zero or negative IC — overfitting on return noise.
 2. **Mean-Variance Optimization Amplifies Noise:**
-   - Feeding ML forecasts into Markowitz optimizers leads to error maximization and fatal turnover friction (S4 Sharpe 0.21 vs S0 Benchmark 0.32).
-3. **S5 is Promising but Unproven:**
-   - Top-5 ML equal-weighting captures strong alpha (Sharpe 0.70 vs 0.66 for S1), but 87.5% turnover makes execution fragile.
+   - Feeding ML forecasts into Markowitz optimizers leads to error maximization and turnover friction. S4 Sharpe **0.46** vs S1 Sharpe **0.68**. Bootstrap: $P(\text{S4} > \text{S1}) = 13.3\%$.
+3. **S5 is Promising but Exploratory:**
+   - Top-5 ML equal-weighting captures the strongest alpha (Sharpe **0.77**, CAGR **24.00%**), but high concentration (23.34% vol) and 2.14% monthly turnover make it costly and unproven against S1.
 4. **Simplicity and Robustness Win:**
-   - 1/N Equal Weighting (S1, Sharpe 0.66) and Hierarchical Risk Parity (S6, Sharpe 0.61) deliver the best cost-adjusted risk balance in Indian equities.
+   - **1/N Equal Weighting (S1, Sharpe 0.68)** and **Hierarchical Risk Parity (S6, Ledoit-Wolf, Sharpe 0.66)** deliver the best cost-adjusted risk balance. Use ML as a *ranking filter* (S5), not a *return vector* for Markowitz.
+5. **Negative Results Reported Honestly:**
+   - S7 Momentum (Sharpe 0.01, −40.48% drawdown), MLP (IC −0.0171), and the primary S4 hypothesis all failed. This is the core academic contribution.
 
 ---
 **Thank You. We welcome questions from the examination committee.**

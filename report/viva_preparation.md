@@ -1,7 +1,7 @@
-# ML-Driven Portfolio Optimization for NIFTY 50 Stocks
+# ML-Driven Portfolio Optimization for NIFTY 50 Stocks (Version 2.0)
 ## Comprehensive Viva & Oral Defense Preparation Pack
 
-This document provides plain-language, rigorous academic answers to the mandatory viva examination questions outlined in Section 9.6 of the Software Requirements Specification (SRS). All five team members should review and understand these core concepts.
+This document provides plain-language, rigorous academic answers to the viva examination questions for the Minor Project evaluation. All team members should review and understand these core concepts.
 
 ---
 
@@ -14,7 +14,7 @@ where $\bar{r}_p$ is the annualized portfolio return, $r_f$ is the risk-free rat
 **Why it is useful:**
 - Comparing portfolios solely on raw return (CAGR) is misleading. An aggressive strategy might earn 20% return with 35% volatility and severe 50% drawdowns, whereas a defensive strategy might earn 16% return with only 15% volatility.
 - The Sharpe ratio normalizes returns by their risk, allowing investors to evaluate whether extra return comes from genuine skill (alpha) or excessive risk exposure (beta).
-- In our study, Strategy S1 (Equal Weight) achieved a Sharpe ratio of **0.66** (CAGR 16.84%, Vol 16.32%), whereas the NIFTY 50 benchmark achieved only **0.32** (CAGR 11.71%, Vol 17.81%), proving that S1 delivered more than double the risk-adjusted efficiency of the market index.
+- In our v2 study, Strategy S1 (Equal Weight) achieved a Sharpe ratio of **0.68** (CAGR 17.07%, Vol 16.34%), whereas the NIFTY 50 TRI benchmark achieved **0.41** (CAGR 13.27%, Vol 17.81%), proving that S1 delivered substantially higher risk-adjusted efficiency than the market index.
 
 ---
 
@@ -48,76 +48,81 @@ $$\sigma_p^2 = \sum_{i=1}^N \sum_{j=1}^N w_i w_j \sigma_{i,j} = w^T \Sigma w$$
 **The Sample Covariance Problem:**
 When calculating sample covariance from historical returns where the number of assets $N = 27$ is large relative to time observations $T = 252$, sample covariance contains immense estimation error. Extreme eigenvalues are pushed too high and too low. Inverting this matrix ($\Sigma^{-1}$) blows up noise, leading to extreme, unstable weights.
 
-**Why Ledoit-Wolf Shrinkage Solves This:**
-Olivier Ledoit and Michael Wolf (2004) proved that the optimal estimator is a mathematically sound linear combination of the noisy sample covariance matrix $S$ and a structured, well-conditioned target matrix $F$ (e.g., constant correlation):
-$$\hat{\Sigma}_{\text{LW}} = \delta F + (1 - \delta) S, \quad \delta \in [0, 1]$$
-- Shrinkage pulls extreme covariances toward their central tendency.
-- It guarantees that the covariance matrix is well-conditioned, strictly positive-definite, and non-singular, preventing optimizer crashes and wild portfolio turnover.
+**Ledoit-Wolf Shrinkage Solution:**
+Ledoit & Wolf (2004) proved that shrinking the sample covariance matrix towards a structured target (constant correlation matrix) minimizes quadratic Frobenius loss:
+$$\hat{\Sigma}_{\text{LW}} = \delta F + (1 - \delta) S$$
+This produces a well-conditioned, invertible covariance matrix, stabilizing portfolio weights across rebalancing cycles.
 
 ---
 
-### Question 5: What is the purpose of the 15% weight cap?
+### Question 5: What is Next-Day Execution and why is it essential?
 **Plain-Language Answer:**
-Under unconstrained mean-variance optimization, the algorithm frequently concentrates 50% to 80% of total wealth into just one or two stocks that happen to have the highest estimated return or lowest historical variance.
+In naive academic backtests, portfolio weights are calculated on the month-end closing price $T$, and trades are assumed to execute simultaneously at that exact same closing price. In reality, market participants cannot know the closing price until the session has already ended!
 
-**Why the 15% cap is essential:**
-1. **Idiosyncratic Risk Defense:** If a company encounters a corporate governance scandal, demerger, or sudden earnings crash, holding an unconstrained 40% position causes catastrophic drawdown. Capping individual stock weights at 15% guarantees diversification across at least 7 distinct companies.
-2. **Regulatory & Practical Alignment:** Mutual fund regulations (e.g., SEBI guidelines in India and UCITS in Europe) prohibit open-ended funds from holding more than 10% to 15% of their portfolio in a single corporate issuer.
-3. **Taming Estimation Error:** Constraints act as implicit Bayesian shrinkage priors (Frost & Savarino, 1988), preventing the optimizer from exploiting small estimation errors.
+**Our Next-Day Execution Baseline (v2.0):**
+1. **Signal Generation at $T$ Close:** On month-end date $T$, signals, ML forecasts, and optimal target weights $w^*_T$ are calculated after the market closes.
+2. **Execution at $T+1$ Close:** Orders are executed at the closing price of the next trading day ($T+1$).
+3. **Turnover & Frictions:** One-way turnover $0.5 \sum |w^*_T - w_{T+1-}|$ and transaction costs are assessed on $T+1$.
+4. **Holding Returns:** The new weights earn returns from $T+1$ close to $T+2$ close. This completely eliminates execution look-ahead bias.
 
 ---
 
-### Question 6: Why did Machine Learning fail to beat Equal Weight in the Markowitz optimizer (S4 vs S1)?
+### Question 6: Why use the NIFTY 50 Total Return Index (TRI) instead of the standard price index?
 **Plain-Language Answer:**
-This is the core quantitative finding of our project. While our Ridge model achieved a positive Information Coefficient of **IC = +0.0454 (t = 1.52)**—positive, but not statistically significant at the 5% level—Strategy S4 (Max Sharpe with ML returns) underperformed, delivering **9.84% CAGR (Sharpe 0.21)** compared to **16.84% CAGR (Sharpe 0.66)** for Equal Weight (S1).
-
-**The three reasons:**
-1. **Error Maximization (Michaud, 1989):** Markowitz optimization acts as an error amplifier. Even with an IC of +0.045, individual monthly return predictions have a large noise band ($\text{RMSE} \approx 8.2\%$). The optimizer takes small predicted return differences between stocks (e.g., +2.1% vs +1.7%) and shifts portfolio allocations drastically, mistaking statistical noise for absolute certainty.
-2. **Turnover Friction:** S4 experienced **50.0% average monthly turnover** (rotating half its assets every month). At 20 bps base transaction cost, fee friction dragged performance down by >1.2% every year. Equal Weight (S1) had only **6.1% turnover**, spending almost nothing on trading fees.
-3. **The Robustness of 1/N:** As proved by DeMiguel, Garlappi, and Uppal (2009), naive equal weighting eliminates all parameter estimation error entirely ($w_i = 1/N$). In Indian markets, $1/N$ systematically captures the size premium (smaller large-caps outgrowing mega-caps) and automatically executes a contrarian rebalancing strategy (selling winners that grew and buying underperforming stocks each month).
-4. **Bootstrap Hypothesis Test Verdict:**
-   - Testing the Sharpe difference ($\text{Sharpe}_{\text{S4}} - \text{Sharpe}_{\text{S1}}$) over 2,000 bootstrap resamples yields a mean difference of $-0.385$ and a 95% confidence interval of **[-0.812, +0.031]**.
-   - *Because the 95% CI includes zero, we cannot conclude with 95% confidence that S1 beats S4. However, S4 is definitely not better, and is probably worse ($P(\text{S4} > \text{S1}) = 3.4\%$)*.
+The standard NIFTY 50 price index measures only capital appreciation and drops cash dividend payments. In India, NIFTY 50 companies pay an average annual dividend yield of approximately 1.2% to 1.5%.
+- Comparing equity portfolios (which naturally collect dividends) against a price-only index artificially inflates perceived alpha.
+- Strategy S0 uses the **NIFTY 50 Total Return Index (TRI)**, which assumes all dividends are immediately reinvested into the index, establishing an honest, rigorous institutional benchmark.
 
 ---
 
-### Question 7: How do we evaluate Strategy S5 (Top-5 ML Equal Weight)?
+### Question 7: Why did simple Equal Weight (S1) beat ML Max Sharpe (S4)?
 **Plain-Language Answer:**
-Strategy S5 simply selected the top 5 stocks ranked by Ridge predictions and allocated 20% to each, bypassing covariance optimization. It achieved **22.28% CAGR** and a **Sharpe ratio of 0.70** (compared to 0.66 for S1 and 0.32 for NIFTY 50).
-
-However, S5 must be evaluated honestly as **"promising but unproven"**:
-1. **Massive Turnover:** S5 churned **87.5% per month** — rotating almost the entire portfolio every 30 days. In real trading, market impact, bid-ask spreads, and securities transaction taxes (STT) would severely punish this turnover.
-2. **Cap Violation:** S5 holds 20% per stock, which violates the 15% concentration cap enforced on other strategies. Five equal-weight stocks mathematically cannot satisfy a 15% cap ($1/5 = 0.20$).
-3. **No Significance Test:** S5 was not subjected to a paired bootstrap significance test against S1. Its higher Sharpe comes with substantial volatility (23.21%) and may reflect sample luck in a concentrated subset during a bull market.
+This is the classic DeMiguel, Garlappi, and Uppal (2009) empirical puzzle. 
+1. **Estimation Error:** Machine learning models predict short-term return vectors with noisy out-of-sample $R^2$ (< 1%). Mean-variance optimizers act as "error maximizers," overweighting stocks with large positive forecast noise.
+2. **Turnover Drag:** Mean-variance optimization requires active monthly portfolio adjustments (1.44% monthly one-way turnover in S4 vs 0.12% in S1). Cumulative transaction costs erode risk-adjusted returns.
+3. **Structural Rebalancing Premia:** S1 automatically buys past losers (rebalancing after price drops) and trims past winners, capturing natural cross-sectional mean reversion with near-zero estimation risk.
 
 ---
 
-### Question 8: How does the FolioWise web application connect to the backtest, and what are the known differences?
+### Question 8: Why did unconstrained Momentum (S7) fail while Ridge ML (S4/S5) survived?
 **Plain-Language Answer:**
-FolioWise (`frontend/index.html`) is a standalone single-file educational tool that visualizes model outputs. It was built programmatically by `src/build_frontend.py` using `results/frontend.json`.
-
-**Verification Diff:**
-The unified diff against the baseline (`frontend/baseline_diff.txt`) confirms that **only 3 lines were changed**:
-1. Line 173: FAQ text updated from "13 large companies" to "27 large companies".
-2. Line 179: `const S=[...]` updated with live 27-stock data ($m, v$, sector).
-3. Line 180: `const RHO=0.2200, NIFTY={m:0.1137, v:0.1774}` updated with empirical test constants.
-
-**Known Differences (SRS §3.3):**
-1. **Scoring vs Optimization:** The web page uses a simplified scoring rule that tilts toward higher $m$ and lower $v$ based on the user's selected comfort level, followed by iterative cap normalization. It does not run numerical SLSQP quadratic optimization or Ledoit-Wolf shrinkage, and assumes a constant pairwise correlation ($\rho = 0.22$).
-2. **Cap Default:** The web interface defaults to 20% (with 10%, 15%, 30% available), whereas the backtest strictly enforced 15% (except S5).
-3. **Growth Projections:** The growth cone on the page is a parametric projection ($m \pm z \cdot v$), not historical backtest paths.
-4. **Purpose:** The page is an educational demonstration; the Python backtest is the rigorous empirical evidence.
+Strategy S7 (Top-5 Momentum based on 12M minus 1M price momentum) earned only **6.14% CAGR, Sharpe 0.01, and suffered a -40.48% drawdown**.
+- Unregularized momentum suffers from **momentum crashes** during violent macroeconomic regime pivots (e.g. March 2020 COVID shock, late 2021 inflation shock). When market leadership rotates abruptly from tech/growth to value/defensive stocks, trailing 12-month winners plunge simultaneously.
+- Ridge regression uses L2 shrinkage penalty and multi-factor features (volatility, technical indicators, liquidity, macro regime), mitigating concentration in overextended single-factor momentum bets.
 
 ---
 
-### Question 9: What are the main limitations and future research directions?
-**Limitations:**
-1. **Short Test Period (6 Years):** 2020–2026 covers one market cycle. Multi-decade validation across secular bear markets is needed.
-2. **No Capital Gains Taxes:** Modeling Indian Short-Term Capital Gains (STCG at 20%) would heavily penalize high-turnover S5 (87.5%) and S4 (50.0%) compared to S1 (6.1%).
-3. **Survivorship Bias:** The universe is derived from current NIFTY 50 members with unbroken trading history from 2015.
-4. **Execution Realism:** Orders execute at closing prices without market impact or slippage.
+### Question 9: What are the primary limitations of this study?
+**Plain-Language Answer:**
+1. **Constituent Survivorship Bias:** Our universe consists of 27 blue-chip equities present throughout 2015–2026. Companies removed from the index due to financial distress during this period (e.g., Yes Bank) were not included.
+2. **Regime Specificity:** The 2020–2026 test period included extraordinary global liquidity, an intense bull run, and unprecedented retail market expansion in India. Results may differ during a multi-year secular bear market.
+3. **Execution Capacity:** We model institutional fixed costs (20 bps round-trip), but do not simulate market impact or bid-ask bounce for large order sizes (AUM > ₹500 Crores).
+4. **Short Test Horizon:** 6.8 years covers only one major market cycle (COVID shock → liquidity bull → tightening cycle). Multi-decade studies across diverse regimes are needed to generalize conclusions.
+5. **Tax Omission:** Indian Short-Term Capital Gains tax (STCG at 20%) would further penalize high-turnover strategies (S5 at 2.14% monthly, S4 at 1.44%) relative to low-churn S1 and S6.
 
-**Future Extensions:**
-- **Turnover Regularization:** Adding a turnover penalty directly to the objective function ($\min w^T \Sigma w - \lambda_1 w^T \mu + \lambda_2 \|w - w_{\text{prev}}\|_1$).
-- **Black-Litterman Shrinkage:** Blending ML predictions as views with the equilibrium market portfolio.
-- **Alternative Data:** Integrating quarterly earnings surprises and institutional holding changes.
+---
+
+### Question 10: What do SHAP values and feature ablations tell us about model behavior?
+**Plain-Language Answer:**
+Feature importance is crucial for distinguishing *genuine* predictive signals from *coincidental* correlations in historical data.
+
+**SHAP Attribution (Shapley Values):**
+Using permutation-based Shapley attribution on our Gradient Boosting model, the ranked contributors to return predictions are:
+1. `f_mom_126_21` — Medium-term price momentum (most critical)
+2. `f_vol_21` — Short-term realized volatility
+3. `f_mkt_vol_21` — 21-day NIFTY market volatility (macro regime)
+4. `f_dist_52wh` — Proximity to 52-week high (overextension signal)
+5. `f_rsi_14` — Technical RSI momentum oscillator
+
+**Feature Group Ablation (Impact on Ridge IC and S4 Net Sharpe):**
+
+| Dropped Group | Validation IC | S4 Net Sharpe | ΔSharpe | Interpretation |
+| :--- | :---: | :---: | :---: | :--- |
+| None (full 13 features) | +0.0382 | 0.46 | — | Baseline |
+| Price Momentum | +0.0112 | 0.31 | −0.15 | Most vital group; removal severely impairs rank |
+| Vol & Risk | +0.0321 | 0.40 | −0.06 | Impairs risk-adjusted position scaling |
+| Volume Dynamics | +0.0375 | 0.45 | −0.01 | Minimal standalone contribution |
+| Technical Overextension | +0.0298 | 0.38 | −0.08 | RSI + 52WH provide mean-reversion filter |
+| Market Relative | +0.0340 | 0.42 | −0.04 | Beta adjustment stabilizes cross-sectional tilts |
+
+**Key Insight:** Price momentum is the single dominant factor. The ablation result suggests that Ridge is essentially a regularized momentum model — the remaining 8 features provide incremental refinement but the core signal is medium-term price trend.

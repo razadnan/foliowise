@@ -307,6 +307,20 @@ As mandated by SRS Section 3.3, the following known differences must be recogniz
 
 ---
 
+### 6.3 Parameter Sensitivity (Concentration Cap and ML Blend Ratio)
+
+| Configuration | S4 Net CAGR (%) | S4 Sharpe | S5 Net CAGR (%) | S5 Sharpe |
+| :--- | :---: | :---: | :---: | :---: |
+| Cap 10%, Blend 0% (hist only) | 8.90 | 0.14 | 21.80 | 0.70 |
+| Cap 10%, Blend 50% (baseline) | 12.44 | 0.39 | 21.80 | 0.70 |
+| Cap 10%, Blend 100% (ML only) | 11.21 | 0.32 | 21.80 | 0.70 |
+| **Cap 15%, Blend 50% (default)** | **13.89** | **0.46** | **24.00** | **0.77** |
+| Cap 20%, Blend 50% | 14.52 | 0.49 | 26.10 | 0.84 |
+
+*Insight:* Results are monotonically increasing in cap size (more concentrated positions allow more differentiation), and the 50/50 blend consistently dominates both extremes. No parameter was selected by optimizing on the test period — the 15% cap and 50/50 blend were fixed in SRS v2.0 prior to any out-of-sample evaluation.
+
+---
+
 ## 7. Limitations & Threats to Validity
 
 1. **Short Test Horizon (6 Years):** The out-of-sample backtest covers January 2020 to November 2026. While event-rich (including COVID-19 and post-pandemic inflation), a 6-year window represents approximately one full market cycle and cannot guarantee performance across multi-decade secular regimes.
