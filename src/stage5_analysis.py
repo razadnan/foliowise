@@ -75,8 +75,8 @@ def run_stage5(base_dir="."):
         ml_ann = (1.0 + raw_pred) ** 12 - 1.0
         hist_ann = hist_mean_ann.get(t, 0.12)
         # 50/50 blend used at rebalance
-        m_val = float(np.clip(0.5 * ml_ann + 0.5 * hist_ann, 0.04, 0.35))
-        v_val = float(np.clip(v_series.get(t, 0.20), 0.10, 0.45))
+        m_val = float(0.5 * ml_ann + 0.5 * hist_ann)
+        v_val = float(v_series.get(t, 0.20))
 
         stocks_list.append({
             "name": name,
@@ -131,61 +131,16 @@ def run_stage5(base_dir="."):
 
     # 2. Build Frontend HTML using src/build_frontend.py
     print("\nBuilding FolioWise frontend HTML...")
-    baseline_html_path = os.path.join(frontend_dir, "FolioWise_baseline.html")
-    with open(baseline_html_path, "r", encoding="utf-8") as f:
-        baseline_html = f.read()
-
-    # Create replacements
-    # S stock array
-    s_items = [f'["{s["name"]}","{s["sector"]}",{s["m"]:.4f},{s["v"]:.4f}]' for s in stocks_list]
-    new_s_decl = f'const S=[{",".join(s_items)}].map(a=>({{n:a[0],s:a[1],m:a[2],v:a[3]}}));'
-
-    import re
-    # Replace const S
-    new_html = re.sub(
-        r"const S=\[.*?\]\.map\(a=>\(\{n:a\[0\],s:a\[1\],m:a\[2\],v:a\[3\]\}\)\);",
-        new_s_decl,
-        baseline_html
-    )
-
-    # Replace NIFTY={m:...,v:...}
-    new_nifty_decl = f'NIFTY={{m:{idx_cagr:.4f},v:{idx_vol:.4f}}}'
-    new_html = re.sub(r"NIFTY=\{m:[^,}]+,v:[^}]+\}", new_nifty_decl, new_html)
-
-    # Replace RHO
-    new_html = re.sub(r"const RHO=[0-9.]+", f"const RHO={rho_val:.2f}", new_html)
-
-    # Replace "13 large companies" in FAQ
-    new_html = new_html.replace("13 large companies", f"{len(stocks_list)} large companies")
-
-    # Save to frontend/index.html
-    output_html_path = os.path.join(frontend_dir, "index.html")
-    with open(output_html_path, "w", encoding="utf-8") as f:
-        f.write(new_html)
-    print(f"Saved final page to {output_html_path}")
-
-    # Generate baseline diff
-    import difflib
-    baseline_lines = baseline_html.splitlines(keepends=True)
-    new_lines = new_html.splitlines(keepends=True)
-    diff = difflib.unified_diff(
-        baseline_lines, new_lines,
-        fromfile="frontend/FolioWise_baseline.html",
-        tofile="frontend/index.html",
-        n=1
-    )
-    diff_text = "".join(diff)
-    diff_path = os.path.join(frontend_dir, "baseline_diff.txt")
-    with open(diff_path, "w", encoding="utf-8") as f:
-        f.write(diff_text)
-    print(f"Saved baseline diff to {diff_path}")
+    import subprocess, sys
+    subprocess.run([sys.executable, os.path.join(base_dir, "src", "build_frontend.py")], check=True)
 
     # 3. Sub-period Performance Breakdown (FR-5.1)
+    max_date_str = str(daily_ret_df["date"].max())[:10]
     subperiods = [
-        ("Full Test Period", "2020-01-31", "2026-11-13"),
+        ("Full Test Period", "2020-01-31", max_date_str),
         ("COVID Crash & Recovery", "2020-01-31", "2020-12-31"),
         ("Post-COVID Bull & Volatility", "2021-01-01", "2022-12-31"),
-        ("Recent Market Regime", "2023-01-01", "2026-11-13")
+        ("Recent Market Regime", "2023-01-01", max_date_str)
     ]
 
     sub_records = []

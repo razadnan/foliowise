@@ -1,5 +1,5 @@
 model,period,ic_mean,ic_tstat,rmse,dir_acc,top_minus_bottom
 Naive,Full (2020-2026),-0.0327,-1.12,0.0827,56.15,-0.44
-Random_Forest,Full (2020-2026),0.0084,0.29,0.0822,55.97,0.93
+Random_Forest,Full (2020-2026),0.0086,0.3,0.0822,55.97,0.93
 Ridge,Full (2020-2026),0.0454,1.52,0.0821,56.06,1.9
-XGBoost,Full (2020-2026),0.0112,0.41,0.082,56.1,0.79
+XGBoost,Full (2020-2026),0.0112,0.41,0.082,56.1,0.8

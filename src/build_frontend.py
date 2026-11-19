@@ -60,7 +60,7 @@ def _stocks_to_js(stocks: list) -> str:
         sector_esc = sector.replace('"', '\\"')
         items.append(f'["{name_esc}","{sector_esc}",{m:.4f},{v:.4f}]')
     inner = ",".join(items)
-    return f"const S=[{inner}].map(a=>{{n:a[0],s:a[1],m:a[2],v:a[3]}}));"
+    return f"const S=[{inner}].map(a=>({{n:a[0],s:a[1],m:a[2],v:a[3]}}));"
 
 
 def _build_new_html(baseline: str, payload: dict) -> str:
@@ -108,17 +108,6 @@ def _build_new_html(baseline: str, payload: dict) -> str:
         r"\b13\b large companies",
         f"{n_stocks} large companies",
         new_html,
-    )
-    # Also fix the demo-banner note if it mentions 13
-    new_html = re.sub(
-        r"sample figures for 13 large companies",
-        f"model data for {n_stocks} large companies",
-        new_html,
-    )
-    # Update demo banner
-    new_html = new_html.replace(
-        "Demo mode: figures use sample market data, not live prices.",
-        f"Live model: figures from ML backtest ({n_stocks} NIFTY 50 stocks, 2015–2026).",
     )
 
     return new_html

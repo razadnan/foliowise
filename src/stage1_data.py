@@ -125,25 +125,18 @@ def run_stage1(base_dir="."):
             # Align to index calendar
             stock_df = stock_df.set_index("date").reindex(calendar)
             
-            # Check maximum gap before ffill
-            is_na = stock_df["adj_close"].isna()
-            gap_lengths = is_na.astype(int).groupby((~is_na).cumsum()).cumsum()
-            max_gap = gap_lengths.max()
-            if max_gap > 5:
-                # Still check if it's acceptable (forward-fill max 3 days per SRS)
-                pass
+            # Track raw missing values for filled flag (FR-1.5)
+            raw_na = stock_df["adj_close"].isna()
 
-            # Forward fill short gaps (<= 3 days)
+            # Forward fill short gaps (<= 3 days per FR-1.5)
             stock_df["adj_close"] = stock_df["adj_close"].ffill(limit=3)
             stock_df["volume"] = stock_df["volume"].fillna(0)
+            stock_df["filled"] = raw_na & stock_df["adj_close"].notna()
 
-            # Drop any remaining NAs at start/end
-            if stock_df["adj_close"].isna().sum() > 20:
-                dropped_tickers[ticker] = f"Excessive missing days ({stock_df['adj_close'].isna().sum()})"
+            # Drop any remaining NAs at start/end or gaps > 3 days (FR-1.5)
+            if stock_df["adj_close"].isna().any():
+                dropped_tickers[ticker] = f"Excessive/unfillable missing days ({stock_df['adj_close'].isna().sum()})"
                 continue
-
-            # Forward fill any residual or drop leading
-            stock_df["adj_close"] = stock_df["adj_close"].bfill().ffill()
 
             # Check zero or negative prices
             if (stock_df["adj_close"] <= 0).any():
@@ -162,7 +155,7 @@ def run_stage1(base_dir="."):
             stock_df["date"] = stock_df["date"].dt.strftime("%Y-%m-%d")
             stock_df["ticker"] = ticker
             
-            all_prices.append(stock_df[["date", "ticker", "adj_close", "volume"]])
+            all_prices.append(stock_df[["date", "ticker", "adj_close", "volume", "filled"]])
             kept_universe[ticker] = (name, sector)
 
         except Exception as e:
