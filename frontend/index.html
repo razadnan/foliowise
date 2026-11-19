@@ -7,10 +7,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#F2F6F8;--card:#fff;--ink:#12263A;--mut:#5B6B7B;--line:#D9E2E8;--brand:#0F6E63;--brand-ink:#fff;--soft:#E3F1EE;--warn:#B7791F;--warnbg:#FBF1DC;--bad:#B94331;
+:root{--bg:#F2F6F8;--card:#fff;--ink:#12263A;--mut:#5B6B7B;--line:#D9E2E8;--brand:#0F6E63;--brand-ink:#fff;--soft:#E3F1EE;--warn:#B7791F;--warnbg:#FBF1DC;--bad:#B94331;--badbg:#FDE8E8;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1A24;--card:#16263A;--ink:#EAF1F6;--mut:#9DB0C0;--line:#26405A;--brand:#3CB9A5;--brand-ink:#06201C;--soft:#17383A;--warn:#E5B04F;--warnbg:#3A2F17;--bad:#F08A78;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0E1A24;--card:#16263A;--ink:#EAF1F6;--mut:#9DB0C0;--line:#26405A;--brand:#3CB9A5;--brand-ink:#06201C;--soft:#17383A;--warn:#E5B04F;--warnbg:#3A2F17;--bad:#F08A78;color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1A24;--card:#16263A;--ink:#EAF1F6;--mut:#9DB0C0;--line:#26405A;--brand:#3CB9A5;--brand-ink:#06201C;--soft:#17383A;--warn:#E5B04F;--warnbg:#3A2F17;--bad:#F08A78;--badbg:#341716;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E1A24;--card:#16263A;--ink:#EAF1F6;--mut:#9DB0C0;--line:#26405A;--brand:#3CB9A5;--brand-ink:#06201C;--soft:#17383A;--warn:#E5B04F;--warnbg:#3A2F17;--bad:#F08A78;--badbg:#341716;color-scheme:dark}
 html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
 *,*::before,*::after{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 "Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-variant-numeric:tabular-nums}
@@ -20,6 +20,7 @@ a{color:var(--brand)}
 header{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
 .logo{font-weight:800;font-size:20px;letter-spacing:-.02em}.logo b{color:var(--brand)}
 nav a{margin-left:20px;text-decoration:none;color:var(--mut);font-weight:600;font-size:15px}
+nav a:hover{color:var(--brand)}
 .demo{background:var(--warnbg);color:var(--warn);font-size:14px;font-weight:600;text-align:center;padding:8px 16px}
 .hero{display:grid;grid-template-columns:1fr 1.05fr;gap:40px;align-items:start;padding:36px 0 28px}
 h1{font-size:clamp(32px,4.6vw,52px);line-height:1.08;letter-spacing:-.03em;margin:0 0 16px;font-weight:800}
@@ -53,6 +54,7 @@ select,.sip{font:600 15px "Plus Jakarta Sans",system-ui,sans-serif;border:1.5px 
 .btn{display:block;width:100%;border:0;border-radius:12px;background:var(--brand);color:var(--brand-ink);font:800 17px "Plus Jakarta Sans",system-ui,sans-serif;padding:15px;cursor:pointer}
 .btn:hover{filter:brightness(1.07)}
 .btn.ghost{background:transparent;color:var(--brand);border:1.5px solid var(--brand);width:auto;display:inline-block;font-size:15px;padding:10px 18px}
+.form-err{color:var(--bad);background:var(--badbg);padding:10px 14px;border-radius:8px;font-size:14px;font-weight:600;margin-top:12px;display:none}
 #result{display:none;padding:12px 0 30px}
 #result h2{font-size:clamp(24px,3vw,32px);letter-spacing:-.02em;margin:0 0 6px}
 .sum{font-size:18px;max-width:70ch;color:var(--mut);margin:0 0 22px}.sum b{color:var(--ink)}
@@ -80,7 +82,12 @@ td.r,th.r{text-align:right}
 .cmp .fill{height:100%;background:var(--brand);border-radius:8px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;color:var(--brand-ink);font-size:13px;font-weight:700;min-width:44px}
 .cmp .row.o .fill{background:#6B7A8C;color:#fff}
 .cmp small{display:block;color:var(--mut);font-weight:500;font-size:12px}
-.acts{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:18px}
+.glossary{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin-top:20px}
+.glossary summary{cursor:pointer;font-weight:700;font-size:15px;color:var(--brand)}
+.glossary dl{display:grid;grid-template-columns:140px 1fr;gap:10px 16px;margin:14px 0 4px;font-size:14px}
+.glossary dt{font-weight:700;color:var(--ink)}
+.glossary dd{margin:0;color:var(--mut)}
+.acts{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:20px}
 #msg{color:var(--mut);font-size:14px;font-weight:600}
 .how{padding:30px 0}.how h2,.faq h2{font-size:28px;letter-spacing:-.02em;margin:0 0 18px}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;counter-reset:s;padding:0;list-style:none;margin:0}
@@ -89,15 +96,36 @@ td.r,th.r{text-align:right}
 .faq{padding-bottom:20px}.faq details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-bottom:10px}
 .faq summary{cursor:pointer;font-weight:700}.faq p{color:var(--mut);margin:10px 0 0}
 footer{border-top:1px solid var(--line);padding:22px 0 34px;color:var(--mut);font-size:13px}
-@media (max-width:860px){.hero,.grid2{grid-template-columns:1fr}.steps,.facts{grid-template-columns:1fr}.cmp .row{grid-template-columns:1fr;gap:4px}nav{display:none}}
+.footer-dev{margin-top:10px}
+.footer-dev a{color:var(--brand);font-weight:700;text-decoration:none}
+.footer-dev a:hover{text-decoration:underline}
+@media (max-width:860px){.hero,.grid2{grid-template-columns:1fr}.steps,.facts{grid-template-columns:1fr}.cmp .row{grid-template-columns:1fr;gap:4px}.glossary dl{grid-template-columns:1fr;gap:4px}nav{display:none}}
 [hidden]{display:none!important}.mode{margin-bottom:18px}.mode label{flex:1;text-align:center;padding:10px 12px}.hrow{display:grid;grid-template-columns:1fr 130px 34px;gap:8px;margin-bottom:8px}.hrow .x{border:1.5px solid var(--line);background:transparent;color:var(--mut);border-radius:10px;cursor:pointer}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Print Styles: Clean results-only printable summary */
+@media print {
+  body { background:#fff!important; color:#000!important; font-size:11pt; line-height:1.4 }
+  .demo, header, .hero, .how, .faq, footer, .acts, .glossary summary, details.more, nav { display:none!important }
+  #result { display:block!important; padding:0 }
+  .card { border:1px solid #ccc!important; box-shadow:none!important; break-inside:avoid; margin-bottom:14px }
+  .grid2 { display:grid; grid-template-columns:1fr 1.4fr; gap:16px }
+  #chart { max-height:220px }
+}
 </style>
 </head>
 <body>
-<div class="demo">Demo mode: figures use sample market data, not live prices.</div>
+<div class="demo">Preview: these are sample estimates, not live prices and not advice.</div>
 <div class="wrap">
-<header><div class="logo">Folio<b>Wise</b></div><nav><a href="#plan">Plan</a><a href="#how">How it works</a><a href="#faq">Questions</a></nav></header>
+<header>
+<div class="logo">Folio<b>Wise</b></div>
+<nav>
+<a href="#plan">Plan</a>
+<a href="#how">How it works</a>
+<a href="#faq">Questions</a>
+<a href="dashboard.html" style="color:var(--brand);font-weight:700">For developers →</a>
+</nav>
+</header>
 
 <section class="hero" id="plan">
 <div>
@@ -139,6 +167,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 34px;color:var(--mut);fon
 <div class="q"><span class="ql" id="xl">Leave out these sectors</span>
 <div class="chips" id="excl" aria-labelledby="xl"></div></div></details>
 <button class="btn" id="go">Show my plan</button>
+<div id="formErr" class="form-err" role="alert"></div>
 </form>
 </section>
 
@@ -151,19 +180,49 @@ footer{border-top:1px solid var(--line);padding:22px 0 34px;color:var(--mut);fon
 <div class="card tw"><table><thead><tr id="thr"><th>Company</th><th class="r">Share</th><th class="r">Amount</th></tr></thead><tbody id="tb"></tbody></table></div>
 </div>
 <div class="facts card" id="facts"></div>
+
+<!-- Glossary: What do these numbers mean? -->
+<details class="glossary">
+<summary>What do these numbers mean?</summary>
+<dl>
+<dt>Expected return</dt>
+<dd>The estimated average growth per year over a long horizon based on past market data. Real results will vary from year to year.</dd>
+<dt>A rough year</dt>
+<dd>A bad-but-realistic year that happens about once in 20 years (~5% worst outcomes). It shows how much you could temporarily lose, so you're prepared.</dd>
+<dt>Swings (swings)</dt>
+<dd>How much the portfolio value bounces up and down over shorter periods. Calmer swings help investors stay disciplined.</dd>
+</dl>
+</details>
+
 <div class="card sec" id="insC" hidden><h3>What we noticed in your holdings</h3><ul id="ins" style="margin:8px 0 0;padding-left:20px"></ul></div>
 <div class="card sec"><h3>How your money could grow</h3><p>The shaded band is the likely range. Real results can fall outside it.</p>
 <svg id="chart" viewBox="0 0 640 270" style="width:100%;height:auto" role="img" aria-label="Projected growth of your investment"></svg>
 <div class="legend" id="legend"></div></div>
 <div class="card sec"><h3>How this mix compares</h3><p>Expected yearly return. The line below each shows a rough year (about 1 in 20).</p><div class="cmp" id="cmp"></div></div>
-<div class="acts"><button class="btn ghost" id="copy">Copy my plan</button><button class="btn ghost" id="again">Change my answers</button><span id="msg"></span></div>
+
+<!-- Honest Testing Card -->
+<div class="card sec" id="testingCard" style="border-left:4px solid var(--warn);">
+<h3>What our testing showed (2020–2026 backtest)</h3>
+<p style="margin-bottom:12px">We tested these strategies over 6.8 real years of Indian market history (January 2020 to November 2026), including the COVID crash, bull rally, and sideways markets.</p>
+<div class="cmp" id="testCmp"></div>
+<p style="font-size:13px;color:var(--mut);margin-top:12px;line-height:1.5">
+<strong>Honest verdict:</strong> In our historical testing, a simple equal split earned 16.8% per year, beating both the NIFTY 50 index (11.7%) and our model-guided mix (9.8%). Machine learning predictions generated frequent rebalancing trades (50% monthly turnover), and trading frictions ate into profits. We show this plainly so you can decide based on real evidence rather than false hype.
+</p>
+</div>
+
+<div class="acts">
+<button class="btn ghost" id="copy">Copy my plan</button>
+<button class="btn ghost" id="print">Save as PDF</button>
+<button class="btn ghost" id="again">Change my answers</button>
+<span id="msg"></span>
+</div>
 </section>
 
 <section class="how" id="how"><h2>How it works</h2>
 <ol class="steps">
 <li><b>We study past prices</b><span>A computer model looks at how large Indian companies have moved over the past decade.</span></li>
 <li><b>We estimate what may come next</b><span>Machine learning estimates which companies look stronger or steadier. These are estimates, not promises.</span></li>
-<li><b>We split your money to match your comfort</b><span>An optimiser picks the mix that aims for the best return for the risk you chose, and never puts too much in one place.</span></li></ol></section>
+<li><b>We split your money to match your comfort</b><span>A simple scoring rule tilts toward steadier or faster-growing companies based on your risk comfort, capping each company so your money stays spread out.</span></li></ol></section>
 
 <section class="faq" id="faq"><h2>Common questions</h2>
 <details><summary>Is this financial advice?</summary><p>No. This is an educational tool built for a college project. Please talk to a SEBI-registered adviser before investing real money.</p></details>
@@ -172,17 +231,25 @@ footer{border-top:1px solid var(--line);padding:22px 0 34px;color:var(--mut);fon
 <details><summary>What does "a rough year" mean?</summary><p>It's a bad-but-possible outcome, one that happens about once in 20 years in our estimate. It is not the worst case.</p></details>
 <details><summary>Are these live prices?</summary><p>Not yet. This demo uses sample figures for 27 large companies. A live version would load fresh prices and the model's latest estimates.</p></details>
 </section>
-<footer>FolioWise is a student project for learning. Past performance does not guarantee future results. Investments in the stock market carry risk, including loss of money.</footer>
+<footer>
+FolioWise is a student project for learning. Past performance does not guarantee future results. Investments in the stock market carry risk, including loss of money.
+<div class="footer-dev"><a href="dashboard.html">For developers & quantitative researchers →</a></div>
+</footer>
 </div>
 
 <script>
 const S=[["Reliance Industries","Energy",0.0960,0.2417],["Tata Consultancy Services","IT",0.0881,0.3001],["HDFC Bank","Banking",0.0443,0.2310],["Infosys","IT",0.1081,0.3171],["ICICI Bank","Banking",0.1434,0.2110],["Hindustan Unilever","FMCG",0.0336,0.2253],["ITC","FMCG",0.0462,0.2270],["Sun Pharma","Pharma",0.1316,0.1967],["Larsen & Toubro","Industrials",0.1072,0.2570],["Maruti Suzuki","Auto",0.0879,0.2479],["Bharti Airtel","Telecom",0.0790,0.2181],["Titan","Consumer",0.2132,0.2406],["Nestle India","FMCG",0.1537,0.2287],["Axis Bank","Banking",0.1346,0.2527],["Kotak Mahindra Bank","Banking",0.1390,0.2193],["Bajaj Finance","Banking",0.1583,0.3232],["Wipro","IT",0.0893,0.2684],["HCL Technologies","IT",0.1521,0.3058],["UltraTech Cement","Industrials",0.1161,0.2416],["Asian Paints","Consumer",0.1327,0.2483],["Tech Mahindra","IT",0.2093,0.2982],["Power Grid","Energy",0.0929,0.2102],["NTPC","Energy",0.1003,0.1982],["ONGC","Energy",0.0947,0.2417],["Coal India","Energy",0.1688,0.2411],["Bajaj Finserv","Banking",0.0692,0.2516],["Dr. Reddy's Laboratories","Pharma",0.1433,0.2421]].map(a=>({n:a[0],s:a[1],m:a[2],v:a[3]}));
 const RHO=0.2200,NIFTY={m:0.1137,v:0.1774},COL=["#0F7B6C","#2F6FDE","#E0A100","#C2410C","#7C5CBF","#0E9AA7","#B5457B","#6B7A8C"];
+const TEST={equal:16.8,model:9.8,nifty:11.7};
 const RL=[["Very safe","Steady companies, smaller swings, smaller gains."],["Careful","Mostly steady companies with a little growth."],["Balanced","A middle path between steady and growing."],["Growth","More growing companies, bigger ups and downs."],["Aggressive","Chases higher returns and accepts big swings."]];
 const $=id=>document.getElementById(id),inr=n=>new Intl.NumberFormat("en-IN",{maximumFractionDigits:0}).format(Math.round(n));
 const sh=v=>v>=1e7?(v/1e7).toFixed(1)+" Cr":v>=1e5?(v/1e5).toFixed(1)+" L":Math.round(v/1e3)+"K";
 const num=s=>+String(s).replace(/[^0-9]/g,"")||0;
 let excl=new Set(),shown=false,last="";
+
+function showFormErr(msg){const el=$("formErr");if(!el)return;el.textContent=msg;el.style.display=msg?"block":"none"}
+function clearFormErr(){showFormErr("")}
+
 [...new Set(S.map(x=>x.s))].forEach(s=>{const b=document.createElement("button");b.type="button";b.textContent=s;b.onclick=()=>{excl.has(s)?excl.delete(s):excl.add(s);b.classList.toggle("on");upd()};$("excl").append(b)});
 function capNorm(w,cap){let f=new Array(w.length).fill(false);for(let k=0;k<20;k++){let fs=0,fr=0;w.forEach((x,i)=>{if(f[i])fs+=x;else fr+=x});if(fr<=0)break;const sc=(1-fs)/fr;let hit=false;w=w.map((x,i)=>{if(f[i])return x;const y=x*sc;if(y>cap){f[i]=true;hit=true;return cap}return y});if(!hit)break}return w}
 function build(r,cap){let L=S.filter(x=>!excl.has(x.s));if(L.length<3)return null;cap=Math.max(cap,1/L.length+.001);
@@ -194,9 +261,13 @@ return{L,w,cap}}
 function stats(L,w){const m=L.reduce((p,x,i)=>p+w[i]*x.m,0),sw=L.reduce((p,x,i)=>p+w[i]*x.v,0),q=L.reduce((p,x,i)=>p+(w[i]*x.v)**2,0);return{m,v:Math.sqrt((1-RHO)*q+RHO*sw*sw)}}
 function fv(V,sip,g,T){const rm=Math.pow(1+g,1/12)-1,n=T*12;return V*Math.pow(1+g,T)+(rm>1e-9?sip*(Math.pow(1+rm,n)-1)/rm:sip*n)}
 function upd(){const i=+$("risk").value;$("riskOut").innerHTML=RL[i-1][0]+"<em>"+i+" of 5</em>";$("riskHelp").textContent=RL[i-1][1];if(shown)run(false)}
-function run(scroll){const fresh=num($("amt").value),cur=curArr(),amt=MODE=="ex"?cur.reduce((p,c)=>p+c,0)+fresh:fresh,sip=num($("sip").value),T=+document.querySelector("[name=yrs]:checked").value,r=(+$("risk").value-1)/4,cap=+$("cap").value;
-if(MODE=="ex"&&amt==fresh){alert("Add at least one holding you already own.");return}if(amt<1000){$("msg").textContent="";alert("Enter at least ₹1,000 to invest.");return}
-const B=build(r,cap);if(!B){alert("Too many sectors are left out. Keep at least 3 companies available.");return}
+function run(scroll){
+clearFormErr();
+const fresh=num($("amt").value),cur=curArr(),amt=MODE=="ex"?cur.reduce((p,c)=>p+c,0)+fresh:fresh,sip=num($("sip").value),T=+document.querySelector("[name=yrs]:checked").value,r=(+$("risk").value-1)/4,cap=+$("cap").value;
+if(MODE=="ex"&&amt==fresh){showFormErr("Please add at least one holding you already own.");return}
+if(amt<1000){showFormErr("Please enter at least ₹1,000 to invest.");return}
+const B=build(r,cap);
+if(!B){showFormErr("Too many sectors are left out. Please keep at least 3 companies available.");return}
 let{L,w}=B;const EX=MODE=="ex"?exCalc(B.L,B.w,cur,fresh):null;if(EX){L=S;w=EX.aw}const CS=EX?stats(S,cur.map(v=>v/(amt-fresh))):null,P=stats(L,w),ew=L.map(()=>1/L.length),E=stats(L,ew),rough=P.m-1.65*P.v;
 const rows=L.map((x,i)=>({x,w:w[i]})).filter(o=>o.w>0).sort((a,b)=>b.w-a.w);
 const tone=x=>x.v<.19?"Steady":x.m>=.14?"Growth":"Balanced";
@@ -219,19 +290,29 @@ $("chart").innerHTML=g+`<path d="${band}" fill="var(--brand)" opacity=".16"/><pa
 $("legend").innerHTML=`<span style="color:var(--brand)">━ Expected: ₹${inr(vE)}</span><span>▒ Range: ₹${inr(vB)} to ₹${inr(vG)}</span><span>┅ You put in: ₹${inr(inv)}</span>`;
 const R=[["Your suggested mix",P,0],...(EX?[["Your current mix",CS,1]]:[["Equal split, same companies",E,1]]),["NIFTY 50 index",NIFTY,1]],top=Math.max(...R.map(a=>a[1].m))*1.15;
 $("cmp").innerHTML=R.map(a=>`<div class="row ${a[2]?"o":""}"><div>${a[0]}<small>Rough year: ${((a[1].m-1.65*a[1].v)*100).toFixed(1)}%</small></div><div class="track"><div class="fill" style="width:${a[1].m/top*100}%">${(a[1].m*100).toFixed(1)}%</div></div></div>`).join("");
+
+// Testing card render
+const tTop=Math.max(TEST.equal,TEST.model,TEST.nifty)*1.15;
+$("testCmp").innerHTML=`
+<div class="row o"><div>Equal split (1/N)<small>Simple & broad</small></div><div class="track"><div class="fill" style="width:${TEST.equal/tTop*100}%;background:#0F766E">${TEST.equal}%</div></div></div>
+<div class="row o"><div>NIFTY 50 index<small>Market benchmark</small></div><div class="track"><div class="fill" style="width:${TEST.nifty/tTop*100}%;background:#6B7280">${TEST.nifty}%</div></div></div>
+<div class="row o"><div>Model-guided mix<small>ML predictions</small></div><div class="track"><div class="fill" style="width:${TEST.model/tTop*100}%;background:#DC2626">${TEST.model}%</div></div></div>
+`;
+
 last=`FolioWise plan for ₹${inr(amt)} over ${T} year(s), comfort ${RL[+$("risk").value-1][0]}:\n`+rows.map(o=>`${o.x.n}: ${(o.w*100).toFixed(1)}% (₹${inr(o.w*amt)})`).join("\n")+`\nExpected return ${(P.m*100).toFixed(1)}%/yr. Educational demo, not advice.`;
 $("result").style.display="block";shown=true;if(scroll)$("result").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"})}
 $("go").onclick=()=>run(true);
-$("again").onclick=()=>$("plan").scrollIntoView();
-$("copy").onclick=async()=>{try{await navigator.clipboard.writeText(last);$("msg").textContent="Plan copied."}catch(e){$("msg").textContent="Couldn't copy. Select the table and copy it instead."}};
-$("amt").addEventListener("input",e=>{const v=num(e.target.value);e.target.value=v?inr(v):"";document.querySelectorAll("#amtChips button").forEach(b=>b.classList.toggle("on",+b.dataset.v===v));if(shown)run(false)});
+$("again").onclick=()=>{clearFormErr();$("plan").scrollIntoView()};
+$("copy").onclick=async()=>{try{await navigator.clipboard.writeText(last);$("msg").textContent="Plan copied to clipboard."}catch(e){$("msg").textContent="Couldn't copy. Select the table and copy it instead."}};
+$("print").onclick=()=>window.print();
+$("amt").addEventListener("input",e=>{clearFormErr();const v=num(e.target.value);e.target.value=v?inr(v):"";document.querySelectorAll("#amtChips button").forEach(b=>b.classList.toggle("on",+b.dataset.v===v));if(shown)run(false)});
 $("sip").addEventListener("input",e=>{const v=num(e.target.value);e.target.value=inr(v);if(shown)run(false)});
-document.querySelectorAll("#amtChips button").forEach(b=>b.onclick=()=>{$("amt").value=inr(+b.dataset.v);document.querySelectorAll("#amtChips button").forEach(x=>x.classList.toggle("on",x===b));if(shown)run(false)});
+document.querySelectorAll("#amtChips button").forEach(b=>b.onclick=()=>{clearFormErr();$("amt").value=inr(+b.dataset.v);document.querySelectorAll("#amtChips button").forEach(x=>x.classList.toggle("on",x===b));if(shown)run(false)});
 ["risk","cap"].forEach(id=>$(id).addEventListener("input",upd));document.querySelectorAll("[name=yrs]").forEach(x=>x.addEventListener("change",()=>shown&&run(false)));
 let MODE="new";
 function curArr(){const c=S.map(()=>0);if(MODE=="ex")document.querySelectorAll("#hrows .hrow").forEach(r=>{c[+r.querySelector("select").value]+=num(r.querySelector("input").value)});return c}
 function addRow(i,v){const d=document.createElement("div");d.className="hrow";d.innerHTML=`<select aria-label="Company">${S.map((x,k)=>`<option value="${k}"${k==i?" selected":""}>${x.n}</option>`).join("")}</select><input class="sip" inputmode="numeric" aria-label="Amount in rupees" value="${v?inr(v):""}" placeholder="₹ amount"><button type="button" class="x" aria-label="Remove holding">✕</button>`;d.querySelector("input").addEventListener("input",e=>{const n=num(e.target.value);e.target.value=n?inr(n):"";if(shown)run(false)});d.querySelector("select").addEventListener("change",()=>shown&&run(false));d.querySelector(".x").onclick=()=>{d.remove();if(shown)run(false)};$("hrows").append(d)}
-function setMode(m){MODE=m;const e=m=="ex";$("holdQ").hidden=!e;$("nsQ").hidden=!e;$("insC").hidden=!e;$("amtChips").hidden=e;$("amtL").textContent=e?"Any new money to add? (optional)":"How much do you want to invest?";$("amt").value=e?"":"5,00,000";$("amt").placeholder="0";document.querySelectorAll("#amtChips button").forEach(b=>b.classList.toggle("on",+b.dataset.v===500000));$("thr").innerHTML=e?"<th>Company</th><th class='r'>You hold</th><th class='r'>Suggested</th><th class='r'>What to do</th>":"<th>Company</th><th class='r'>Share</th><th class='r'>Amount</th>";$("rh").textContent=e?"Your portfolio checkup":"Your suggested plan";$("go").textContent=e?"Check my portfolio":"Show my plan";$("result").style.display="none";shown=false;if(e&&!$("hrows").children.length)[[6,250000],[0,150000],[1,100000]].forEach(a=>addRow(a[0],a[1]))}
+function setMode(m){MODE=m;const e=m=="ex";clearFormErr();$("holdQ").hidden=!e;$("nsQ").hidden=!e;$("insC").hidden=!e;$("amtChips").hidden=e;$("amtL").textContent=e?"Any new money to add? (optional)":"How much do you want to invest?";$("amt").value=e?"":"5,00,000";$("amt").placeholder="0";document.querySelectorAll("#amtChips button").forEach(b=>b.classList.toggle("on",+b.dataset.v===500000));$("thr").innerHTML=e?"<th>Company</th><th class='r'>You hold</th><th class='r'>Suggested</th><th class='r'>What to do</th>":"<th>Company</th><th class='r'>Share</th><th class='r'>Amount</th>";$("rh").textContent=e?"Your portfolio checkup":"Your suggested plan";$("go").textContent=e?"Check my portfolio":"Show my plan";$("result").style.display="none";shown=false;if(e&&!$("hrows").children.length)[[6,250000],[0,150000],[1,100000]].forEach(a=>addRow(a[0],a[1]))}
 function exCalc(Lb,wb,cur,fresh){const sc=cur.reduce((p,c)=>p+c,0),tot=sc+fresh,tw=S.map(x=>{const j=Lb.indexOf(x);return j<0?0:wb[j]}),t=tw.map(v=>v*tot);let after,d;if($("nosell").checked){const sf=t.map((v,i)=>Math.max(0,v-cur[i])),ss=sf.reduce((p,c)=>p+c,0);d=sf.map(v=>ss?fresh*v/ss:0);after=cur.map((c,i)=>c+d[i])}else{after=t;d=t.map((v,i)=>v-cur[i])}const sa=after.reduce((p,c)=>p+c,0);return{after,d,aw:after.map(v=>v/sa),total:tot,cur:sc,sell:d.reduce((p,c)=>p+(c<0?-c:0),0),buy:d.reduce((p,c)=>p+(c>0?c:0),0)}}
 function exTable(E,cur){const th=Math.max(1000,E.total*.01);return S.map((x,i)=>({x,i,c:cur[i],a:E.after[i],d:E.d[i]})).filter(o=>o.c>0||o.a>0).sort((a,b)=>b.a-a.a).map(o=>{const act=Math.abs(o.d)<th?'<span class="tag">Keep</span>':o.d>0?`<b style="color:var(--brand)">Buy ₹${inr(o.d)}</b>`:`<b style="color:var(--bad)">Sell ₹${inr(-o.d)}</b>`;return `<tr><td><span class="nm">${o.x.n}</span><span class="sub">${o.x.s}</span></td><td class="r">₹${inr(o.c)}<span class="sub">${(o.c/E.cur*100).toFixed(0)}%</span></td><td class="r"><b>${(E.aw[o.i]*100).toFixed(1)}%</b><span class="sub">₹${inr(o.a)}</span></td><td class="r">${act}</td></tr>`}).join("")}
 function exSum(P,CS,E,fresh){const r=s=>((s.m-1.65*s.v)*100).toFixed(1);return `Your current mix is expected to earn about <b>${(CS.m*100).toFixed(1)}%</b> a year, and a rough year could be near ${r(CS)}%. With our changes it's about <b>${(P.m*100).toFixed(1)}%</b>, with a rough year near ${r(P)}%. ${E.sell>1?`That means selling about <b>₹${inr(E.sell)}</b> and buying about <b>₹${inr(E.buy)}</b>${fresh?`, including your ₹${inr(fresh)} of new money`:""}.`:`No selling is needed${fresh?`. Your ₹${inr(fresh)} of new money goes into the companies marked Buy`:""}.`} Trading costs would be roughly ₹${inr((E.sell+E.buy)*.002)}.${E.sell>1?" Selling at a profit can trigger capital gains tax, so check that before you act.":""}`}

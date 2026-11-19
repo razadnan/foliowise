@@ -110,6 +110,22 @@ def _build_new_html(baseline: str, payload: dict) -> str:
         new_html,
     )
 
+    # ------------------------------------------------------------------
+    # 5. Update TEST line from strategy_metrics.csv if available
+    # ------------------------------------------------------------------
+    strat_csv = RESULTS_DIR / "strategy_metrics.csv"
+    if strat_csv.exists():
+        try:
+            import pandas as pd
+            sm_df = pd.read_csv(strat_csv)
+            s1_val = round(float(sm_df[sm_df["strategy"] == "S1"]["cagr"].values[0]), 1)
+            s4_val = round(float(sm_df[sm_df["strategy"] == "S4"]["cagr"].values[0]), 1)
+            s0_val = round(float(sm_df[sm_df["strategy"] == "S0"]["cagr"].values[0]), 1)
+            new_test = f"const TEST={{equal:{s1_val},model:{s4_val},nifty:{s0_val}}};"
+            new_html = re.sub(r"const TEST=\{[^}]+\};", new_test, new_html)
+        except Exception:
+            pass
+
     return new_html
 
 
