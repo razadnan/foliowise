@@ -604,44 +604,121 @@ svg text { font-family: var(--sans); }
       </div>
 
       <div class="card">
-        <h3 style="margin-bottom:8px;">Data Integrity & Leakage Verification</h3>
+        <h3 style="margin-bottom:8px;">Data Engineering & Point-in-Time Universe Audit</h3>
         <p style="color:var(--mut);font-size:13px;margin-bottom:16px;">
-          Rigorous leak check preventing lookahead bias across 5 rolling split timestamps.
+          Milestone M1 automated validation across 2,921 trading sessions (2015–2026).
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Dataset Component</th>
+                <th>Records</th>
+                <th>Quality Gates</th>
+                <th class="r">Audit Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Stock Prices (prices.csv)</strong></td>
+                <td>78,867</td>
+                <td>0 duplicates, 0 nulls, 0 non-positive</td>
+                <td class="r"><span class="badge" style="background:var(--goodbg);color:var(--good)">PASSED</span></td>
+              </tr>
+              <tr>
+                <td><strong>Price Benchmark (^NSEI)</strong></td>
+                <td>2,921</td>
+                <td>10-yr CAGR: 10.45% (+199.50% return)</td>
+                <td class="r"><span class="badge" style="background:var(--goodbg);color:var(--good)">PASSED</span></td>
+              </tr>
+              <tr>
+                <td><strong>Investable TRI (NIFTYBEES)</strong></td>
+                <td>2,921</td>
+                <td>10-yr CAGR: 12.28% (+48.35% div drift)</td>
+                <td class="r"><span class="badge" style="background:var(--goodbg);color:var(--good)">PASSED</span></td>
+              </tr>
+              <tr>
+                <td><strong>India VIX (^INDIAVIX)</strong></td>
+                <td>2,910</td>
+                <td>Mean: 16.53 | Min: 9.15 | Max: 83.61</td>
+                <td class="r"><span class="badge" style="background:var(--goodbg);color:var(--good)">PASSED</span></td>
+              </tr>
+              <tr>
+                <td><strong>PIT Universe (universe_pit)</strong></td>
+                <td>76 entries</td>
+                <td>58 semi-annual reconstitutions mapped</td>
+                <td class="r"><span class="badge" style="background:var(--goodbg);color:var(--good)">PASSED</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom:8px;">Data Integrity & Multi-Date Leakage Verification</h3>
+        <p style="color:var(--mut);font-size:13px;margin-bottom:16px;">
+          Multi-date truncation test (Milestone M2): 3,402 feature checks across 6 historical cutoffs.
         </p>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
                 <th>Cutoff Date</th>
-                <th>Check Status</th>
-                <th class="r">Future Leak Rows</th>
+                <th>Tickers</th>
+                <th>Features</th>
+                <th>Checks</th>
+                <th class="r">Max Difference</th>
+                <th class="r">Audit Status</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>2020-01-31</td>
-                <td><span class="badge" style="background:var(--goodbg);color:var(--good)">PASSED</span></td>
-                <td class="r">0</td>
+                <td>2018-12-31</td>
+                <td>27</td>
+                <td>21</td>
+                <td>567</td>
+                <td class="r">0.000000</td>
+                <td class="r"><span class="badge" style="background:var(--goodbg);color:var(--good)">PASSED</span></td>
+              </tr>
+              <tr>
+                <td>2019-12-31</td>
+                <td>27</td>
+                <td>21</td>
+                <td>567</td>
+                <td class="r">0.000000</td>
+                <td class="r"><span class="badge" style="background:var(--goodbg);color:var(--good)">PASSED</span></td>
               </tr>
               <tr>
                 <td>2021-06-30</td>
-                <td><span class="badge" style="background:var(--goodbg);color:var(--good)">PASSED</span></td>
-                <td class="r">0</td>
+                <td>27</td>
+                <td>21</td>
+                <td>567</td>
+                <td class="r">0.000000</td>
+                <td class="r"><span class="badge" style="background:var(--goodbg);color:var(--good)">PASSED</span></td>
               </tr>
               <tr>
-                <td>2022-12-31</td>
-                <td><span class="badge" style="background:var(--goodbg);color:var(--good)">PASSED</span></td>
-                <td class="r">0</td>
+                <td>2022-12-30</td>
+                <td>27</td>
+                <td>21</td>
+                <td>567</td>
+                <td class="r">0.000000</td>
+                <td class="r"><span class="badge" style="background:var(--goodbg);color:var(--good)">PASSED</span></td>
               </tr>
               <tr>
-                <td>2024-06-30</td>
-                <td><span class="badge" style="background:var(--goodbg);color:var(--good)">PASSED</span></td>
-                <td class="r">0</td>
+                <td>2023-12-29</td>
+                <td>27</td>
+                <td>21</td>
+                <td>567</td>
+                <td class="r">0.000000</td>
+                <td class="r"><span class="badge" style="background:var(--goodbg);color:var(--good)">PASSED</span></td>
               </tr>
               <tr>
-                <td>2025-12-31</td>
-                <td><span class="badge" style="background:var(--goodbg);color:var(--good)">PASSED</span></td>
-                <td class="r">0</td>
+                <td>2024-12-31</td>
+                <td>27</td>
+                <td>21</td>
+                <td>567</td>
+                <td class="r">0.000000</td>
+                <td class="r"><span class="badge" style="background:var(--goodbg);color:var(--good)">PASSED</span></td>
               </tr>
             </tbody>
           </table>
