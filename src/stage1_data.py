@@ -1,19 +1,38 @@
 """
 src/stage1_data.py
 ==================
-Student 1: Data Engineer
-Fetches, cleans, aligns, and computes returns for ~25 NIFTY 50 stocks and ^NSEI.
-Outputs:
-- data/raw/prices.csv (date, ticker, adj_close, volume)
-- data/raw/index.csv (date, adj_close)
-- data/raw/universe.csv (ticker, name, sector)
-- data/processed/returns.csv (date, ticker, ret_1d)
-- results/normalized_prices.png
-- results/data_quality_summary.csv
+Stage 1: Data Engineering Pipeline (FolioWise Upgrade).
+
+Fetches, cleans, aligns, validates, and stores:
+- Point-in-time verified constituents (27 core continuous NIFTY 50 equities)
+- Benchmark Price Return Index (^NSEI)
+- Investable Benchmark Total Return Index (NIFTYBEES.NS base)
+- India VIX (^INDIAVIX) daily volatility index
+- Outputs:
+  - data/raw/prices.csv (date, ticker, adj_close, volume, filled)
+  - data/raw/index.csv (date, adj_close)
+  - data/raw/index_tri.csv (date, adj_close)
+  - data/raw/india_vix.csv (date, vix)
+  - data/raw/universe.csv (ticker, name, sector)
+  - data/raw/universe_pit.csv (point-in-time membership records)
+  - data/raw/membership_changes.csv (reconstitution changes log)
+  - data/processed/returns.csv (date, ticker, ret_1d)
+  - data/processed/prices.parquet (Apache Parquet persistence)
+  - data/foliowise.db (SQLite database)
+  - results/normalized_prices.png
+  - results/data_quality_summary.csv
+  - results/extreme_returns_audit.csv
+  - data/data_quality_report.json
 """
 
 import os
 import sys
+
+# Ensure repository root is in sys.path
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+
 import warnings
 import numpy as np
 import pandas as pd
@@ -22,46 +41,19 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
+from src.data.market_data import MarketDataPipeline, CANDIDATE_UNIVERSE
+from src.data.benchmark import BenchmarkManager
+from src.data.validator import DataValidator
+from src.universe.resolver import UniverseResolver
+
 warnings.filterwarnings("ignore")
 
-# 27 candidate tickers from NIFTY 50
-CANDIDATE_UNIVERSE = {
-    "RELIANCE.NS": ("Reliance Industries", "Energy"),
-    "TCS.NS": ("Tata Consultancy Services", "IT"),
-    "HDFCBANK.NS": ("HDFC Bank", "Banking"),
-    "INFY.NS": ("Infosys", "IT"),
-    "ICICIBANK.NS": ("ICICI Bank", "Banking"),
-    "HINDUNILVR.NS": ("Hindustan Unilever", "FMCG"),
-    "ITC.NS": ("ITC", "FMCG"),
-    "SUNPHARMA.NS": ("Sun Pharma", "Pharma"),
-    "LT.NS": ("Larsen & Toubro", "Industrials"),
-    "MARUTI.NS": ("Maruti Suzuki", "Auto"),
-    "BHARTIARTL.NS": ("Bharti Airtel", "Telecom"),
-    "TITAN.NS": ("Titan", "Consumer"),
-    "NESTLEIND.NS": ("Nestle India", "FMCG"),
-    "AXISBANK.NS": ("Axis Bank", "Banking"),
-    "KOTAKBANK.NS": ("Kotak Mahindra Bank", "Banking"),
-    "BAJFINANCE.NS": ("Bajaj Finance", "Banking"),
-    "WIPRO.NS": ("Wipro", "IT"),
-    "HCLTECH.NS": ("HCL Technologies", "IT"),
-    "ULTRACEMCO.NS": ("UltraTech Cement", "Industrials"),
-    "ASIANPAINT.NS": ("Asian Paints", "Consumer"),
-    "TECHM.NS": ("Tech Mahindra", "IT"),
-    "POWERGRID.NS": ("Power Grid", "Energy"),
-    "NTPC.NS": ("NTPC", "Energy"),
-    "ONGC.NS": ("ONGC", "Energy"),
-    "COALINDIA.NS": ("Coal India", "Energy"),
-    "BAJAJFINSV.NS": ("Bajaj Finserv", "Banking"),
-    "DRREDDY.NS": ("Dr. Reddy's Laboratories", "Pharma"),
-}
-
-BENCHMARK = "^NSEI"
 START_DATE = "2015-01-01"
 END_DATE = "2026-11-15"
 
-def run_stage1(base_dir="."):
+def run_stage1(base_dir=".", use_cache=True):
     print("=" * 60)
-    print("STAGE 1: DATA ENGINEERING (Student 1)")
+    print("STAGE 1: DATA ENGINEERING & POINT-IN-TIME RESOLUTION")
     print("=" * 60)
 
     data_raw_dir = os.path.join(base_dir, "data", "raw")
@@ -71,161 +63,46 @@ def run_stage1(base_dir="."):
     os.makedirs(data_proc_dir, exist_ok=True)
     os.makedirs(results_dir, exist_ok=True)
 
-    # 1. Download benchmark index (^NSEI)
-    print(f"Downloading benchmark {BENCHMARK} from {START_DATE} to {END_DATE}...")
-    index_df = yf.download(BENCHMARK, start=START_DATE, end=END_DATE, progress=False, auto_adjust=False)
-    if isinstance(index_df.columns, pd.MultiIndex):
-        index_df = index_df.xs(BENCHMARK, level=1, axis=1) if BENCHMARK in index_df.columns.levels[1] else index_df
+    # 1. Run Core Market Data Pipeline
+    pipeline = MarketDataPipeline(base_dir=base_dir)
+    pipe_results = pipeline.run_pipeline(
+        start_date=START_DATE,
+        end_date=END_DATE,
+        use_cache=use_cache
+    )
 
-    # Extract Adj Close or Close
-    adj_col = "Adj Close" if "Adj Close" in index_df.columns else "Close"
-    index_clean = pd.DataFrame({
-        "date": pd.to_datetime(index_df.index).strftime("%Y-%m-%d"),
-        "adj_close": index_df[adj_col].values
-    }).dropna().sort_values("date").reset_index(drop=True)
-
-    index_path = os.path.join(data_raw_dir, "index.csv")
-    index_clean.to_csv(index_path, index=False)
-    print(f"Saved benchmark index to {index_path} ({len(index_clean)} rows)")
-
-    # Construct NIFTY 50 Total Return Index (TRI) benchmark (FR-1.1 & Phase 1)
-    # Accounting for reinvested dividends at standard ~1.30% p.a. NSE dividend yield
-    div_yield_daily = (1.0 + 0.0130) ** (1.0 / 252.0) - 1.0
-    index_ret = index_clean["adj_close"].pct_change().fillna(0.0)
-    tri_ret = (1.0 + index_ret) * (1.0 + div_yield_daily) - 1.0
-    tri_levels = (1.0 + tri_ret).cumprod() * index_clean["adj_close"].iloc[0]
-    tri_clean = pd.DataFrame({
-        "date": index_clean["date"],
-        "adj_close": tri_levels
-    })
-    tri_path = os.path.join(data_raw_dir, "index_tri.csv")
-    tri_clean.to_csv(tri_path, index=False)
-    print(f"Saved NIFTY 50 TRI benchmark to {tri_path} ({len(tri_clean)} rows)")
-
+    prices_df = pipe_results["all_prices_df"]
+    index_clean = pipe_results["index_price_df"]
+    universe_df = pipe_results["universe_df"]
     calendar = pd.to_datetime(index_clean["date"]).sort_values().unique()
 
-    # 2. Download candidate stocks
-    all_prices = []
-    dropped_tickers = {}
-    kept_universe = {}
+    kept_universe = {
+        row["ticker"]: (row["name"], row["sector"])
+        for _, row in universe_df.iterrows()
+    }
 
-    for ticker, (name, sector) in CANDIDATE_UNIVERSE.items():
-        print(f"Downloading {ticker} ({name})...")
-        try:
-            df = yf.download(ticker, start=START_DATE, end=END_DATE, progress=False, auto_adjust=False)
-            if df.empty or len(df) < 1500:
-                dropped_tickers[ticker] = f"Insufficient history ({len(df)} rows)"
-                continue
-
-            if isinstance(df.columns, pd.MultiIndex):
-                if ticker in df.columns.levels[1]:
-                    df = df.xs(ticker, level=1, axis=1)
-
-            adj_close_col = "Adj Close" if "Adj Close" in df.columns else "Close"
-            vol_col = "Volume" if "Volume" in df.columns else None
-
-            stock_df = pd.DataFrame({
-                "date": pd.to_datetime(df.index),
-                "adj_close": df[adj_close_col].values,
-                "volume": df[vol_col].values if vol_col else 0
-            }).dropna(subset=["adj_close"]).drop_duplicates(subset=["date"])
-
-            # Check start date
-            first_date = stock_df["date"].min()
-            if first_date > pd.to_datetime("2015-06-01"):
-                dropped_tickers[ticker] = f"History starts late ({first_date.strftime('%Y-%m-%d')})"
-                continue
-
-            # Align to index calendar
-            stock_df = stock_df.set_index("date").reindex(calendar)
-            
-            # Track raw missing values for filled flag (FR-1.5)
-            raw_na = stock_df["adj_close"].isna()
-
-            # Forward fill short gaps (<= 3 days per FR-1.5)
-            stock_df["adj_close"] = stock_df["adj_close"].ffill(limit=3)
-            stock_df["volume"] = stock_df["volume"].fillna(0)
-            stock_df["filled"] = raw_na & stock_df["adj_close"].notna()
-
-            # Drop any remaining NAs at start/end or gaps > 3 days (FR-1.5)
-            if stock_df["adj_close"].isna().any():
-                dropped_tickers[ticker] = f"Excessive/unfillable missing days ({stock_df['adj_close'].isna().sum()})"
-                continue
-
-            # Check zero or negative prices
-            if (stock_df["adj_close"] <= 0).any():
-                dropped_tickers[ticker] = "Non-positive price found"
-                continue
-
-            # Compute daily return for split/anomaly check
-            rets = stock_df["adj_close"].pct_change()
-            extreme_rets = (rets.abs() > 0.35).sum()
-            if extreme_rets > 2:
-                dropped_tickers[ticker] = f"Extreme price jumps ({extreme_rets} days > 35%)"
-                continue
-
-            stock_df = stock_df.reset_index()
-            stock_df.rename(columns={"index": "date"}, inplace=True)
-            stock_df["date"] = stock_df["date"].dt.strftime("%Y-%m-%d")
-            stock_df["ticker"] = ticker
-            
-            all_prices.append(stock_df[["date", "ticker", "adj_close", "volume", "filled"]])
-            kept_universe[ticker] = (name, sector)
-
-        except Exception as e:
-            dropped_tickers[ticker] = str(e)
-
-    print(f"\nKept {len(kept_universe)} stocks. Target was ~25 (min 20).")
-    if dropped_tickers:
-        print("Dropped tickers:")
-        for t, reason in dropped_tickers.items():
-            print(f"  - {t}: {reason}")
-
-    # Combine prices
-    prices_df = pd.concat(all_prices, ignore_index=True).sort_values(["ticker", "date"]).reset_index(drop=True)
-    prices_path = os.path.join(data_raw_dir, "prices.csv")
-    prices_df.to_csv(prices_path, index=False)
-    print(f"Saved raw prices to {prices_path} ({len(prices_df)} rows)")
-
-    # Save universe.csv
-    universe_df = pd.DataFrame([
-        {"ticker": t, "name": name, "sector": sector}
-        for t, (name, sector) in kept_universe.items()
-    ])
-    universe_path = os.path.join(data_raw_dir, "universe.csv")
-    universe_df.to_csv(universe_path, index=False)
-    print(f"Saved universe table to {universe_path} ({len(universe_df)} stocks)")
-
-    # Compute daily returns
-    returns_list = []
-    for ticker, grp in prices_df.groupby("ticker"):
-        grp = grp.sort_values("date").copy()
-        grp["ret_1d"] = grp["adj_close"].pct_change()
-        returns_list.append(grp[["date", "ticker", "ret_1d"]].dropna())
-
-    returns_df = pd.concat(returns_list, ignore_index=True).sort_values(["ticker", "date"]).reset_index(drop=True)
+    # 2. Daily returns
     returns_path = os.path.join(data_proc_dir, "returns.csv")
-    returns_df.to_csv(returns_path, index=False)
-    print(f"Saved returns to {returns_path} ({len(returns_df)} rows)")
+    returns_df = pd.read_csv(returns_path)
 
-    # Data Quality summary
+    # 3. Data Quality Summary Table
     qc_summary = []
     piv = prices_df.pivot(index="date", columns="ticker", values="adj_close")
     ret_piv = returns_df.pivot(index="date", columns="ticker", values="ret_1d")
 
     for ticker in kept_universe:
-        p_series = piv[ticker].dropna()
-        r_series = ret_piv[ticker].dropna()
+        p_series = piv[ticker].dropna() if ticker in piv else pd.Series()
+        r_series = ret_piv[ticker].dropna() if ticker in ret_piv else pd.Series()
         qc_summary.append({
             "ticker": ticker,
             "name": kept_universe[ticker][0],
             "sector": kept_universe[ticker][1],
-            "start_date": p_series.index.min(),
-            "end_date": p_series.index.max(),
+            "start_date": p_series.index.min() if not p_series.empty else None,
+            "end_date": p_series.index.max() if not p_series.empty else None,
             "total_days": len(p_series),
             "missing_pct": round((len(calendar) - len(p_series)) / len(calendar) * 100, 2),
-            "max_abs_daily_ret": round(r_series.abs().max() * 100, 2),
-            "ann_volatility": round(r_series.std() * np.sqrt(252) * 100, 2),
+            "max_abs_daily_ret": round(r_series.abs().max() * 100, 2) if not r_series.empty else 0.0,
+            "ann_volatility": round(r_series.std() * np.sqrt(252) * 100, 2) if not r_series.empty else 0.0,
         })
 
     qc_df = pd.DataFrame(qc_summary)
@@ -233,13 +110,12 @@ def run_stage1(base_dir="."):
     qc_df.to_csv(qc_path, index=False)
     print(f"Saved data quality summary to {qc_path}")
 
-    # Normalized price plot
+    # 4. Normalized Price Plot
     plt.figure(figsize=(12, 7))
     norm_piv = piv / piv.iloc[0] * 100
-    for col in norm_piv.columns[:10]: # plot first 10 for clarity
+    for col in norm_piv.columns[:10]:
         plt.plot(pd.to_datetime(norm_piv.index), norm_piv[col], alpha=0.6, label=kept_universe[col][0])
     
-    # Plot index normalized
     idx_piv = index_clean.set_index("date")["adj_close"]
     idx_norm = idx_piv / idx_piv.iloc[0] * 100
     plt.plot(pd.to_datetime(idx_norm.index), idx_norm, color="black", linewidth=2.5, label="NIFTY 50 (^NSEI)")
@@ -255,7 +131,7 @@ def run_stage1(base_dir="."):
     plt.close()
     print(f"Saved normalized price plot to {plot_path}")
 
-    # Audit and explain every return above 25% (Phase 1 requirement)
+    # 5. Extreme Returns Audit (> 25%)
     rets_series = prices_df.groupby("ticker")["adj_close"].pct_change()
     extreme_mask = rets_series.abs() > 0.25
     extreme_df = prices_df[extreme_mask].copy()
@@ -265,6 +141,16 @@ def run_stage1(base_dir="."):
         audit_path = os.path.join(results_dir, "extreme_returns_audit.csv")
         extreme_df[["date", "ticker", "adj_close", "return_pct", "explanation"]].to_csv(audit_path, index=False)
         print(f"Saved extreme returns audit to {audit_path} ({len(extreme_df)} rows)")
+
+    # 6. Point-in-Time Universe Coverage Audit
+    resolver = UniverseResolver(base_dir=base_dir)
+    cov_start = resolver.calculate_survivorship_coverage("2015-01-02", kept_universe.keys())
+    cov_mid = resolver.calculate_survivorship_coverage("2020-04-01", kept_universe.keys())
+    cov_end = resolver.calculate_survivorship_coverage("2024-10-01", kept_universe.keys())
+    print("\nPoint-in-Time Universe Coverage:")
+    print(f"  2015-01-02: {cov_start['available_in_pit']}/{cov_start['pit_total_count']} ({cov_start['coverage_ratio']:.1%})")
+    print(f"  2020-04-01: {cov_mid['available_in_pit']}/{cov_mid['pit_total_count']} ({cov_mid['coverage_ratio']:.1%})")
+    print(f"  2024-10-01: {cov_end['available_in_pit']}/{cov_end['pit_total_count']} ({cov_end['coverage_ratio']:.1%})")
 
     print("\nStage 1 Data Engineering complete successfully!")
     return kept_universe

@@ -1,0 +1,52 @@
+{
+  "overall_passed": true,
+  "audit_timestamp": "2026-11-22T19:41:38.900335",
+  "components": {
+    "prices": {
+      "dataset": "prices",
+      "passed": true,
+      "issues": [],
+      "metrics": {
+        "total_rows": 78867,
+        "unique_tickers": 27,
+        "date_min": "2015-01-02",
+        "date_max": "2026-11-13",
+        "duplicate_records": 0,
+        "null_prices": 0,
+        "non_positive_prices": 0,
+        "null_volumes": 0,
+        "negative_volumes": 0,
+        "filled_records_count": 0,
+        "filled_records_pct": 0.0,
+        "abnormal_return_spikes_gt_35pct": 0
+      }
+    },
+    "benchmark": {
+      "dataset": "benchmark",
+      "passed": true,
+      "issues": [],
+      "metrics": {
+        "price_index_rows": 2921,
+        "price_index_min_date": "2015-01-02",
+        "price_index_max_date": "2026-11-13",
+        "tri_index_rows": 2921,
+        "10yr_tri_total_return": 2.4785,
+        "10yr_price_total_return": 1.995,
+        "dividend_drift_premium": 0.4835
+      }
+    },
+    "india_vix": {
+      "dataset": "india_vix",
+      "passed": true,
+      "issues": [],
+      "metrics": {
+        "vix_rows": 2910,
+        "vix_min_date": "2015-01-01",
+        "vix_max_date": "2026-11-13",
+        "vix_min": 9.149999618530272,
+        "vix_max": 83.61000061035156,
+        "vix_mean": 16.53348452708975
+      }
+    }
+  }
+}
