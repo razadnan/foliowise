@@ -106,13 +106,17 @@ class StationaryBootstrapTester:
         ci_upper = float(np.percentile(boot_diffs, 97.5))
         std_err = float(np.std(boot_diffs, ddof=1))
         
-        # Centered bootstrap p-value
-        # H0 test: count bootstrap replicates centered around observed diff
-        centered_diffs = boot_diffs - observed_diff
-        p_val = float(np.mean(np.abs(centered_diffs) >= np.abs(observed_diff)))
-        p_val = min(max(p_val, 1.0 / self.n_bootstraps), 1.0)
+        # Dual percentile bootstrap p-value (Efron & Tibshirani 1993, Davison & Hinkley 1997)
+        # Exactly dual to the 95% percentile confidence interval: p < 0.05 <=> 0 not in [ci_lower, ci_upper]
+        p_percentile = 2.0 * min(float(np.mean(boot_diffs >= 0.0)), float(np.mean(boot_diffs <= 0.0)))
+        p_val = min(max(p_percentile, 1.0 / self.n_bootstraps), 1.0)
         
-        is_significant = p_val < 0.05 and (ci_lower > 0 or ci_upper < 0)
+        # Centered bootstrap p-value for methodological comparison
+        centered_diffs = boot_diffs - observed_diff
+        p_centered = float(np.mean(np.abs(centered_diffs) >= np.abs(observed_diff)))
+        p_centered = min(max(p_centered, 1.0 / self.n_bootstraps), 1.0)
+        
+        is_significant = bool(p_val < 0.05 and (ci_lower > 0.0 or ci_upper < 0.0))
         
         return {
             "strategy_a": name_a,
@@ -124,5 +128,6 @@ class StationaryBootstrapTester:
             "ci_95_lower": round(ci_lower, 4),
             "ci_95_upper": round(ci_upper, 4),
             "p_value": round(p_val, 4),
+            "p_value_centered": round(p_centered, 4),
             "significant_5pct": is_significant
         }

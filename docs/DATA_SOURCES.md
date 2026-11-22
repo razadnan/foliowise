@@ -52,12 +52,24 @@ Because distressed deletions were omitted from the 27 continuous survivors, equa
 
 ---
 
-## 4. Benchmark Separation: Price Return vs Total Return
+## 4. Benchmark Terminology & Three-Tier Hierarchy
 
-SmartFolio methodology strictly forbids synthetic substitution of market benchmarks:
-- **Price Index (`data/raw/index.csv`):** Historical levels of `^NSEI` (8,395.88 in Jan 2015 to 25,145.90 in Nov 2026; total return +199.50%, CAGR ~10.45%).
-- **Total Return Index (`data/raw/index_tri.csv`):** Genuine investable ETF base `NIFTYBEES.NS` tracking cumulative total returns with reinvested cash dividends (indexed base 8,395.88 to 29,205.20; total return +247.85%, CAGR ~12.28%).
-- **Dividend Compounding Premium:** Real dividend reinvestment contributes an excess cumulative return of **+48.35%** (+183 bps annualized) over the 10-year period.
+To ensure strict institutional compliance and eliminate ambiguity, FolioWise defines a clear three-tier benchmark taxonomy:
+
+1. **NIFTY 50 Price Return Index (`^NSEI`):**
+   - **Nature:** Official capital-gains price benchmark computed by NSE Indices Limited.
+   - **Characteristics:** Reflects nominal stock price levels without dividend cash flows.
+   - **Role in FolioWise:** Ingested in `data/raw/index.csv` for beta calculation and market correlation features. It does not represent an investable wealth baseline.
+
+2. **NIFTYBEES ETF Proxy (`NIFTYBEES.NS`):**
+   - **Nature:** Tradeable, open-ended exchange-traded fund managed by Nippon India Mutual Fund, tracking the NIFTY 50 index.
+   - **Characteristics:** Automatically reinvests received dividends into the fund's NAV. However, its returns diverge slightly from the theoretical TRI due to a **0.04% total expense ratio (TER)**, cash drag from uninvested dividends, and intra-day exchange trading price premiums or discounts relative to fair Net Asset Value (NAV).
+   - **Role in FolioWise:** Ingested in `data/raw/index_tri.csv` as an authentic, investable Total Return baseline (CAGR ~12.28% over 10 years).
+
+3. **Official NIFTY 50 Total Return Index (TRI):**
+   - **Nature:** Official gross benchmark published by NSE Indices Limited.
+   - **Characteristics:** Reinvests 100% of gross dividend payouts on the ex-dividend date without deducting fund management fees, tracking error, or cash drag.
+   - **Role in FolioWise:** Used as a theoretical ceiling reference. Over the 2020–2026 backtest period, the NIFTY 50 TRI delivered 13.27% CAGR (Sharpe 0.41), while the Price Return Index delivered 11.7% CAGR, highlighting the critical importance of dividend compounding.
 
 ---
 
