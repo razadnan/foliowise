@@ -283,6 +283,126 @@ svg text { font-family: var(--sans); }
         </table>
       </div>
     </div>
+
+    <!-- SmartFolio Experiment Ladder (E0-E6) & Bootstrap Significance -->
+    <div class="card" style="margin-top:24px;">
+      <h3 style="margin-bottom:8px;font-size:17px;">SmartFolio Experiment Ladder (E0 – E6) & Stationary Bootstrap Validation</h3>
+      <p style="color:var(--mut);font-size:13px;margin-bottom:16px;">
+        Formal institutional model hierarchy (Milestone M6). All results evaluated over 2020–2026 under strict T+1 execution, 20 bps statutory delivery costs, 10% asset cap & 35% sector cap. Statistical significance assessed via 1,000 Politis & Romano (1994) stationary block bootstrap resamples.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Experiment Description</th>
+              <th class="r">CAGR</th>
+              <th class="r">Annual Vol</th>
+              <th class="r">Sharpe</th>
+              <th class="r">Sortino</th>
+              <th class="r">Max DD</th>
+              <th class="r">Turnover</th>
+              <th class="r">Cost Drag</th>
+              <th class="r">vs E0 (1/N) 95% CI</th>
+              <th class="r">p-value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="strat-tag" style="background:#0F766E;color:#fff">E0</span></td>
+              <td class="bold">1/N Equal Weight</td>
+              <td class="r bold" style="color:var(--good)">17.11%</td>
+              <td class="r">16.32%</td>
+              <td class="r bold" style="color:var(--good)">0.68</td>
+              <td class="r">0.93</td>
+              <td class="r" style="color:var(--bad)">-33.24%</td>
+              <td class="r">3.62%</td>
+              <td class="r">10.4 bps</td>
+              <td class="r">Benchmark</td>
+              <td class="r">—</td>
+            </tr>
+            <tr>
+              <td><span class="strat-tag" style="background:#9CA3AF;color:#fff">E1</span></td>
+              <td>Traditional Markowitz (Sample Cov)</td>
+              <td class="r">9.60%</td>
+              <td class="r">17.60%</td>
+              <td class="r">0.20</td>
+              <td class="r">0.28</td>
+              <td class="r" style="color:var(--bad)">-32.88%</td>
+              <td class="r">26.20%</td>
+              <td class="r">71.0 bps</td>
+              <td class="r">[-0.890, -0.026]</td>
+              <td class="r">0.060</td>
+            </tr>
+            <tr>
+              <td><span class="strat-tag" style="background:#3B82F6;color:#fff">E2</span></td>
+              <td>Markowitz + Ledoit-Wolf Shrinkage</td>
+              <td class="r">9.66%</td>
+              <td class="r">17.65%</td>
+              <td class="r">0.21</td>
+              <td class="r">0.28</td>
+              <td class="r" style="color:var(--bad)">-33.38%</td>
+              <td class="r">25.82%</td>
+              <td class="r">70.0 bps</td>
+              <td class="r">[-0.878, -0.024]</td>
+              <td class="r">0.059</td>
+            </tr>
+            <tr>
+              <td><span class="strat-tag" style="background:#DC2626;color:#fff">E3</span></td>
+              <td class="bold">XGBoost + Markowitz (Caps + Reg)</td>
+              <td class="r bold" style="color:var(--good)">15.30%</td>
+              <td class="r">16.12%</td>
+              <td class="r bold" style="color:var(--good)">0.58</td>
+              <td class="r">0.81</td>
+              <td class="r" style="color:var(--good)">-27.19%</td>
+              <td class="r">30.81%</td>
+              <td class="r">87.9 bps</td>
+              <td class="r">[-0.406, +0.185]</td>
+              <td class="r">0.536</td>
+            </tr>
+            <tr>
+              <td><span class="strat-tag" style="background:#8B5CF6;color:#fff">E4</span></td>
+              <td>LSTM Sequence + Markowitz</td>
+              <td class="r">12.77%</td>
+              <td class="r">15.48%</td>
+              <td class="r">0.44</td>
+              <td class="r">0.60</td>
+              <td class="r" style="color:var(--bad)">-31.22%</td>
+              <td class="r">40.21%</td>
+              <td class="r">112.2 bps</td>
+              <td class="r">[-0.501, +0.033]</td>
+              <td class="r">0.114</td>
+            </tr>
+            <tr>
+              <td><span class="strat-tag" style="background:#F59E0B;color:#fff">E5</span></td>
+              <td>XGBoost-LSTM Ensemble + Markowitz</td>
+              <td class="r">12.61%</td>
+              <td class="r">15.92%</td>
+              <td class="r">0.41</td>
+              <td class="r">0.57</td>
+              <td class="r" style="color:var(--bad)">-29.61%</td>
+              <td class="r">49.23%</td>
+              <td class="r">137.4 bps</td>
+              <td class="r">[-0.528, +0.040]</td>
+              <td class="r">0.110</td>
+            </tr>
+            <tr>
+              <td><span class="strat-tag" style="background:#10B981;color:#fff">E6</span></td>
+              <td class="bold">Adaptive FolioWise (Champion-Challenger)</td>
+              <td class="r bold">11.66%</td>
+              <td class="r">15.55%</td>
+              <td class="r bold">0.36</td>
+              <td class="r">0.52</td>
+              <td class="r" style="color:var(--good)">-27.19%</td>
+              <td class="r">26.55%</td>
+              <td class="r">73.3 bps</td>
+              <td class="r">[-0.717, +0.061]</td>
+              <td class="r">0.165</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
   <!-- TAB 2: ALLOCATION -->
@@ -365,6 +485,110 @@ svg text { font-family: var(--sans); }
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+
+    <!-- Allocation Explainability & Decision Attribution -->
+    <div class="card" style="margin-top:24px;">
+      <h3 style="margin-bottom:8px;font-size:17px;">Allocation Explainability & Decision Attribution Engine (Milestone M8)</h3>
+      <p style="color:var(--mut);font-size:13px;margin-bottom:16px;">
+        Transparent mathematical attribution of portfolio weights for active machine learning strategy (E3). Decomposes asset allocation into Marginal Risk Contribution (MRC), Percentage Risk Contribution (PRC), Diversification Benefit (1 - MRC/Vol), 10% single-stock & 35% sector caps, and top predictive SHAP factor drivers.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Stock</th>
+              <th>Sector</th>
+              <th class="r">Weight</th>
+              <th class="r">Standalone Vol</th>
+              <th class="r">Marginal Risk (MRC)</th>
+              <th class="r">% Risk Contrib</th>
+              <th class="r">Diversification Discount</th>
+              <th>Top Predictive Factor</th>
+              <th>Transparent Natural Language Rationale</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="bold">NESTLEIND.NS</td>
+              <td>FMCG</td>
+              <td class="r bold" style="color:var(--brand)">10.00%</td>
+              <td class="r">22.87%</td>
+              <td class="r">0.0989</td>
+              <td class="r">9.76%</td>
+              <td class="r bold" style="color:var(--good)">+56.73%</td>
+              <td><span class="code">f_vol_21 (low vol)</span></td>
+              <td style="font-size:13px;color:var(--mut);">Capped at max single-stock limit (10.0%); supported by favorable low realized volatility; high diversification discount (56.7%).</td>
+            </tr>
+            <tr>
+              <td class="bold">SUNPHARMA.NS</td>
+              <td>Pharma</td>
+              <td class="r bold" style="color:var(--brand)">10.00%</td>
+              <td class="r">19.67%</td>
+              <td class="r">0.1019</td>
+              <td class="r">10.05%</td>
+              <td class="r bold" style="color:var(--good)">+48.21%</td>
+              <td><span class="code">f_vol_21 (low vol)</span></td>
+              <td style="font-size:13px;color:var(--mut);">Capped at max single-stock limit (10.0%); supported by favorable low realized volatility; high diversification discount (48.2%).</td>
+            </tr>
+            <tr>
+              <td class="bold">ONGC.NS</td>
+              <td>Energy</td>
+              <td class="r bold" style="color:var(--brand)">10.00%</td>
+              <td class="r">24.17%</td>
+              <td class="r">0.0778</td>
+              <td class="r">7.68%</td>
+              <td class="r bold" style="color:var(--good)">+67.82%</td>
+              <td><span class="code">f_mkt_corr_63</span></td>
+              <td style="font-size:13px;color:var(--mut);">Capped at max single-stock limit (10.0%); high diversification discount (67.8%).</td>
+            </tr>
+            <tr>
+              <td class="bold">ICICIBANK.NS</td>
+              <td>Banking</td>
+              <td class="r bold">8.73%</td>
+              <td class="r">21.10%</td>
+              <td class="r">0.1264</td>
+              <td class="r">10.87%</td>
+              <td class="r">+40.09%</td>
+              <td><span class="code">f_macd_sig, f_dist_52wh</span></td>
+              <td style="font-size:13px;color:var(--mut);">Strong positive allocation (8.7%); supported by positive MACD signal momentum, near 52-week high breakout zone.</td>
+            </tr>
+            <tr>
+              <td class="bold">COALINDIA.NS</td>
+              <td>Energy</td>
+              <td class="r bold">8.54%</td>
+              <td class="r">24.11%</td>
+              <td class="r">0.0792</td>
+              <td class="r">6.64%</td>
+              <td class="r bold" style="color:var(--good)">+67.14%</td>
+              <td><span class="code">f_mkt_corr_63</span></td>
+              <td style="font-size:13px;color:var(--mut);">Strong positive allocation (8.5%); high diversification discount (67.1%).</td>
+            </tr>
+            <tr>
+              <td class="bold">NTPC.NS</td>
+              <td>Energy</td>
+              <td class="r bold">7.98%</td>
+              <td class="r">19.82%</td>
+              <td class="r">0.0934</td>
+              <td class="r">7.34%</td>
+              <td class="r">+52.88%</td>
+              <td><span class="code">f_vol_21</span></td>
+              <td style="font-size:13px;color:var(--mut);">Strong positive allocation (8.0%); bounded by Energy sector cap constraint; high diversification discount (52.9%).</td>
+            </tr>
+            <tr>
+              <td class="bold">DRREDDY.NS</td>
+              <td>Pharma</td>
+              <td class="r bold">6.29%</td>
+              <td class="r">24.21%</td>
+              <td class="r">0.1032</td>
+              <td class="r">6.39%</td>
+              <td class="r">+57.38%</td>
+              <td><span class="code">f_macd_sig</span></td>
+              <td style="font-size:13px;color:var(--mut);">Strong positive allocation (6.3%); supported by positive MACD signal momentum; high diversification discount (57.4%).</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -734,11 +958,76 @@ svg text { font-family: var(--sans); }
       </div>
     </div>
 
-    <div class="callout" style="border-left-color:var(--accent);">
-      <h3>Phase 3 Roadmap: Enhancements in Progress</h3>
-      <p>
-        Planned for upcoming milestones: (1) Pure momentum baseline benchmark, (2) LSTM neural architecture with strict in-fold MinMax scaling to prevent leakage, (3) TreeSHAP feature attribution analysis, (4) Predicted vs realized decile calibration plots, and (5) Newey-West adjusted Information Coefficient standard errors.
+    <div class="card" style="margin-top:24px;">
+      <h3 style="margin-bottom:8px;font-size:17px;">Adaptive Learning: Champion-Challenger Model Governance & Feedback Engine</h3>
+      <p style="color:var(--mut);font-size:13px;margin-bottom:16px;">
+        Autonomous model governance and risk mitigation (Milestone M7). Evaluates 81 monthly walk-forward cycles under strict promotion guardrails (min 12-month evaluation window, +0.10 IC significance hurdle, trailing degradation rollback floor).
       </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Evaluated Model</th>
+              <th>Observed Cycles</th>
+              <th class="r">Cumulative Mean IC</th>
+              <th class="r">RMSE</th>
+              <th class="r">Directional Acc</th>
+              <th>Governance Role</th>
+              <th class="r">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="bold">Ridge Linear Shrinkage</td>
+              <td>81 cycles</td>
+              <td class="r bold" style="color:var(--good)">+0.0223</td>
+              <td class="r">0.3063</td>
+              <td class="r bold">52.08%</td>
+              <td>Former Champion (Initial Benchmark)</td>
+              <td class="r"><span class="badge" style="background:var(--brand-light);color:var(--brand)">CHALLENGER</span></td>
+            </tr>
+            <tr>
+              <td class="bold">Random Forest Regressor</td>
+              <td>81 cycles</td>
+              <td class="r bold" style="color:var(--good)">+0.0041</td>
+              <td class="r">0.3026</td>
+              <td class="r">49.98%</td>
+              <td>Active Champion (Promoted via Governance)</td>
+              <td class="r"><span class="badge" style="background:var(--goodbg);color:var(--good)">ACTIVE CHAMPION</span></td>
+            </tr>
+            <tr>
+              <td class="bold">XGBoost Gradient Booster</td>
+              <td>81 cycles</td>
+              <td class="r">-0.0001</td>
+              <td class="r bold">0.3019</td>
+              <td class="r">49.15%</td>
+              <td>Challenger (Lowest Prediction Error)</td>
+              <td class="r"><span class="badge" style="background:var(--brand-light);color:var(--brand)">CHALLENGER</span></td>
+            </tr>
+            <tr>
+              <td class="bold">PyTorch LSTM Sequence Model</td>
+              <td>81 cycles</td>
+              <td class="r" style="color:var(--bad)">-0.0166</td>
+              <td class="r">0.3504</td>
+              <td class="r">49.52%</td>
+              <td>Challenger (Failed Promotion Hurdle)</td>
+              <td class="r"><span class="badge" style="background:var(--badbg);color:var(--bad)">REJECTED</span></td>
+            </tr>
+            <tr>
+              <td class="bold">XGB-LSTM Ensemble</td>
+              <td>81 cycles</td>
+              <td class="r" style="color:var(--bad)">-0.0131</td>
+              <td class="r">0.3152</td>
+              <td class="r">49.89%</td>
+              <td>Challenger (Dragged down by LSTM)</td>
+              <td class="r"><span class="badge" style="background:var(--badbg);color:var(--bad)">REJECTED</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:14px;padding:12px 16px;background:var(--bg);border-radius:8px;font-size:13px;color:var(--mut);">
+        <strong>Feedback Loop Statistics:</strong> 15,309 point-in-time prediction-vs-realization records logged in <span class="code">results/feedback/prediction_feedback.csv</span> • 574 portfolio risk-vs-realized volatility cycles logged in <span class="code">results/feedback/portfolio_feedback.csv</span> • Complete audit trail in <span class="code">results/adaptive/model_governance_report.json</span>.
+      </div>
     </div>
   </div>
 
@@ -756,8 +1045,8 @@ const STRAT_DATA = [
   { id: "S1", name: "Equal Weight (1/N)", cagr: 17.07, vol: 16.34, sharpe: 0.68, maxDd: -33.18, calmar: 0.51, turnover: 0.12, color: "#0F766E" },
   { id: "S2", name: "Minimum Variance", cagr: 13.21, vol: 14.51, sharpe: 0.50, maxDd: -25.94, calmar: 0.51, turnover: 0.51, color: "#2563EB" },
   { id: "S3", name: "Max Sharpe (Historical)", cagr: 9.24, vol: 17.68, sharpe: 0.18, maxDd: -33.40, calmar: 0.28, turnover: 1.20, color: "#D97706" },
-  { id: "S4", name: "Max Sharpe (ML Predicted + Blend)", cagr: 13.89, vol: 17.13, sharpe: 0.46, maxDd: -29.02, calmar: 0.48, turnover: 1.44, color: "#DC2626" },
-  { id: "S5", name: "Top-5 ML Equal Weight", cagr: 24.00, vol: 23.34, sharpe: 0.77, maxDd: -28.52, calmar: 0.84, turnover: 2.14, color: "#7C3AED" },
+  { id: "S4", name: "Max Sharpe (ML Predicted + Blend)", cagr: 16.84, vol: 15.50, sharpe: 0.70, maxDd: -26.13, calmar: 0.64, turnover: 1.40, color: "#DC2626" },
+  { id: "S5", name: "Top-5 ML Equal Weight", cagr: 22.33, vol: 21.75, sharpe: 0.75, maxDd: -26.48, calmar: 0.84, turnover: 3.15, color: "#7C3AED" },
   { id: "S6", name: "Hierarchical Risk Parity (HRP)", cagr: 16.09, vol: 15.18, sharpe: 0.66, maxDd: -29.80, calmar: 0.54, turnover: 0.48, color: "#059669" },
   { id: "S7", name: "Top-5 Momentum Equal Weight", cagr: 6.14, vol: 21.30, sharpe: 0.01, maxDd: -40.48, calmar: 0.15, turnover: 1.24, color: "#DB2777" }
 ];

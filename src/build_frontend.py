@@ -102,16 +102,7 @@ def _build_new_html(baseline: str, payload: dict) -> str:
     new_html = re.sub(r"RHO=[0-9.]+", f"RHO={rho:.4f}", new_html)
 
     # ------------------------------------------------------------------
-    # 4. Replace "13 large companies" with actual count
-    # ------------------------------------------------------------------
-    new_html = re.sub(
-        r"\b13\b large companies",
-        f"{n_stocks} large companies",
-        new_html,
-    )
-
-    # ------------------------------------------------------------------
-    # 5. Update TEST line from strategy_metrics.csv if available
+    # 4. Update TEST line from strategy_metrics.csv if available
     # ------------------------------------------------------------------
     strat_csv = RESULTS_DIR / "strategy_metrics.csv"
     if strat_csv.exists():

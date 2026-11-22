@@ -1,14 +1,5 @@
 --- FolioWise_baseline.html
 +++ index.html
-@@ -229,7 +229,7 @@
- <details><summary>I already own stocks. Do I have to sell?</summary><p>No. Choose "I already invest" and tick "Don't sell anything". We'll then show how to use only new money to move closer to a better mix. Selling at a profit can trigger capital gains tax, so check before you sell.</p></details>
- <details><summary>Why does a higher comfort level mean more risk?</summary><p>Companies with higher expected returns usually swing more in price. If you stay calm during drops, we lean toward them. If not, we lean toward steadier companies.</p></details>
- <details><summary>What does "a rough year" mean?</summary><p>It's a bad-but-possible outcome, one that happens about once in 20 years in our estimate. It is not the worst case.</p></details>
--<details><summary>Are these live prices?</summary><p>Not yet. This demo uses sample figures for 13 large companies. A live version would load fresh prices and the model's latest estimates.</p></details>
-+<details><summary>Are these live prices?</summary><p>Not yet. This demo uses sample figures for 27 large companies. A live version would load fresh prices and the model's latest estimates.</p></details>
- </section>
- <footer>
- FolioWise is a student project for learning. Past performance does not guarantee future results. Investments in the stock market carry risk, including loss of money.
 @@ -238,9 +238,9 @@
  </div>
  
@@ -16,9 +7,9 @@
 -const S=[["Reliance Industries","Energy",.12,.24],["Tata Consultancy Services","IT",.11,.21],["HDFC Bank","Banking",.12,.20],["Infosys","IT",.11,.23],["ICICI Bank","Banking",.14,.24],["Hindustan Unilever","FMCG",.09,.16],["ITC","FMCG",.11,.18],["Sun Pharma","Pharma",.14,.24],["Larsen & Toubro","Industrials",.15,.26],["Maruti Suzuki","Auto",.13,.25],["Bharti Airtel","Telecom",.14,.25],["Titan","Consumer",.16,.30],["Nestlé India","FMCG",.08,.15]].map(a=>({n:a[0],s:a[1],m:a[2],v:a[3]}));
 -const RHO=.45,NIFTY={m:.11,v:.15},COL=["#0F7B6C","#2F6FDE","#E0A100","#C2410C","#7C5CBF","#0E9AA7","#B5457B","#6B7A8C"];
 -const TEST={equal:16.8,model:9.8,nifty:11.7};
-+const S=[["Reliance Industries","Energy",0.0915,0.2417],["Tata Consultancy Services","IT",0.0981,0.3001],["HDFC Bank","Banking",0.0319,0.2310],["Infosys","IT",0.1196,0.3171],["ICICI Bank","Banking",0.1341,0.2110],["Hindustan Unilever","FMCG",0.0244,0.2253],["ITC","FMCG",0.0427,0.2270],["Sun Pharma","Pharma",0.1335,0.1967],["Larsen & Toubro","Industrials",0.0970,0.2570],["Maruti Suzuki","Auto",0.0817,0.2479],["Bharti Airtel","Telecom",0.0760,0.2181],["Titan","Consumer",0.2059,0.2406],["Nestle India","FMCG",0.1663,0.2287],["Axis Bank","Banking",0.1270,0.2527],["Kotak Mahindra Bank","Banking",0.1375,0.2193],["Bajaj Finance","Banking",0.1476,0.3232],["Wipro","IT",0.0954,0.2684],["HCL Technologies","IT",0.1635,0.3058],["UltraTech Cement","Industrials",0.1029,0.2416],["Asian Paints","Consumer",0.1234,0.2483],["Tech Mahindra","IT",0.2158,0.2982],["Power Grid","Energy",0.0939,0.2102],["NTPC","Energy",0.1025,0.1982],["ONGC","Energy",0.1120,0.2417],["Coal India","Energy",0.1835,0.2411],["Bajaj Finserv","Banking",0.0549,0.2516],["Dr. Reddy's Laboratories","Pharma",0.1530,0.2421]].map(a=>({n:a[0],s:a[1],m:a[2],v:a[3]}));
++const S=[["Reliance Industries","Energy",0.2055,0.2417],["Tata Consultancy Services","IT",0.1064,0.3001],["HDFC Bank","Banking",0.1383,0.2310],["Infosys","IT",0.1366,0.3171],["ICICI Bank","Banking",0.1876,0.2110],["Hindustan Unilever","FMCG",0.1258,0.2253],["ITC","FMCG",0.0818,0.2270],["Sun Pharma","Pharma",0.1183,0.1967],["Larsen & Toubro","Industrials",0.1712,0.2570],["Maruti Suzuki","Auto",0.1626,0.2479],["Bharti Airtel","Telecom",0.2070,0.2181],["Titan","Consumer",0.2661,0.2406],["Nestle India","FMCG",0.1584,0.2287],["Axis Bank","Banking",0.1375,0.2527],["Kotak Mahindra Bank","Banking",0.1496,0.2193],["Bajaj Finance","Banking",0.3667,0.3232],["Wipro","IT",0.0985,0.2684],["HCL Technologies","IT",0.1728,0.3058],["UltraTech Cement","Industrials",0.1683,0.2416],["Asian Paints","Consumer",0.1422,0.2483],["Tech Mahindra","IT",0.1605,0.2982],["Power Grid","Energy",0.1765,0.2102],["NTPC","Energy",0.1538,0.1982],["ONGC","Energy",0.1027,0.2417],["Coal India","Energy",0.1288,0.2411],["Bajaj Finserv","Banking",0.2849,0.2516],["Dr. Reddy's Laboratories","Pharma",0.1061,0.2421]].map(a=>({n:a[0],s:a[1],m:a[2],v:a[3]}));
 +const RHO=0.2200,NIFTY={m:0.1327,v:0.1781},COL=["#0F7B6C","#2F6FDE","#E0A100","#C2410C","#7C5CBF","#0E9AA7","#B5457B","#6B7A8C"];
-+const TEST={equal:17.1,model:13.9,nifty:13.3};
++const TEST={equal:17.1,model:16.8,nifty:13.3};
  const RL=[["Very safe","Steady companies, smaller swings, smaller gains."],["Careful","Mostly steady companies with a little growth."],["Balanced","A middle path between steady and growing."],["Growth","More growing companies, bigger ups and downs."],["Aggressive","Chases higher returns and accepts big swings."]];
  const $=id=>document.getElementById(id),inr=n=>new Intl.NumberFormat("en-IN",{maximumFractionDigits:0}).format(Math.round(n));
  const sh=v=>v>=1e7?(v/1e7).toFixed(1)+" Cr":v>=1e5?(v/1e5).toFixed(1)+" L":Math.round(v/1e3)+"K";

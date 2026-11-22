@@ -242,15 +242,17 @@ def run_stage5(base_dir="."):
     ridge_latest = preds_df[(preds_df["date"] == latest_pred_date) & (preds_df["model"] == "Ridge")].set_index("ticker")
     recent_returns = piv_returns.iloc[-252:]
     v_series = recent_returns.std() * np.sqrt(252.0)
-    hist_mean_ann = recent_returns.mean() * 252.0
+    full_mean_ann = piv_returns.mean() * 252.0
 
     stocks_list = []
     for _, row in universe_df.iterrows():
         t = row["ticker"]
-        raw_pred = ridge_latest.loc[t, "pred"] if t in ridge_latest.index else 0.015
-        ml_ann = (1.0 + raw_pred) ** 12.0 - 1.0
-        hist_ann = hist_mean_ann.get(t, 0.12)
-        m_val = float(0.5 * ml_ann + 0.5 * hist_ann)
+        raw_pred = float(ridge_latest.loc[t, "pred"]) if t in ridge_latest.index else 0.50
+        # Standardized cross-sectional rank [0, 1] mapped to alpha tilt
+        rank_excess = float(raw_pred - 0.50)
+        ml_alpha_ann = rank_excess * 0.04
+        hist_ann = float(full_mean_ann.get(t, 0.14))
+        m_val = float(hist_ann + ml_alpha_ann)
         v_val = float(v_series.get(t, 0.20))
         stocks_list.append({
             "name": row["name"],
