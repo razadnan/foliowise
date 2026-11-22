@@ -1,0 +1,914 @@
+date,strategy_id,strategy_name,weights_generated,sum_weights,max_weight,min_weight,active_assets,signal_source,has_ml_prediction,fallback_triggered,notes
+2020-01-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2020-01-31,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.034715,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2020-01-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.007036,10,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2020-01-31,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,3.3e-05,17,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-01-31,E4,LSTM Sequence Model + Markowitz,True,0.999997,0.1,0.001406,16,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-01-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.000001,0.1,0.004693,17,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-01-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,3.3e-05,17,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2020-01-31,B1,Hierarchical Risk Parity (HRP),True,1.000002,0.072865,0.009332,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-01-31,B2,Minimum Variance (Min-Var),True,1.000001,0.1,0.007692,18,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-01-31,B3,Equal Risk Contribution (ERC),True,1.000001,0.05717,0.020819,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-01-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2020-02-28,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2020-02-28,E1,Traditional Markowitz (Sample Cov),True,0.999999,0.15,0.00796,12,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2020-02-28,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.000001,0.15,0.008225,12,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2020-02-28,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.004487,17,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-02-28,E4,LSTM Sequence Model + Markowitz,True,1.000001,0.1,0.012124,14,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-02-28,E5,XGB-LSTM Ensemble + Markowitz,True,0.999999,0.1,0.008865,16,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-02-28,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.004487,17,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2020-02-28,B1,Hierarchical Risk Parity (HRP),True,1.000002,0.076303,0.011253,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-02-28,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.022012,16,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-02-28,B3,Equal Risk Contribution (ERC),True,1.000001,0.055861,0.021288,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-02-28,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2020-03-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2020-03-31,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.032825,8,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2020-03-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.04003,8,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2020-03-31,E3,XGBoost + Markowitz (Caps + Reg),True,0.999999,0.1,0.000873,14,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-03-31,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.025642,15,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-03-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.003988,14,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-03-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.15,0.04003,8,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2020-03-31,B1,Hierarchical Risk Parity (HRP),True,1.0,0.082045,0.01124,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-03-31,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.025642,15,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-03-31,B3,Equal Risk Contribution (ERC),True,1.000003,0.054387,0.02248,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-03-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2020-04-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2020-04-30,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.018205,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2020-04-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.037299,9,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2020-04-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.025043,13,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-04-30,E4,LSTM Sequence Model + Markowitz,True,0.999999,0.1,0.002914,15,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-04-30,E5,XGB-LSTM Ensemble + Markowitz,True,0.999997,0.099999,0.030078,11,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-04-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.15,0.037299,9,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2020-04-30,B1,Hierarchical Risk Parity (HRP),True,0.999998,0.064912,0.012306,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-04-30,B2,Minimum Variance (Min-Var),True,0.999999,0.1,0.002914,15,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-04-30,B3,Equal Risk Contribution (ERC),True,1.000001,0.057299,0.022263,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-04-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2020-05-29,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2020-05-29,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.00597,8,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2020-05-29,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.007843,8,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2020-05-29,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.026306,12,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-05-29,E4,LSTM Sequence Model + Markowitz,True,0.999999,0.1,8.1e-05,13,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-05-29,E5,XGB-LSTM Ensemble + Markowitz,True,0.999999,0.1,8.1e-05,13,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-05-29,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.15,0.007843,8,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2020-05-29,B1,Hierarchical Risk Parity (HRP),True,1.000001,0.075729,0.010461,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-05-29,B2,Minimum Variance (Min-Var),True,0.999999,0.1,8.1e-05,13,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-05-29,B3,Equal Risk Contribution (ERC),True,1.000001,0.057121,0.02177,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-05-29,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2020-06-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2020-06-30,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.1,7,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2020-06-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.1,7,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2020-06-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.003722,14,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-06-30,E4,LSTM Sequence Model + Markowitz,True,0.999999,0.1,0.002013,12,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-06-30,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.026988,11,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-06-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.15,0.1,7,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2020-06-30,B1,Hierarchical Risk Parity (HRP),True,0.999999,0.074433,0.010611,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-06-30,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.023833,13,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-06-30,B3,Equal Risk Contribution (ERC),True,1.000002,0.05472,0.021471,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-06-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2020-07-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2020-07-31,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.013327,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2020-07-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.02086,9,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2020-07-31,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.016215,16,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-07-31,E4,LSTM Sequence Model + Markowitz,True,1.000001,0.1,0.014267,12,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-07-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.000002,0.1,0.013298,12,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-07-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.15,0.02086,9,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2020-07-31,B1,Hierarchical Risk Parity (HRP),True,0.999999,0.09264,0.010664,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-07-31,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.015542,13,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-07-31,B3,Equal Risk Contribution (ERC),True,0.999998,0.054664,0.021273,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-07-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2020-08-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2020-08-31,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.006327,8,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2020-08-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.01463,8,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2020-08-31,E3,XGBoost + Markowitz (Caps + Reg),True,0.999999,0.1,0.009042,15,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-08-31,E4,LSTM Sequence Model + Markowitz,True,1.000001,0.1,0.000147,14,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-08-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.05,11,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-08-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.15,0.01463,8,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2020-08-31,B1,Hierarchical Risk Parity (HRP),True,0.999999,0.079749,0.010199,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-08-31,B2,Minimum Variance (Min-Var),True,1.000001,0.1,0.000147,14,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-08-31,B3,Equal Risk Contribution (ERC),True,0.999999,0.05458,0.021248,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-08-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2020-09-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2020-09-30,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.04043,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2020-09-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.044798,9,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2020-09-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.015347,12,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-09-30,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.005036,15,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-09-30,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.026505,11,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-09-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.15,0.044798,9,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2020-09-30,B1,Hierarchical Risk Parity (HRP),True,1.000001,0.056881,0.011869,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-09-30,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.005036,15,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-09-30,B3,Equal Risk Contribution (ERC),True,0.999999,0.052326,0.021364,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-09-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2020-10-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2020-10-30,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.1,7,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2020-10-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.103614,7,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2020-10-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.010333,14,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-10-30,E4,LSTM Sequence Model + Markowitz,True,0.999999,0.1,0.001406,15,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-10-30,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.00305,12,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-10-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.15,0.103614,7,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2020-10-30,B1,Hierarchical Risk Parity (HRP),True,1.0,0.083771,0.01311,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-10-30,B2,Minimum Variance (Min-Var),True,0.999999,0.1,0.001406,15,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-10-30,B3,Equal Risk Contribution (ERC),True,1.000001,0.052184,0.021244,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-10-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2020-11-27,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2020-11-27,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.018225,8,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2020-11-27,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.025005,8,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2020-11-27,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.023702,13,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-11-27,E4,LSTM Sequence Model + Markowitz,True,1.000001,0.1,0.015319,14,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-11-27,E5,XGB-LSTM Ensemble + Markowitz,True,1.000001,0.1,0.048632,11,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-11-27,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.15,0.025005,8,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2020-11-27,B1,Hierarchical Risk Parity (HRP),True,1.000002,0.077561,0.009423,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-11-27,B2,Minimum Variance (Min-Var),True,1.000001,0.1,0.015319,14,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-11-27,B3,Equal Risk Contribution (ERC),True,0.999999,0.052075,0.021137,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-11-27,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2020-12-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2020-12-31,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.1,7,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2020-12-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.1,7,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2020-12-31,E3,XGBoost + Markowitz (Caps + Reg),True,0.999999,0.1,0.001487,15,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-12-31,E4,LSTM Sequence Model + Markowitz,True,0.999999,0.1,0.011407,14,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-12-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.007071,13,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2020-12-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.15,0.1,7,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2020-12-31,B1,Hierarchical Risk Parity (HRP),True,0.999997,0.066943,0.014276,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-12-31,B2,Minimum Variance (Min-Var),True,0.999999,0.1,0.011407,14,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-12-31,B3,Equal Risk Contribution (ERC),True,1.0,0.051982,0.021397,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2020-12-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2021-01-29,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2021-01-29,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.119574,7,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2021-01-29,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.116055,7,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2021-01-29,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.001863,16,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-01-29,E4,LSTM Sequence Model + Markowitz,True,1.000002,0.1,0.011237,14,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-01-29,E5,XGB-LSTM Ensemble + Markowitz,True,1.000001,0.1,0.028345,12,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-01-29,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.15,0.116055,7,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2021-01-29,B1,Hierarchical Risk Parity (HRP),True,1.0,0.073037,0.011056,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-01-29,B2,Minimum Variance (Min-Var),True,1.000002,0.1,0.011237,14,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-01-29,B3,Equal Risk Contribution (ERC),True,0.999999,0.050741,0.021849,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-01-29,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2021-02-26,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2021-02-26,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.041998,8,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2021-02-26,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.050879,8,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2021-02-26,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.013806,15,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-02-26,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.001678,13,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-02-26,E5,XGB-LSTM Ensemble + Markowitz,True,0.999999,0.1,0.013694,12,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-02-26,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.15,0.050879,8,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2021-02-26,B1,Hierarchical Risk Parity (HRP),True,1.000002,0.067816,0.014017,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-02-26,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.025889,14,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-02-26,B3,Equal Risk Contribution (ERC),True,1.0,0.051951,0.021529,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-02-26,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2021-03-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2021-03-31,E1,Traditional Markowitz (Sample Cov),True,0.999999,0.15,0.000244,14,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2021-03-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,0.999999,0.15,0.006038,14,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2021-03-31,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.005535,17,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-03-31,E4,LSTM Sequence Model + Markowitz,True,1.000001,0.1,0.001516,18,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-03-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.01977,14,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-03-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.000001,0.1,0.005535,17,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2021-03-31,B1,Hierarchical Risk Parity (HRP),True,0.999998,0.064277,0.00997,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-03-31,B2,Minimum Variance (Min-Var),True,1.000001,0.1,0.001516,18,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-03-31,B3,Equal Risk Contribution (ERC),True,0.999999,0.051271,0.021066,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-03-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2021-04-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2021-04-30,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.019396,12,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2021-04-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.02083,12,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2021-04-30,E3,XGBoost + Markowitz (Caps + Reg),True,0.999999,0.1,0.004121,16,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-04-30,E4,LSTM Sequence Model + Markowitz,True,0.999986,0.099999,0.041647,11,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-04-30,E5,XGB-LSTM Ensemble + Markowitz,True,1.000002,0.1,0.008425,13,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-04-30,E6,Adaptive FolioWise (Champion-Challenger),True,0.999999,0.1,0.004121,16,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2021-04-30,B1,Hierarchical Risk Parity (HRP),True,1.000001,0.08088,0.010177,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-04-30,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.014356,15,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-04-30,B3,Equal Risk Contribution (ERC),True,0.999999,0.062647,0.021071,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-04-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2021-05-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2021-05-31,E1,Traditional Markowitz (Sample Cov),True,1.000001,0.15,0.001652,13,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2021-05-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.007087,13,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2021-05-31,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.002873,19,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-05-31,E4,LSTM Sequence Model + Markowitz,True,1.000001,0.1,0.003843,14,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-05-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.000001,0.1,0.010375,14,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-05-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.002873,19,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2021-05-31,B1,Hierarchical Risk Parity (HRP),True,0.999999,0.089775,0.012835,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-05-31,B2,Minimum Variance (Min-Var),True,1.0,0.1,6.1e-05,19,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-05-31,B3,Equal Risk Contribution (ERC),True,1.0,0.060999,0.021832,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-05-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2021-06-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2021-06-30,E1,Traditional Markowitz (Sample Cov),True,1.000001,0.15,0.01662,12,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2021-06-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.000001,0.15,0.003437,13,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2021-06-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.000368,17,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-06-30,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.000317,19,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-06-30,E5,XGB-LSTM Ensemble + Markowitz,True,0.999999,0.1,0.015175,14,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-06-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.000001,0.1,0.000368,17,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2021-06-30,B1,Hierarchical Risk Parity (HRP),True,0.999999,0.095545,0.013649,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-06-30,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.000317,19,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-06-30,B3,Equal Risk Contribution (ERC),True,0.999999,0.064232,0.023916,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-06-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2021-07-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2021-07-30,E1,Traditional Markowitz (Sample Cov),True,1.000001,0.15,0.017951,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2021-07-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.025499,9,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2021-07-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.011289,16,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-07-30,E4,LSTM Sequence Model + Markowitz,True,1.000001,0.1,0.003884,17,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-07-30,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.012202,13,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-07-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.000001,0.1,0.011289,16,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2021-07-30,B1,Hierarchical Risk Parity (HRP),True,1.000001,0.097153,0.011374,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-07-30,B2,Minimum Variance (Min-Var),True,1.000001,0.1,0.003884,17,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-07-30,B3,Equal Risk Contribution (ERC),True,1.000002,0.064143,0.024537,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-07-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2021-08-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2021-08-31,E1,Traditional Markowitz (Sample Cov),True,1.000001,0.15,0.004698,12,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2021-08-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.000001,0.15,0.000387,13,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2021-08-31,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.001948,17,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-08-31,E4,LSTM Sequence Model + Markowitz,True,0.999988,0.099999,0.032148,13,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-08-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.002293,14,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-08-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.000001,0.1,0.001948,17,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2021-08-31,B1,Hierarchical Risk Parity (HRP),True,0.999999,0.067229,0.012555,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-08-31,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.005368,19,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-08-31,B3,Equal Risk Contribution (ERC),True,0.999998,0.065369,0.02465,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-08-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2021-09-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2021-09-30,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.002834,14,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2021-09-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.007335,14,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2021-09-30,E3,XGBoost + Markowitz (Caps + Reg),True,0.999999,0.1,0.005742,18,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-09-30,E4,LSTM Sequence Model + Markowitz,True,1.000002,0.1,0.006547,13,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-09-30,E5,XGB-LSTM Ensemble + Markowitz,True,1.000001,0.1,0.025022,12,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-09-30,E6,Adaptive FolioWise (Champion-Challenger),True,0.999999,0.1,0.005742,18,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2021-09-30,B1,Hierarchical Risk Parity (HRP),True,0.999997,0.087552,0.014652,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-09-30,B2,Minimum Variance (Min-Var),True,0.999998,0.1,0.002849,19,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-09-30,B3,Equal Risk Contribution (ERC),True,1.000001,0.067702,0.02503,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-09-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2021-10-29,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2021-10-29,E1,Traditional Markowitz (Sample Cov),True,1.000001,0.15,0.003163,14,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2021-10-29,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.005078,15,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2021-10-29,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,7.8e-05,16,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-10-29,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.00165,20,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-10-29,E5,XGB-LSTM Ensemble + Markowitz,True,1.000002,0.1,0.010168,13,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-10-29,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,7.8e-05,16,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2021-10-29,B1,Hierarchical Risk Parity (HRP),True,1.0,0.065788,0.015689,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-10-29,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.00165,20,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-10-29,B3,Equal Risk Contribution (ERC),True,0.999999,0.062596,0.027034,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-10-29,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2021-11-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2021-11-30,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.01163,10,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2021-11-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.003665,11,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2021-11-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.002272,18,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-11-30,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.002585,13,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-11-30,E5,XGB-LSTM Ensemble + Markowitz,True,1.000001,0.1,0.002187,14,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-11-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.000001,0.1,0.002272,18,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2021-11-30,B1,Hierarchical Risk Parity (HRP),True,1.000001,0.083429,0.013627,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-11-30,B2,Minimum Variance (Min-Var),True,0.999999,0.1,0.000952,19,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-11-30,B3,Equal Risk Contribution (ERC),True,1.000002,0.065252,0.025896,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-11-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2021-12-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2021-12-31,E1,Traditional Markowitz (Sample Cov),True,0.999999,0.15,0.033183,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2021-12-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,0.999999,0.15,0.003695,10,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2021-12-31,E3,XGBoost + Markowitz (Caps + Reg),True,0.999999,0.1,0.018461,18,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-12-31,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.001078,13,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-12-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,1.3e-05,13,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2021-12-31,E6,Adaptive FolioWise (Champion-Challenger),True,0.999999,0.1,0.018461,18,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2021-12-31,B1,Hierarchical Risk Parity (HRP),True,0.999998,0.076519,0.016605,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-12-31,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.008317,19,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-12-31,B3,Equal Risk Contribution (ERC),True,0.999996,0.062858,0.025981,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2021-12-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2022-01-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2022-01-31,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.014231,10,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2022-01-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,0.999999,0.15,0.016937,10,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2022-01-31,E3,XGBoost + Markowitz (Caps + Reg),True,0.999997,0.1,0.003925,18,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-01-31,E4,LSTM Sequence Model + Markowitz,True,0.999999,0.1,0.006642,12,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-01-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.018215,12,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-01-31,E6,Adaptive FolioWise (Champion-Challenger),True,0.999997,0.1,0.003925,18,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2022-01-31,B1,Hierarchical Risk Parity (HRP),True,1.0,0.083898,0.012424,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-01-31,B2,Minimum Variance (Min-Var),True,1.0,0.1,8.2e-05,18,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-01-31,B3,Equal Risk Contribution (ERC),True,1.0,0.062979,0.025019,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-01-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2022-02-28,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2022-02-28,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.014725,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2022-02-28,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.019301,9,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2022-02-28,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.000443,19,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-02-28,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.01543,14,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-02-28,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.002579,15,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-02-28,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.000443,19,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2022-02-28,B1,Hierarchical Risk Parity (HRP),True,1.0,0.081781,0.014347,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-02-28,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.011538,16,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-02-28,B3,Equal Risk Contribution (ERC),True,1.000002,0.065966,0.024672,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-02-28,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2022-03-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2022-03-31,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.003233,11,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2022-03-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.007195,11,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2022-03-31,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.009595,15,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-03-31,E4,LSTM Sequence Model + Markowitz,True,1.000001,0.1,0.004614,17,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-03-31,E5,XGB-LSTM Ensemble + Markowitz,True,0.999999,0.1,0.000846,15,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-03-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.000001,0.1,0.009595,15,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2022-03-31,B1,Hierarchical Risk Parity (HRP),True,1.0,0.070501,0.01739,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-03-31,B2,Minimum Variance (Min-Var),True,1.000001,0.1,0.004614,17,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-03-31,B3,Equal Risk Contribution (ERC),True,0.999999,0.065618,0.02349,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-03-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2022-04-29,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2022-04-29,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.052147,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2022-04-29,E2,Markowitz + Ledoit-Wolf Shrinkage,True,0.999999,0.15,0.00088,10,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2022-04-29,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.00826,16,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-04-29,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,2.7e-05,17,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-04-29,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.001015,17,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-04-29,E6,Adaptive FolioWise (Champion-Challenger),True,1.000001,0.1,0.00826,16,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2022-04-29,B1,Hierarchical Risk Parity (HRP),True,1.000003,0.086661,0.015503,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-04-29,B2,Minimum Variance (Min-Var),True,1.0,0.1,2.7e-05,17,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-04-29,B3,Equal Risk Contribution (ERC),True,1.0,0.067932,0.024549,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-04-29,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2022-05-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2022-05-31,E1,Traditional Markowitz (Sample Cov),True,1.000001,0.15,0.015139,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2022-05-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,0.999999,0.15,0.022815,9,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2022-05-31,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.000582,18,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-05-31,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.017205,11,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-05-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.002191,12,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-05-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.000001,0.1,0.000582,18,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2022-05-31,B1,Hierarchical Risk Parity (HRP),True,0.999999,0.074993,0.014345,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-05-31,B2,Minimum Variance (Min-Var),True,1.000002,0.1,0.003086,17,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-05-31,B3,Equal Risk Contribution (ERC),True,1.0,0.061505,0.025098,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-05-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2022-06-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2022-06-30,E1,Traditional Markowitz (Sample Cov),True,0.999999,0.15,0.018961,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2022-06-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,0.999999,0.15,0.019473,9,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2022-06-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.009387,17,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-06-30,E4,LSTM Sequence Model + Markowitz,True,1.000001,0.1,0.000979,13,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-06-30,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.005641,12,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-06-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.009387,17,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2022-06-30,B1,Hierarchical Risk Parity (HRP),True,0.999997,0.078771,0.013484,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-06-30,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.004335,16,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-06-30,B3,Equal Risk Contribution (ERC),True,1.000001,0.063638,0.025156,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-06-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2022-07-29,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2022-07-29,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.009291,11,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2022-07-29,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.012909,11,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2022-07-29,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.002714,16,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-07-29,E4,LSTM Sequence Model + Markowitz,True,1.000001,0.1,0.005225,15,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-07-29,E5,XGB-LSTM Ensemble + Markowitz,True,0.999999,0.1,0.005294,15,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-07-29,E6,Adaptive FolioWise (Champion-Challenger),True,1.000001,0.1,0.002714,16,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2022-07-29,B1,Hierarchical Risk Parity (HRP),True,0.999998,0.073166,0.014747,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-07-29,B2,Minimum Variance (Min-Var),True,1.000001,0.1,0.005225,15,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-07-29,B3,Equal Risk Contribution (ERC),True,0.999997,0.060257,0.024437,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-07-29,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2022-08-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2022-08-30,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.013417,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2022-08-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,0.999999,0.15,0.001135,10,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2022-08-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.002073,15,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-08-30,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.003595,15,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-08-30,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.022675,12,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-08-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.000001,0.1,0.002073,15,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2022-08-30,B1,Hierarchical Risk Parity (HRP),True,0.999999,0.07898,0.017242,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-08-30,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.003595,15,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-08-30,B3,Equal Risk Contribution (ERC),True,1.000002,0.06226,0.023589,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-08-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2022-09-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2022-09-30,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.048315,8,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2022-09-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,0.999999,0.15,0.049911,8,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2022-09-30,E3,XGBoost + Markowitz (Caps + Reg),True,0.999999,0.1,0.000755,17,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-09-30,E4,LSTM Sequence Model + Markowitz,True,0.999999,0.1,0.002645,15,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-09-30,E5,XGB-LSTM Ensemble + Markowitz,True,0.999999,0.1,0.009591,13,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-09-30,E6,Adaptive FolioWise (Champion-Challenger),True,0.999999,0.1,0.000755,17,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2022-09-30,B1,Hierarchical Risk Parity (HRP),True,1.000001,0.078225,0.016871,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-09-30,B2,Minimum Variance (Min-Var),True,0.999999,0.1,0.002645,15,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-09-30,B3,Equal Risk Contribution (ERC),True,1.000001,0.058943,0.023728,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-09-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2022-10-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2022-10-31,E1,Traditional Markowitz (Sample Cov),True,1.000001,0.15,0.043459,8,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2022-10-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,0.999999,0.15,0.048822,8,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2022-10-31,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.004893,14,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-10-31,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.012063,13,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-10-31,E5,XGB-LSTM Ensemble + Markowitz,True,0.999999,0.1,0.016223,13,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-10-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.004893,14,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2022-10-31,B1,Hierarchical Risk Parity (HRP),True,1.000004,0.075385,0.019242,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-10-31,B2,Minimum Variance (Min-Var),True,0.999999,0.1,0.024749,13,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-10-31,B3,Equal Risk Contribution (ERC),True,1.0,0.054731,0.023396,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-10-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2022-11-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2022-11-30,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.071744,8,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2022-11-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.002135,9,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2022-11-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.018823,14,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-11-30,E4,LSTM Sequence Model + Markowitz,True,0.999991,0.1,0.005286,13,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-11-30,E5,XGB-LSTM Ensemble + Markowitz,True,1.000001,0.1,0.00087,12,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-11-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.018823,14,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2022-11-30,B1,Hierarchical Risk Parity (HRP),True,0.999999,0.077825,0.012491,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-11-30,B2,Minimum Variance (Min-Var),True,1.000001,0.1,0.00284,15,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-11-30,B3,Equal Risk Contribution (ERC),True,1.0,0.054562,0.023367,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-11-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2022-12-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2022-12-30,E1,Traditional Markowitz (Sample Cov),True,1.000001,0.15,0.010336,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2022-12-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.015458,9,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2022-12-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.005195,17,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-12-30,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.003851,15,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-12-30,E5,XGB-LSTM Ensemble + Markowitz,True,0.999999,0.1,0.000786,15,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2022-12-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.005195,17,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2022-12-30,B1,Hierarchical Risk Parity (HRP),True,1.000004,0.1,0.01575,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-12-30,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.003851,15,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-12-30,B3,Equal Risk Contribution (ERC),True,1.0,0.05504,0.023734,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2022-12-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2023-01-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2023-01-31,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.017833,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2023-01-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.019538,9,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2023-01-31,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.001269,15,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-01-31,E4,LSTM Sequence Model + Markowitz,True,0.999999,0.1,0.010087,15,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-01-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.000001,0.1,0.005443,14,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-01-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.001269,15,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2023-01-31,B1,Hierarchical Risk Parity (HRP),True,1.000001,0.072299,0.013473,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-01-31,B2,Minimum Variance (Min-Var),True,0.999999,0.1,0.010087,15,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-01-31,B3,Equal Risk Contribution (ERC),True,1.000002,0.054314,0.024136,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-01-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2023-02-28,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2023-02-28,E1,Traditional Markowitz (Sample Cov),True,1.000001,0.15,0.021732,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2023-02-28,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.026262,9,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2023-02-28,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.002865,15,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-02-28,E4,LSTM Sequence Model + Markowitz,True,0.999999,0.1,0.005724,17,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-02-28,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.015327,14,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-02-28,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.002865,15,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2023-02-28,B1,Hierarchical Risk Parity (HRP),True,1.0,0.061828,0.012307,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-02-28,B2,Minimum Variance (Min-Var),True,0.999999,0.1,0.005724,17,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-02-28,B3,Equal Risk Contribution (ERC),True,0.999998,0.05393,0.023732,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-02-28,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2023-03-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2023-03-31,E1,Traditional Markowitz (Sample Cov),True,0.999999,0.15,0.002468,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2023-03-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,0.999999,0.15,0.006215,9,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2023-03-31,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.004297,16,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-03-31,E4,LSTM Sequence Model + Markowitz,True,0.99997,0.099998,0.00675,13,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-03-31,E5,XGB-LSTM Ensemble + Markowitz,True,0.999999,0.1,0.000887,15,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-03-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.000001,0.1,0.004297,16,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2023-03-31,B1,Hierarchical Risk Parity (HRP),True,1.0,0.071434,0.014251,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-03-31,B2,Minimum Variance (Min-Var),True,0.999999,0.1,0.005243,18,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-03-31,B3,Equal Risk Contribution (ERC),True,1.000001,0.052675,0.02372,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-03-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2023-04-28,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2023-04-28,E1,Traditional Markowitz (Sample Cov),True,1.000001,0.15,0.039188,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2023-04-28,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.039405,9,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2023-04-28,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.008557,16,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-04-28,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.003049,17,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-04-28,E5,XGB-LSTM Ensemble + Markowitz,True,1.000001,0.1,0.019863,13,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-04-28,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.008557,16,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2023-04-28,B1,Hierarchical Risk Parity (HRP),True,1.000001,0.081854,0.012912,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-04-28,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.003049,17,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-04-28,B3,Equal Risk Contribution (ERC),True,0.999997,0.054074,0.023244,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-04-28,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2023-05-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2023-05-31,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.005872,12,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2023-05-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.000001,0.15,0.008174,12,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2023-05-31,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.016112,17,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-05-31,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.008282,13,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-05-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.000001,0.1,0.006513,14,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-05-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.016112,17,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2023-05-31,B1,Hierarchical Risk Parity (HRP),True,1.000002,0.078357,0.011907,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-05-31,B2,Minimum Variance (Min-Var),True,1.000001,0.1,0.001235,19,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-05-31,B3,Equal Risk Contribution (ERC),True,1.000001,0.058758,0.022388,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-05-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2023-06-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2023-06-30,E1,Traditional Markowitz (Sample Cov),True,1.000002,0.15,0.017494,13,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2023-06-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.020784,13,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2023-06-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.000002,0.1,0.007157,18,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-06-30,E4,LSTM Sequence Model + Markowitz,True,1.000001,0.1,4.1e-05,20,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-06-30,E5,XGB-LSTM Ensemble + Markowitz,True,0.999999,0.1,8e-05,12,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-06-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.000002,0.1,0.007157,18,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2023-06-30,B1,Hierarchical Risk Parity (HRP),True,1.000001,0.067695,0.012595,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-06-30,B2,Minimum Variance (Min-Var),True,1.000001,0.1,4.1e-05,20,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-06-30,B3,Equal Risk Contribution (ERC),True,1.0,0.06403,0.022422,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-06-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2023-07-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2023-07-31,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.007988,11,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2023-07-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.000001,0.15,0.000244,14,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2023-07-31,E3,XGBoost + Markowitz (Caps + Reg),True,0.999999,0.1,0.006131,16,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-07-31,E4,LSTM Sequence Model + Markowitz,True,0.999996,0.099999,0.005971,15,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-07-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.026957,14,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-07-31,E6,Adaptive FolioWise (Champion-Challenger),True,0.999999,0.1,0.006131,16,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2023-07-31,B1,Hierarchical Risk Parity (HRP),True,0.999999,0.0673,0.0118,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-07-31,B2,Minimum Variance (Min-Var),True,1.000001,0.1,0.007599,21,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-07-31,B3,Equal Risk Contribution (ERC),True,0.999997,0.055687,0.022627,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-07-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2023-08-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2023-08-31,E1,Traditional Markowitz (Sample Cov),True,0.999999,0.15,0.017548,10,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2023-08-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.000001,0.15,0.025001,10,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2023-08-31,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.006025,16,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-08-31,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.00011,22,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-08-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.000001,0.1,0.001306,15,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-08-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.000001,0.1,0.006025,16,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2023-08-31,B1,Hierarchical Risk Parity (HRP),True,1.0,0.073073,0.014933,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-08-31,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.00011,22,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-08-31,B3,Equal Risk Contribution (ERC),True,1.000001,0.057214,0.024665,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-08-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2023-09-29,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2023-09-29,E1,Traditional Markowitz (Sample Cov),True,1.000001,0.15,0.007447,12,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2023-09-29,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.017242,12,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2023-09-29,E3,XGBoost + Markowitz (Caps + Reg),True,1.000002,0.1,0.003999,20,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-09-29,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.001383,13,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-09-29,E5,XGB-LSTM Ensemble + Markowitz,True,1.000002,0.1,0.000608,15,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-09-29,E6,Adaptive FolioWise (Champion-Challenger),True,1.000002,0.1,0.003999,20,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2023-09-29,B1,Hierarchical Risk Parity (HRP),True,1.000001,0.070754,0.014924,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-09-29,B2,Minimum Variance (Min-Var),True,1.000001,0.1,0.00458,22,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-09-29,B3,Equal Risk Contribution (ERC),True,1.0,0.055842,0.025566,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-09-29,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2023-10-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2023-10-31,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.00012,11,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2023-10-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.000001,0.15,0.006647,11,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2023-10-31,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.013866,17,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-10-31,E4,LSTM Sequence Model + Markowitz,True,0.999978,0.1,0.0055,15,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-10-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.003442,16,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-10-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.013866,17,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2023-10-31,B1,Hierarchical Risk Parity (HRP),True,1.0,0.053156,0.018,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-10-31,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.004836,22,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-10-31,B3,Equal Risk Contribution (ERC),True,0.999999,0.051635,0.025939,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-10-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2023-11-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2023-11-30,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.058681,10,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2023-11-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,0.999999,0.15,0.002556,11,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2023-11-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.004814,18,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-11-30,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.007971,15,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-11-30,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.002919,18,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-11-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.004814,18,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2023-11-30,B1,Hierarchical Risk Parity (HRP),True,0.999999,0.070376,0.014691,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-11-30,B2,Minimum Variance (Min-Var),True,0.999999,0.1,0.003476,21,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-11-30,B3,Equal Risk Contribution (ERC),True,1.000002,0.053059,0.026175,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-11-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2023-12-29,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2023-12-29,E1,Traditional Markowitz (Sample Cov),True,0.999999,0.15,0.029555,12,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2023-12-29,E2,Markowitz + Ledoit-Wolf Shrinkage,True,0.999999,0.15,0.033243,12,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2023-12-29,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.000379,21,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-12-29,E4,LSTM Sequence Model + Markowitz,True,0.999999,0.1,0.012314,15,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-12-29,E5,XGB-LSTM Ensemble + Markowitz,True,0.999999,0.1,0.005263,16,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2023-12-29,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.000379,21,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2023-12-29,B1,Hierarchical Risk Parity (HRP),True,0.999999,0.06726,0.015321,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-12-29,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.000606,18,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-12-29,B3,Equal Risk Contribution (ERC),True,0.999999,0.052751,0.02602,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2023-12-29,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2024-01-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2024-01-31,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.00024,13,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2024-01-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,0.999998,0.15,0.005354,13,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2024-01-31,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.002983,17,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-01-31,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.0075,17,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-01-31,E5,XGB-LSTM Ensemble + Markowitz,True,0.999998,0.1,0.011218,17,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-01-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.002983,17,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2024-01-31,B1,Hierarchical Risk Parity (HRP),True,0.999999,0.075862,0.016615,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-01-31,B2,Minimum Variance (Min-Var),True,0.999999,0.1,0.000168,18,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-01-31,B3,Equal Risk Contribution (ERC),True,0.999998,0.054194,0.026384,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-01-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2024-02-29,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2024-02-29,E1,Traditional Markowitz (Sample Cov),True,0.999999,0.15,0.005956,13,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2024-02-29,E2,Markowitz + Ledoit-Wolf Shrinkage,True,0.999999,0.15,0.007548,13,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2024-02-29,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.013249,20,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-02-29,E4,LSTM Sequence Model + Markowitz,True,0.999999,0.1,0.003034,16,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-02-29,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.006339,17,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-02-29,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.013249,20,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2024-02-29,B1,Hierarchical Risk Parity (HRP),True,1.000003,0.07581,0.013518,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-02-29,B2,Minimum Variance (Min-Var),True,0.999999,0.1,0.002877,19,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-02-29,B3,Equal Risk Contribution (ERC),True,1.000001,0.058193,0.024976,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-02-29,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2024-03-28,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2024-03-28,E1,Traditional Markowitz (Sample Cov),True,0.999999,0.15,0.019322,13,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2024-03-28,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.000001,0.15,0.024748,13,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2024-03-28,E3,XGBoost + Markowitz (Caps + Reg),True,0.999999,0.1,0.003855,19,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-03-28,E4,LSTM Sequence Model + Markowitz,True,0.999987,0.099999,0.010838,13,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-03-28,E5,XGB-LSTM Ensemble + Markowitz,True,1.000002,0.1,0.003955,14,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-03-28,E6,Adaptive FolioWise (Champion-Challenger),True,0.999999,0.1,0.003855,19,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2024-03-28,B1,Hierarchical Risk Parity (HRP),True,1.000002,0.071957,0.014458,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-03-28,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.001448,20,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-03-28,B3,Equal Risk Contribution (ERC),True,1.0,0.054408,0.024514,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-03-28,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2024-04-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2024-04-30,E1,Traditional Markowitz (Sample Cov),True,0.999999,0.15,0.00301,15,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2024-04-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.009487,15,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2024-04-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.000002,0.1,0.002165,19,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-04-30,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.015645,18,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-04-30,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.008829,17,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-04-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.000002,0.1,0.002165,19,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2024-04-30,B1,Hierarchical Risk Parity (HRP),True,0.999997,0.066988,0.013669,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-04-30,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.000321,22,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-04-30,B3,Equal Risk Contribution (ERC),True,0.999999,0.051389,0.025082,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-04-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2024-05-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2024-05-31,E1,Traditional Markowitz (Sample Cov),True,0.999999,0.15,0.003871,11,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2024-05-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.000001,0.15,0.009465,11,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2024-05-31,E3,XGBoost + Markowitz (Caps + Reg),True,0.999999,0.09873,0.003391,19,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-05-31,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,7.9e-05,19,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-05-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.019225,14,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-05-31,E6,Adaptive FolioWise (Champion-Challenger),True,0.999999,0.09873,0.003391,19,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2024-05-31,B1,Hierarchical Risk Parity (HRP),True,1.000002,0.067178,0.013034,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-05-31,B2,Minimum Variance (Min-Var),True,1.0,0.1,7.9e-05,19,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-05-31,B3,Equal Risk Contribution (ERC),True,1.0,0.050515,0.024918,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-05-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2024-06-28,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2024-06-28,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.021331,13,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2024-06-28,E2,Markowitz + Ledoit-Wolf Shrinkage,True,0.999999,0.15,0.021545,13,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2024-06-28,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.000751,18,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-06-28,E4,LSTM Sequence Model + Markowitz,True,1.000001,0.1,0.008944,17,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-06-28,E5,XGB-LSTM Ensemble + Markowitz,True,0.999999,0.1,0.001652,12,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-06-28,E6,Adaptive FolioWise (Champion-Challenger),True,1.000001,0.1,0.000751,18,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2024-06-28,B1,Hierarchical Risk Parity (HRP),True,1.000003,0.078846,0.012748,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-06-28,B2,Minimum Variance (Min-Var),True,1.000001,0.1,0.008944,17,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-06-28,B3,Equal Risk Contribution (ERC),True,1.000001,0.061357,0.020637,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-06-28,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2024-07-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2024-07-31,E1,Traditional Markowitz (Sample Cov),True,1.000001,0.15,0.016512,10,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2024-07-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,3.5e-05,11,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2024-07-31,E3,XGBoost + Markowitz (Caps + Reg),True,1.000002,0.1,0.003434,18,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-07-31,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.002777,18,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-07-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,9.4e-05,13,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-07-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.000002,0.1,0.003434,18,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2024-07-31,B1,Hierarchical Risk Parity (HRP),True,0.999998,0.083954,0.009317,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-07-31,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.002777,18,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-07-31,B3,Equal Risk Contribution (ERC),True,0.999998,0.062189,0.020777,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-07-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2024-08-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2024-08-30,E1,Traditional Markowitz (Sample Cov),True,0.999999,0.15,0.010099,11,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2024-08-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,0.999999,0.15,0.01746,12,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2024-08-30,E3,XGBoost + Markowitz (Caps + Reg),True,0.999999,0.1,0.008139,17,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-08-30,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.010609,17,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-08-30,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.010609,17,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-08-30,E6,Adaptive FolioWise (Champion-Challenger),True,0.999999,0.1,0.008139,17,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2024-08-30,B1,Hierarchical Risk Parity (HRP),True,0.999998,0.081159,0.0082,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-08-30,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.010609,17,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-08-30,B3,Equal Risk Contribution (ERC),True,0.999999,0.067449,0.019465,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-08-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2024-09-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2024-09-30,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.045525,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2024-09-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.000001,0.15,0.000595,10,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2024-09-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.001991,18,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-09-30,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.001988,16,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-09-30,E5,XGB-LSTM Ensemble + Markowitz,True,0.999999,0.1,0.003021,15,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-09-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.001991,18,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2024-09-30,B1,Hierarchical Risk Parity (HRP),True,0.999998,0.077494,0.010664,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-09-30,B2,Minimum Variance (Min-Var),True,0.999998,0.1,0.00282,17,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-09-30,B3,Equal Risk Contribution (ERC),True,1.000001,0.064922,0.019946,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-09-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2024-10-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2024-10-31,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.021029,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2024-10-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.002383,11,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2024-10-31,E3,XGBoost + Markowitz (Caps + Reg),True,1.000002,0.1,0.005134,18,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-10-31,E4,LSTM Sequence Model + Markowitz,True,0.999979,0.099999,0.00981,15,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-10-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.019475,14,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-10-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.000002,0.1,0.005134,18,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2024-10-31,B1,Hierarchical Risk Parity (HRP),True,1.0,0.077549,0.010951,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-10-31,B2,Minimum Variance (Min-Var),True,1.000001,0.1,0.011036,17,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-10-31,B3,Equal Risk Contribution (ERC),True,1.000001,0.061552,0.020266,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-10-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2024-11-29,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2024-11-29,E1,Traditional Markowitz (Sample Cov),True,1.000001,0.15,0.012391,10,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2024-11-29,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.000001,0.15,0.003404,12,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2024-11-29,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.004557,17,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-11-29,E4,LSTM Sequence Model + Markowitz,True,0.999998,0.1,0.027128,13,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-11-29,E5,XGB-LSTM Ensemble + Markowitz,True,0.999999,0.1,0.008105,15,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-11-29,E6,Adaptive FolioWise (Champion-Challenger),True,1.000001,0.1,0.004557,17,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2024-11-29,B1,Hierarchical Risk Parity (HRP),True,0.999999,0.08215,0.011067,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-11-29,B2,Minimum Variance (Min-Var),True,1.000002,0.1,0.01457,17,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-11-29,B3,Equal Risk Contribution (ERC),True,1.0,0.058756,0.02067,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-11-29,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2024-12-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2024-12-31,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.010094,8,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2024-12-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.029563,8,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2024-12-31,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.001615,20,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-12-31,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.031253,12,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-12-31,E5,XGB-LSTM Ensemble + Markowitz,True,0.999999,0.1,0.038099,12,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2024-12-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.000001,0.1,0.001615,20,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2024-12-31,B1,Hierarchical Risk Parity (HRP),True,0.999999,0.068601,0.014293,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-12-31,B2,Minimum Variance (Min-Var),True,1.000002,0.1,0.011431,17,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-12-31,B3,Equal Risk Contribution (ERC),True,1.000003,0.05716,0.020543,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2024-12-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2025-01-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2025-01-31,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.065089,8,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2025-01-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.072547,8,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2025-01-31,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.001559,17,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-01-31,E4,LSTM Sequence Model + Markowitz,True,0.999999,0.1,0.010707,14,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-01-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.000001,0.1,0.001209,15,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-01-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.001559,17,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2025-01-31,B1,Hierarchical Risk Parity (HRP),True,1.0,0.089051,0.00834,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-01-31,B2,Minimum Variance (Min-Var),True,0.999998,0.1,0.000961,17,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-01-31,B3,Equal Risk Contribution (ERC),True,0.999999,0.066738,0.021321,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-01-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2025-02-28,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2025-02-28,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.024831,8,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2025-02-28,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.022971,8,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2025-02-28,E3,XGBoost + Markowitz (Caps + Reg),True,0.999999,0.1,0.005547,18,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-02-28,E4,LSTM Sequence Model + Markowitz,True,0.999998,0.1,0.013905,16,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-02-28,E5,XGB-LSTM Ensemble + Markowitz,True,1.000001,0.1,0.0034,16,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-02-28,E6,Adaptive FolioWise (Champion-Challenger),True,0.999999,0.1,0.005547,18,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2025-02-28,B1,Hierarchical Risk Parity (HRP),True,1.0,0.076401,0.01322,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-02-28,B2,Minimum Variance (Min-Var),True,1.000001,0.1,0.003113,17,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-02-28,B3,Equal Risk Contribution (ERC),True,1.000001,0.062892,0.0221,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-02-28,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2025-03-28,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2025-03-28,E1,Traditional Markowitz (Sample Cov),True,0.999999,0.15,0.016042,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2025-03-28,E2,Markowitz + Ledoit-Wolf Shrinkage,True,0.999999,0.15,0.030345,9,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2025-03-28,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.010493,16,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-03-28,E4,LSTM Sequence Model + Markowitz,True,0.999998,0.1,0.023893,12,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-03-28,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.009841,14,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-03-28,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.010493,16,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2025-03-28,B1,Hierarchical Risk Parity (HRP),True,1.000002,0.086184,0.012498,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-03-28,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.005579,17,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-03-28,B3,Equal Risk Contribution (ERC),True,1.0,0.062379,0.022721,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-03-28,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2025-04-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2025-04-30,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.002924,10,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2025-04-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.009837,10,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2025-04-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.012362,15,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-04-30,E4,LSTM Sequence Model + Markowitz,True,0.999997,0.1,0.008368,14,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-04-30,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.015481,14,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-04-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.012362,15,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2025-04-30,B1,Hierarchical Risk Parity (HRP),True,0.999999,0.070743,0.012168,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-04-30,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.00502,16,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-04-30,B3,Equal Risk Contribution (ERC),True,1.0,0.066542,0.021859,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-04-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2025-05-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2025-05-30,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.001644,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2025-05-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.014441,9,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2025-05-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.00246,15,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-05-30,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.001953,16,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-05-30,E5,XGB-LSTM Ensemble + Markowitz,True,1.000001,0.1,0.001727,13,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-05-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.00246,15,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2025-05-30,B1,Hierarchical Risk Parity (HRP),True,1.0,0.081309,0.00957,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-05-30,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.001953,16,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-05-30,B3,Equal Risk Contribution (ERC),True,1.000001,0.064842,0.022423,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-05-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2025-06-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2025-06-30,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.048321,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2025-06-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.053369,9,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2025-06-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.006994,14,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-06-30,E4,LSTM Sequence Model + Markowitz,True,0.999999,0.1,0.001609,16,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-06-30,E5,XGB-LSTM Ensemble + Markowitz,True,0.999995,0.1,0.027641,13,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-06-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.006994,14,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2025-06-30,B1,Hierarchical Risk Parity (HRP),True,1.000001,0.083356,0.014335,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-06-30,B2,Minimum Variance (Min-Var),True,0.999999,0.1,0.001609,16,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-06-30,B3,Equal Risk Contribution (ERC),True,1.0,0.054206,0.027461,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-06-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2025-07-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2025-07-31,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.1,7,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2025-07-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.006577,8,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2025-07-31,E3,XGBoost + Markowitz (Caps + Reg),True,0.999999,0.1,0.005764,17,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-07-31,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.002581,12,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-07-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.01204,14,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-07-31,E6,Adaptive FolioWise (Champion-Challenger),True,0.999999,0.1,0.005764,17,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2025-07-31,B1,Hierarchical Risk Parity (HRP),True,1.0,0.072762,0.014692,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-07-31,B2,Minimum Variance (Min-Var),True,0.999999,0.1,0.000865,17,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-07-31,B3,Equal Risk Contribution (ERC),True,1.000001,0.057025,0.027661,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-07-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2025-08-29,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2025-08-29,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.036405,8,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2025-08-29,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.035234,8,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2025-08-29,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.007711,18,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-08-29,E4,LSTM Sequence Model + Markowitz,True,1.000001,0.1,0.001005,13,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-08-29,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.006426,12,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-08-29,E6,Adaptive FolioWise (Champion-Challenger),True,1.000001,0.1,0.007711,18,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2025-08-29,B1,Hierarchical Risk Parity (HRP),True,0.999999,0.063364,0.018626,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-08-29,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.000661,16,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-08-29,B3,Equal Risk Contribution (ERC),True,0.999999,0.05383,0.029008,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-08-29,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2025-09-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2025-09-30,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.006414,8,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2025-09-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.013797,8,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2025-09-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.012529,15,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-09-30,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.041299,12,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-09-30,E5,XGB-LSTM Ensemble + Markowitz,True,1.000002,0.1,0.005194,15,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-09-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.012529,15,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2025-09-30,B1,Hierarchical Risk Parity (HRP),True,0.999998,0.069593,0.020411,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-09-30,B2,Minimum Variance (Min-Var),True,0.999999,0.1,0.007532,16,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-09-30,B3,Equal Risk Contribution (ERC),True,1.000003,0.055972,0.028489,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-09-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2025-10-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2025-10-31,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.0247,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2025-10-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,0.999999,0.15,0.034113,9,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2025-10-31,E3,XGBoost + Markowitz (Caps + Reg),True,0.999996,0.1,0.014421,16,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-10-31,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.031798,12,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-10-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.001994,15,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-10-31,E6,Adaptive FolioWise (Champion-Challenger),True,0.999996,0.1,0.014421,16,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2025-10-31,B1,Hierarchical Risk Parity (HRP),True,0.999999,0.065623,0.018735,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-10-31,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.014553,16,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-10-31,B3,Equal Risk Contribution (ERC),True,1.000001,0.055904,0.028247,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-10-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2025-11-28,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2025-11-28,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.055806,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2025-11-28,E2,Markowitz + Ledoit-Wolf Shrinkage,True,0.999999,0.15,0.055487,9,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2025-11-28,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.004898,18,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-11-28,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.032698,11,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-11-28,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.001362,16,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-11-28,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.004898,18,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2025-11-28,B1,Hierarchical Risk Parity (HRP),True,0.999999,0.085518,0.016083,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-11-28,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.001036,18,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-11-28,B3,Equal Risk Contribution (ERC),True,0.999999,0.057918,0.027138,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-11-28,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2025-12-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2025-12-31,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.024483,8,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2025-12-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.000001,0.15,0.033184,8,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2025-12-31,E3,XGBoost + Markowitz (Caps + Reg),True,0.999999,0.1,0.00816,18,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-12-31,E4,LSTM Sequence Model + Markowitz,True,0.999999,0.1,0.028814,13,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-12-31,E5,XGB-LSTM Ensemble + Markowitz,True,0.999999,0.1,0.000521,16,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2025-12-31,E6,Adaptive FolioWise (Champion-Challenger),True,0.999999,0.1,0.00816,18,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2025-12-31,B1,Hierarchical Risk Parity (HRP),True,1.0,0.08628,0.01418,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-12-31,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.00138,17,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-12-31,B3,Equal Risk Contribution (ERC),True,0.999995,0.06008,0.026575,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2025-12-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2026-01-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2026-01-30,E1,Traditional Markowitz (Sample Cov),True,1.000001,0.15,0.024871,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2026-01-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.02618,9,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2026-01-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.005368,18,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-01-30,E4,LSTM Sequence Model + Markowitz,True,0.99999,0.099999,0.015715,14,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-01-30,E5,XGB-LSTM Ensemble + Markowitz,True,0.999999,0.1,0.027596,13,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-01-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.005368,18,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2026-01-30,B1,Hierarchical Risk Parity (HRP),True,1.0,0.072368,0.017468,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-01-30,B2,Minimum Variance (Min-Var),True,1.000001,0.1,0.001738,20,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-01-30,B3,Equal Risk Contribution (ERC),True,1.000001,0.058523,0.025437,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-01-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2026-02-27,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2026-02-27,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.002701,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2026-02-27,E2,Markowitz + Ledoit-Wolf Shrinkage,True,0.999999,0.15,0.010541,9,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2026-02-27,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.008638,17,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-02-27,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.022269,12,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-02-27,E5,XGB-LSTM Ensemble + Markowitz,True,1.000001,0.1,0.000329,14,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-02-27,E6,Adaptive FolioWise (Champion-Challenger),True,1.000001,0.1,0.008638,17,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2026-02-27,B1,Hierarchical Risk Parity (HRP),True,1.0,0.075243,0.011507,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-02-27,B2,Minimum Variance (Min-Var),True,1.0,0.1,6.1e-05,19,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-02-27,B3,Equal Risk Contribution (ERC),True,0.999999,0.056936,0.025585,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-02-27,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2026-03-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2026-03-30,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.03219,10,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2026-03-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.034446,10,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2026-03-30,E3,XGBoost + Markowitz (Caps + Reg),True,0.999999,0.1,0.005168,15,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-03-30,E4,LSTM Sequence Model + Markowitz,True,1.000001,0.1,0.003271,19,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-03-30,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.01194,14,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-03-30,E6,Adaptive FolioWise (Champion-Challenger),True,0.999999,0.1,0.005168,15,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2026-03-30,B1,Hierarchical Risk Parity (HRP),True,1.000002,0.080901,0.011966,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-03-30,B2,Minimum Variance (Min-Var),True,1.000001,0.1,0.003271,19,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-03-30,B3,Equal Risk Contribution (ERC),True,0.999999,0.053406,0.025576,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-03-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2026-04-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2026-04-30,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.005741,10,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2026-04-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.006047,10,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2026-04-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.005013,16,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-04-30,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.001215,15,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-04-30,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.005095,14,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-04-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.005013,16,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2026-04-30,B1,Hierarchical Risk Parity (HRP),True,0.999997,0.079967,0.013254,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-04-30,B2,Minimum Variance (Min-Var),True,0.999999,0.1,0.000596,20,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-04-30,B3,Equal Risk Contribution (ERC),True,1.000001,0.056744,0.024402,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-04-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2026-05-29,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2026-05-29,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.00713,8,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2026-05-29,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.008613,8,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2026-05-29,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.009885,16,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-05-29,E4,LSTM Sequence Model + Markowitz,True,0.999999,0.1,0.006889,13,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-05-29,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.030102,12,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-05-29,E6,Adaptive FolioWise (Champion-Challenger),True,1.000001,0.1,0.009885,16,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2026-05-29,B1,Hierarchical Risk Parity (HRP),True,1.0,0.059891,0.016628,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-05-29,B2,Minimum Variance (Min-Var),True,1.000002,0.1,0.004075,18,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-05-29,B3,Equal Risk Contribution (ERC),True,1.000001,0.066703,0.023128,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-05-29,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2026-06-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2026-06-30,E1,Traditional Markowitz (Sample Cov),True,0.999999,0.15,0.023307,9,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2026-06-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,0.999999,0.15,0.026575,9,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2026-06-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.003651,16,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-06-30,E4,LSTM Sequence Model + Markowitz,True,0.999998,0.1,0.004825,15,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-06-30,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.006286,15,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-06-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.003651,16,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2026-06-30,B1,Hierarchical Risk Parity (HRP),True,1.000003,0.071863,0.010296,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-06-30,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.000568,18,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-06-30,B3,Equal Risk Contribution (ERC),True,0.999998,0.072882,0.022315,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-06-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2026-07-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2026-07-31,E1,Traditional Markowitz (Sample Cov),True,1.000001,0.15,0.031933,10,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2026-07-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.032998,10,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2026-07-31,E3,XGBoost + Markowitz (Caps + Reg),True,1.000003,0.1,0.000293,18,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-07-31,E4,LSTM Sequence Model + Markowitz,True,1.000002,0.1,0.003601,19,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-07-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,7.7e-05,14,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-07-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.000003,0.1,0.000293,18,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2026-07-31,B1,Hierarchical Risk Parity (HRP),True,1.000001,0.075971,0.015578,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-07-31,B2,Minimum Variance (Min-Var),True,1.000002,0.1,0.003601,19,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-07-31,B3,Equal Risk Contribution (ERC),True,0.999999,0.074549,0.021806,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-07-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2026-08-31,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2026-08-31,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.066649,8,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2026-08-31,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.000001,0.15,0.068307,8,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2026-08-31,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.019603,16,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-08-31,E4,LSTM Sequence Model + Markowitz,True,0.999996,0.1,0.001422,17,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-08-31,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.003297,17,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-08-31,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.019603,16,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2026-08-31,B1,Hierarchical Risk Parity (HRP),True,1.000003,0.081681,0.013138,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-08-31,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.002695,20,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-08-31,B3,Equal Risk Contribution (ERC),True,1.0,0.077256,0.02275,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-08-31,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2026-09-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2026-09-30,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.018493,8,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2026-09-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.023023,8,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2026-09-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.000001,0.1,0.000104,18,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-09-30,E4,LSTM Sequence Model + Markowitz,True,1.000001,0.1,0.002488,16,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-09-30,E5,XGB-LSTM Ensemble + Markowitz,True,0.999998,0.1,0.010644,16,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-09-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.000001,0.1,0.000104,18,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2026-09-30,B1,Hierarchical Risk Parity (HRP),True,1.0,0.068659,0.009938,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-09-30,B2,Minimum Variance (Min-Var),True,0.999999,0.1,0.001652,19,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-09-30,B3,Equal Risk Contribution (ERC),True,1.000002,0.077574,0.021898,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-09-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2026-10-30,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2026-10-30,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.1,7,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2026-10-30,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.1,7,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2026-10-30,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,0.00176,18,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-10-30,E4,LSTM Sequence Model + Markowitz,True,0.999997,0.1,0.012067,14,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-10-30,E5,XGB-LSTM Ensemble + Markowitz,True,0.999999,0.1,0.006886,15,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-10-30,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,0.00176,18,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2026-10-30,B1,Hierarchical Risk Parity (HRP),True,1.000001,0.073501,0.010973,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-10-30,B2,Minimum Variance (Min-Var),True,0.999999,0.1,0.002406,21,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-10-30,B3,Equal Risk Contribution (ERC),True,1.0,0.079795,0.022854,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-10-30,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation
+2026-11-13,E0,1/N Equal Weight,True,0.999999,0.037037,0.037037,27,Heuristic (1/N simplex),N/A (Non-ML),False,Valid constrained allocation
+2026-11-13,E1,Traditional Markowitz (Sample Cov),True,1.0,0.15,0.104291,7,Sample Mean & Covariance Optimization,N/A (Non-ML),False,Valid constrained allocation
+2026-11-13,E2,Markowitz + Ledoit-Wolf Shrinkage,True,1.0,0.15,0.104195,7,Sample Mean & Ledoit-Wolf Covariance,N/A (Non-ML),False,Valid constrained allocation
+2026-11-13,E3,XGBoost + Markowitz (Caps + Reg),True,1.0,0.1,7.2e-05,17,XGBoost 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-11-13,E4,LSTM Sequence Model + Markowitz,True,1.0,0.1,0.044212,11,PyTorch LSTM 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-11-13,E5,XGB-LSTM Ensemble + Markowitz,True,1.0,0.1,0.006312,14,Ensemble 20d Alpha + Ledoit-Wolf Covariance,True,False,Valid constrained allocation
+2026-11-13,E6,Adaptive FolioWise (Champion-Challenger),True,1.0,0.1,7.2e-05,17,Dynamic Regime Selection (XGBoost / Shrinkage),True,False,Valid constrained allocation
+2026-11-13,B1,Hierarchical Risk Parity (HRP),True,0.999996,0.070683,0.012637,27,Tree Clustering & Recursive Bisection (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-11-13,B2,Minimum Variance (Min-Var),True,1.0,0.1,0.002429,20,Variance Minimization SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-11-13,B3,Equal Risk Contribution (ERC),True,0.999999,0.081375,0.022415,27,Risk Budget Parity SLSQP (LW Cov),N/A (Non-ML),False,Valid constrained allocation
+2026-11-13,B4,Momentum Top-5 (12M-1M Equal),True,1.0,0.2,0.2,5,12M-1M Historical Price Momentum (Top 5 Equal),N/A (Non-ML),False,Valid constrained allocation

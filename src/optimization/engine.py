@@ -316,10 +316,17 @@ class PortfolioOptimizer:
     ) -> Dict[str, float]:
         """
         Hierarchical Risk Parity (HRP) via Lopez de Prado algorithm.
+        Constructs the asset correlation matrix directly from the covariance matrix Sigma,
+        derives correlation-distance D_ij = sqrt(0.5 * (1 - rho_ij)), clusters via single linkage,
+        quasi-diagonalizes, and allocates via recursive inverse-variance bisection.
         """
         t_list = tickers or cov_matrix.columns.tolist()
         cov = cov_matrix.loc[t_list, t_list]
-        corr = cov.corr()
+        
+        # Derive true asset correlation matrix from covariance: rho_ij = Sigma_ij / (sigma_i * sigma_j)
+        diag = np.sqrt(np.maximum(np.diag(cov.values), 1e-12))
+        corr_vals = np.clip(cov.values / np.outer(diag, diag), -1.0, 1.0)
+        corr = pd.DataFrame(corr_vals, index=t_list, columns=t_list)
 
         # Distance matrix
         d_mat = np.sqrt(np.clip(0.5 * (1.0 - corr.values), 0.0, 1.0))

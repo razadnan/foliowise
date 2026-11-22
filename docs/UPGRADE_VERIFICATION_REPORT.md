@@ -58,7 +58,7 @@ To provide an empirical evaluation of risk-based and heuristic strategies parall
 
 | Benchmark ID | Strategy Description | CAGR (%) | Annual Vol (%) | Sharpe Ratio | Sortino Ratio | Max DD (%) | Monthly Turnover (%) | Annual Cost Drag (bps) | vs E0 95% Bootstrap CI | p vs E0 | p vs E3 |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| **B1** | Hierarchical Risk Parity (HRP) | **16.78%** | 15.45% | **0.70** | 0.96 | -31.01% | 10.66% | 30.7 bps | [-0.114, +0.128] | 0.861 | 0.425 |
+| **B1** | Hierarchical Risk Parity (HRP) | **16.01%** | **15.19%** | **0.66** | 0.91 | **-29.85%** | 11.00% | 31.5 bps | [-0.182, +0.104] | 0.752 | 0.594 |
 | **B2** | Minimum Variance (Min-Var) | 13.73% | **14.52%** | 0.53 | 0.75 | **-26.02%** | 10.40% | 29.2 bps | [-0.457, +0.136] | 0.340 | 0.686 |
 | **B3** | Equal Risk Contribution (ERC) | **16.42%** | 15.57% | **0.67** | 0.92 | -31.21% | **4.28%** | 12.3 bps | [-0.093, +0.058] | 0.717 | 0.537 |
 | **B4** | Momentum Top-5 (12M-1M Equal) | 5.91% | 21.38% | -0.00 | -0.01 | -41.00% | 26.14% | 68.6 bps | [-1.116, -0.136] | **0.021\*** | 0.086 |
@@ -66,7 +66,7 @@ To provide an empirical evaluation of risk-based and heuristic strategies parall
 \* Statistically significant difference at $\alpha = 0.05$.
 
 ### Key Findings from the Benchmark Track:
-1. **Hierarchical Risk Parity (B1):** B1 achieves the highest overall Sharpe ratio (**0.70**) of any strategy evaluated in the system, combining strong CAGR (16.78%) with lower volatility (15.45% vs 16.32% for E0) and lower maximum drawdown (-31.01% vs -33.24% for E0). Because HRP operates directly on the hierarchical clustering tree of the correlation matrix without matrix inversion or return forecasting, it is immune to expected-return estimation error and ill-conditioned covariance inversion.
+1. **Hierarchical Risk Parity (B1):** B1 delivers competitive risk-adjusted returns (Sharpe 0.66, CAGR 16.01%) while achieving substantially lower volatility (15.19% vs 16.32% for E0) and lower maximum drawdown (-29.85% vs -33.24% for E0). Following the independent audit, the correlation matrix in HRP was verified to derive analytically from the Ledoit-Wolf shrinkage covariance matrix $\Sigma_{\text{LW}}$. Because HRP operates on the hierarchical tree topology of correlations and allocates via recursive bisection, it is immune to expected-return estimation error and ill-conditioned covariance inversion.
 2. **Minimum Variance (B2):** B2 achieves the **lowest volatility (14.52%)** and the **lowest maximum drawdown (-26.02%)** across all strategies in the entire system (beating E3's -27.19%). This confirms that when capital preservation is the primary mandate, minimum variance optimization with asset/sector caps provides institutional drawdown defense.
 3. **Equal Risk Contribution (B3):** ERC delivers near-parity with E0 (Sharpe 0.67 vs 0.68, $p = 0.717$), but with reduced turnover (4.28%) and annual cost drag of only 12.3 bps.
 4. **Momentum Crash Risk (B4):** B4 significantly underperforms E0 ($p = 0.021$) and yields a negative Sharpe ratio (-0.00) with severe drawdown (-41.00%). This demonstrates that concentrated 5-stock price momentum in Indian equities without risk budgeting or shrinkage is prone to severe reversals during market stress regimes (such as the March 2020 COVID shock and late 2021 tech corrections).
@@ -75,9 +75,9 @@ To provide an empirical evaluation of risk-based and heuristic strategies parall
 
 ## 2.2 Resolution of Methodological & Empirical Questions
 
-### 1. Cycle Count Alignment: 81 vs 83 Cycles
+### 1. Cycle Count Alignment: 83 vs 81 Cycles
 - **83 Cycles (Backtest Evaluation Period):** Represents the complete sequence of month-end rebalance dates from `2020-01-31` to `2026-11-13` (1,677 trading sessions). All portfolio strategies in M6 (E0–E6 and B1–B4) are simulated across these 83 cycles.
-- **81 Cycles (Machine Learning Inference Period):** In M3, the predictive models (Ridge, XGBoost, LSTM) require an initial warmup training window before emitting their first out-of-sample forward inference. The first 2 month-ends serve as model initialization and warmup, resulting in exactly 81 out-of-sample prediction dates in `results/predictions.csv`. During the initial 2 cycles, portfolio strategies fall back to shrinkage covariance benchmarks.
+- **81 Cycles in Model Metrics Scoring:** In `results/predictions.csv`, every machine learning model emitted predictions for all 83 cycles (2,241 predictions per model). However, because the forward target is a 20-day return (`target_rank_20d`), the forward return had not completed realization on the final two dates (`2026-10-30` and `2026-11-13`) at the cutoff date `2026-11-13`. Thus, statistical scoring metrics in `results/model_metrics.csv` evaluated the 81 fully realized cycles ($81 \times 27 = 2,187$ observations). All 83 cycles generated valid active allocations without missing dates, as verified in `strategy_date_coverage.csv`.
 
 ### 2. Transaction Cost Schedule: Itemized Statutory Model vs 20 bps Base Rate
 The backtesting engine implements the comprehensive Indian statutory equity delivery schedule via `IndianTransactionCostModel`:

@@ -145,12 +145,12 @@ Evaluates risk-based and heuristic strategies parallel to the ML ladder across t
 
 | ID | Benchmark Strategy | CAGR (%) | Annual Vol (%) | Sharpe Ratio | Sortino | Max DD (%) | Monthly Turnover (%) | vs E0 95% Bootstrap CI | p vs E0 | p vs E3 |
 |---|---|---|---|---|---|---|---|---|---|---|
-| **B1** | Hierarchical Risk Parity (HRP) | **16.78%** | 15.45% | **0.70** | 0.96 | -31.01% | 10.66% | [-0.114, +0.128] | 0.861 | 0.425 |
+| **B1** | Hierarchical Risk Parity (HRP) | **16.01%** | **15.19%** | **0.66** | 0.91 | **-29.85%** | 11.00% | [-0.182, +0.104] | 0.752 | 0.594 |
 | **B2** | Minimum Variance (Min-Var) | 13.73% | **14.52%** | 0.53 | 0.75 | **-26.02%** | 10.40% | [-0.457, +0.136] | 0.340 | 0.686 |
 | **B3** | Equal Risk Contribution (ERC) | **16.42%** | 15.57% | **0.67** | 0.92 | -31.21% | **4.28%** | [-0.093, +0.058] | 0.717 | 0.537 |
 | **B4** | Momentum Top-5 (12M-1M Equal) | 5.91% | 21.38% | -0.00 | -0.01 | -41.00% | 26.14% | [-1.116, -0.136] | **0.021\*** | 0.086 |
 
-\* Statistically significant at $\alpha = 0.05$. B1 (HRP) achieves highest Sharpe (0.70); B2 (Min-Var) achieves lowest drawdown (-26.02%); B4 confirms momentum crash risk in concentrated equity portfolios ($p=0.021$).
+\* Statistically significant at $\alpha = 0.05$. B1 (HRP) achieves competitive risk-adjusted returns (Sharpe 0.66) with reduced volatility (15.19%) and drawdown (-29.85%); B2 (Min-Var) achieves lowest drawdown (-26.02%); B4 confirms momentum crash risk in concentrated equity portfolios ($p=0.021$).
 
 ---
 
