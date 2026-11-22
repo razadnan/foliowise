@@ -535,68 +535,76 @@ svg text { font-family: var(--sans); }
       <div class="card">
         <h3 style="margin-bottom:8px;">Walk-Forward ML Return Prediction Metrics</h3>
         <p style="color:var(--mut);font-size:13px;margin-bottom:16px;">
-          Predicting 21-day forward returns using purged rolling walk-forward cross-validation.
+          Predicting 20-day standardized cross-sectional excess rank target using purged expanding walk-forward validation (2020–2026, 81 monthly rebalance dates).
         </p>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Model</th>
-                <th class="r">Mean IC</th>
-                <th class="r">IC t-stat</th>
+                <th>Model Architecture</th>
+                <th class="r">Mean Rank IC</th>
+                <th class="r">NW-t Stat</th>
                 <th class="r">Directional Acc</th>
                 <th class="r">RMSE</th>
-                <th class="r">Top - Bottom</th>
+                <th class="r">Top - Bottom Spread</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td><span class="strat-tag">Ridge</span> (Selected for S4/S5)</td>
-                <td class="r bold" style="color:var(--good)">+0.0382</td>
-                <td class="r">1.55 (NW)</td>
-                <td class="r">56.29%</td>
-                <td class="r">0.0821</td>
-                <td class="r bold">+1.38%</td>
+                <td><span class="strat-tag">Ridge (Model A)</span></td>
+                <td class="r bold" style="color:var(--good)">+0.0223</td>
+                <td class="r">+0.74</td>
+                <td class="r bold">52.08%</td>
+                <td class="r">0.3063</td>
+                <td class="r bold" style="color:var(--good)">+2.83%</td>
               </tr>
               <tr>
-                <td><span class="strat-tag">Gradient Boosting</span></td>
-                <td class="r">+0.0006</td>
-                <td class="r">0.02</td>
-                <td class="r">55.60%</td>
-                <td class="r">0.0818</td>
-                <td class="r">+0.47%</td>
+                <td><span class="strat-tag">XGBoost (Model B)</span></td>
+                <td class="r">-0.0001</td>
+                <td class="r">-0.00</td>
+                <td class="r">49.15%</td>
+                <td class="r bold">0.3019</td>
+                <td class="r bold" style="color:var(--good)">+2.49%</td>
               </tr>
               <tr>
                 <td><span class="strat-tag">Random Forest</span></td>
-                <td class="r" style="color:var(--bad)">-0.0161</td>
-                <td class="r">-0.59</td>
-                <td class="r">54.82%</td>
-                <td class="r">0.0822</td>
-                <td class="r">+0.81%</td>
+                <td class="r">+0.0041</td>
+                <td class="r">+0.18</td>
+                <td class="r">49.98%</td>
+                <td class="r">0.3026</td>
+                <td class="r" style="color:var(--bad)">-1.02%</td>
               </tr>
               <tr>
-                <td><span class="strat-tag">Neural Network (MLP)</span></td>
-                <td class="r" style="color:var(--bad)">-0.0171</td>
-                <td class="r">-0.62</td>
-                <td class="r">53.04%</td>
-                <td class="r">0.0924</td>
-                <td class="r">+0.71%</td>
+                <td><span class="strat-tag">LSTM Sequence (Model C)</span></td>
+                <td class="r" style="color:var(--bad)">-0.0166</td>
+                <td class="r">-0.63</td>
+                <td class="r">49.52%</td>
+                <td class="r">0.3504</td>
+                <td class="r" style="color:var(--bad)">-1.18%</td>
+              </tr>
+              <tr>
+                <td><span class="strat-tag">XGB-LSTM Ensemble (Model D)</span></td>
+                <td class="r" style="color:var(--bad)">-0.0131</td>
+                <td class="r">-0.50</td>
+                <td class="r">49.89%</td>
+                <td class="r">0.3152</td>
+                <td class="r">-0.43%</td>
               </tr>
               <tr>
                 <td><span class="strat-tag">Momentum Baseline</span></td>
-                <td class="r" style="color:var(--bad)">-0.0113</td>
-                <td class="r">-0.35</td>
-                <td class="r">50.53%</td>
-                <td class="r">0.0842</td>
-                <td class="r">-0.04%</td>
+                <td class="r" style="color:var(--bad)">-0.0165</td>
+                <td class="r">-0.51</td>
+                <td class="r">48.74%</td>
+                <td class="r">0.4197</td>
+                <td class="r">-0.28%</td>
               </tr>
               <tr>
                 <td><span class="strat-tag">Naive Baseline</span></td>
-                <td class="r" style="color:var(--bad)">-0.0327</td>
-                <td class="r">-1.11</td>
-                <td class="r">56.15%</td>
-                <td class="r">0.0827</td>
-                <td class="r">-0.44%</td>
+                <td class="r" style="color:var(--bad)">-0.0339</td>
+                <td class="r">-1.15</td>
+                <td class="r">48.24%</td>
+                <td class="r">0.3034</td>
+                <td class="r" style="color:var(--bad)">-4.25%</td>
               </tr>
             </tbody>
           </table>

@@ -9,20 +9,30 @@
     "f_vol_63",
     "f_mom_126_21",
     "f_rsi_14",
+    "f_macd",
+    "f_macd_sig",
+    "f_macd_hist",
+    "f_sma_50_ratio",
+    "f_ema_20_ratio",
+    "f_roc_10",
     "f_volchg",
     "f_dist_52wh",
     "f_rel_nifty",
     "f_mkt_vol_21",
-    "f_mkt_corr_63"
+    "f_mkt_corr_63",
+    "f_vix_level",
+    "f_vix_chg_21"
   ],
-  "purge_trading_days": 21,
+  "target": "target_rank_20d",
+  "purge_trading_days": 20,
   "models": [
     "Naive",
     "Momentum",
     "Ridge",
     "Random_Forest",
     "XGBoost",
-    "Neural_Net"
+    "LSTM",
+    "XGB_LSTM_Ensemble"
   ],
   "ridge": {
     "alphas": [
@@ -41,20 +51,20 @@
     "min_samples_leaf": 20,
     "random_state": 42
   },
-  "gradient_boosting": {
+  "xgboost": {
     "n_estimators": 100,
     "max_depth": 3,
     "learning_rate": 0.03,
     "subsample": 0.8,
+    "colsample_bytree": 0.8,
     "random_state": 42
   },
-  "neural_net": {
-    "hidden_layer_sizes": [
-      32,
-      16
-    ],
-    "max_iter": 200,
-    "random_state": 42,
-    "alpha": 0.01
+  "lstm": {
+    "seq_len": 5,
+    "hidden_dim": 32,
+    "num_layers": 1,
+    "learning_rate": 0.003,
+    "epochs": 15,
+    "batch_size": 128
   }
 }
