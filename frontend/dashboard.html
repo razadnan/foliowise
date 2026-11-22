@@ -401,6 +401,9 @@ svg text { font-family: var(--sans); }
             </tr>
           </tbody>
         </table>
+        <p style="color:var(--mut);font-size:12px;margin-top:10px;">
+          * Indicates raw, unadjusted pairwise bootstrap significance at nominal &alpha; = 0.05. After family-wise error rate control (Holm-Bonferroni across the 6 comparisons against E0, adjusted critical threshold &alpha;<sub>1</sub> = 0.05 / 6 &approx; 0.0083), neither E1 (p = 0.042) nor E2 (p = 0.040) achieve adjusted significance.
+        </p>
       </div>
     </div>
 
@@ -408,7 +411,7 @@ svg text { font-family: var(--sans); }
     <div class="card" style="margin-top:24px;">
       <h3 style="margin-bottom:8px;font-size:17px;">Portfolio Strategy Benchmark Track (B1 – B4) & Bootstrap Validation</h3>
       <p style="color:var(--mut);font-size:13px;margin-bottom:16px;">
-        Evaluates risk-based and heuristic strategies parallel to the ML ladder (B1 HRP, B2 Min-Var, B3 ERC, B4 Momentum). Exact same 2020–2026 test period, 83 monthly rebalance cycles, point-in-time universe, next-day (T+1) execution, 10% asset cap, and 20 bps statutory delivery cost model.
+        Evaluates risk-based and heuristic strategies parallel to the ML ladder (B1 HRP, B2 Min-Var, B3 ERC, B4 Momentum). Exact same 2020–2026 test period, 83 monthly rebalance cycles, point-in-time universe, next-day (T+1) execution, 10% asset cap, and standardized 20 bps flat backtest cost model (itemized statutory delivery schedule documented in research reports).
       </p>
       <div class="table-wrap">
         <table>
@@ -489,7 +492,7 @@ svg text { font-family: var(--sans); }
         </table>
       </div>
       <p style="color:var(--mut);font-size:12px;margin-top:12px;">
-        * Statistically significant at &alpha; = 0.05. Note: B1 (HRP) achieves competitive risk-adjusted returns (Sharpe 0.66) with substantially lower volatility (15.19% vs 16.32%) and lower drawdown (-29.85% vs -33.24%) than E0 (1/N). B2 achieves the lowest drawdown (-26.02%) across all strategies. B4 significantly underperforms E0 (p = 0.021), illustrating momentum crash risk in concentrated equity portfolios.
+        * Raw, unadjusted pairwise bootstrap significance at nominal &alpha; = 0.05. Note: B1 (HRP) achieves competitive risk-adjusted returns (Sharpe 0.66) with lower volatility (15.19% vs 16.32%) and lower drawdown (-29.85% vs -33.24%) than E0 (1/N). B2 achieves the lowest drawdown (-26.02%) across all strategies. B4 exhibits raw pairwise underperformance vs E0 (p = 0.016), reflecting concentrated momentum crash risk, though multiple-testing adjustments should be considered when evaluating across all candidate benchmarks.
       </p>
     </div>
   </div>

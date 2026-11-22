@@ -61,15 +61,15 @@ To provide an empirical evaluation of risk-based and heuristic strategies parall
 | **B1** | Hierarchical Risk Parity (HRP) | **16.01%** | **15.19%** | **0.66** | 0.91 | **-29.85%** | 11.00% | 31.5 bps | [-0.182, +0.104] | 0.752 | 0.594 |
 | **B2** | Minimum Variance (Min-Var) | 13.73% | **14.52%** | 0.53 | 0.75 | **-26.02%** | 10.40% | 29.2 bps | [-0.457, +0.136] | 0.340 | 0.686 |
 | **B3** | Equal Risk Contribution (ERC) | **16.42%** | 15.57% | **0.67** | 0.92 | -31.21% | **4.28%** | 12.3 bps | [-0.093, +0.058] | 0.717 | 0.537 |
-| **B4** | Momentum Top-5 (12M-1M Equal) | 5.91% | 21.38% | -0.00 | -0.01 | -41.00% | 26.14% | 68.6 bps | [-1.116, -0.136] | **0.021\*** | 0.086 |
+| **B4** | Momentum Top-5 (12M-1M Equal) | 5.91% | 21.38% | -0.00 | -0.01 | -41.00% | 26.14% | 68.6 bps | [-1.116, -0.136] | **0.016\*** | 0.098 |
 
-\* Statistically significant difference at $\alpha = 0.05$.
+\* Indicates raw, unadjusted pairwise bootstrap significance at nominal $\alpha = 0.05$. Under multi-comparison adjustments (such as Holm-Bonferroni), this does not reach adjusted significance; it indicates raw sample underperformance.
 
 ### Key Findings from the Benchmark Track:
 1. **Hierarchical Risk Parity (B1):** B1 delivers competitive risk-adjusted returns (Sharpe 0.66, CAGR 16.01%) while achieving substantially lower volatility (15.19% vs 16.32% for E0) and lower maximum drawdown (-29.85% vs -33.24% for E0). Following the independent audit, the correlation matrix in HRP was verified to derive analytically from the Ledoit-Wolf shrinkage covariance matrix $\Sigma_{\text{LW}}$. Because HRP operates on the hierarchical tree topology of correlations and allocates via recursive bisection, it is immune to expected-return estimation error and ill-conditioned covariance inversion.
-2. **Minimum Variance (B2):** B2 achieves the **lowest volatility (14.52%)** and the **lowest maximum drawdown (-26.02%)** across all strategies in the entire system (beating E3's -27.19%). This confirms that when capital preservation is the primary mandate, minimum variance optimization with asset/sector caps provides institutional drawdown defense.
-3. **Equal Risk Contribution (B3):** ERC delivers near-parity with E0 (Sharpe 0.67 vs 0.68, $p = 0.717$), but with reduced turnover (4.28%) and annual cost drag of only 12.3 bps.
-4. **Momentum Crash Risk (B4):** B4 significantly underperforms E0 ($p = 0.021$) and yields a negative Sharpe ratio (-0.00) with severe drawdown (-41.00%). This demonstrates that concentrated 5-stock price momentum in Indian equities without risk budgeting or shrinkage is prone to severe reversals during market stress regimes (such as the March 2020 COVID shock and late 2021 tech corrections).
+2. **Minimum Variance (B2):** B2 achieves the **lowest volatility (14.52%)** and the **lowest maximum drawdown (-26.02%)** across all strategies in the entire system (beating E3's -27.19%). This confirms that when capital preservation is the primary mandate, minimum variance optimization with asset/sector caps provides robust drawdown defense.
+3. **Equal Risk Contribution (B3):** ERC delivers near-parity with E0 (Sharpe 0.67 vs 0.68, $p = 0.664$), but with reduced turnover (4.28%) and annual cost drag of only 12.3 bps.
+4. **Momentum Crash Risk (B4):** B4 exhibits raw pairwise underperformance vs E0 ($p = 0.016$) and yields a negative Sharpe ratio (-0.00) with severe drawdown (-41.00%). This demonstrates that concentrated 5-stock price momentum in Indian equities without risk budgeting or shrinkage is prone to severe reversals during market stress regimes (such as the March 2020 COVID shock and late 2021 tech corrections).
 
 ---
 
@@ -82,12 +82,13 @@ To provide an empirical evaluation of risk-based and heuristic strategies parall
 ### 2. Transaction Cost Schedule: Itemized Statutory Model vs 20 bps Base Rate
 The backtesting engine implements the comprehensive Indian statutory equity delivery schedule via `IndianTransactionCostModel`:
 - **Securities Transaction Tax (STT):** 10.0 bps (0.10%) on delivery buy & sell.
-- **Stamp Duty:** 1.5 bps (0.015%) on delivery buy.
+- **Stamp Duty:** 1.5 bps (0.015%) on delivery buy only.
 - **Exchange Turnover Charges (NSE):** 0.325 bps (0.00325%).
 - **SEBI Regulatory Turnover Fee:** 0.010 bps (0.0001%).
-- **GST (Goods & Services Tax):** 18% applied to broker & exchange fees (~0.1 bps).
-- **Execution Slippage & Market Impact:** ~5.0 bps institutional delivery model.
-- **Effective Round-Trip Delivery Rate:** $\approx 17\text{--}20\text{ bps}$. Thus, setting `base_rate = 0.0020` (20 bps) in `IndianTransactionCostModel` accurately encapsulates the complete statutory and market friction of Indian equity delivery trading.
+- **GST (Goods & Services Tax):** 18% applied strictly to broker & exchange fees (~0.06 bps).
+- **Execution Slippage:** 5.0 bps half-spread assumption.
+- **Total Statutory & Slippage Round-Trip Friction:** $32.291\text{ bps}$ per unit of rebalanced capital.
+- **Flat Backtest Rate:** The 20 bps base rate ($0.0020 \times \text{one-way turnover}$) is a stylized flat backtest benchmark rate representing constant friction. It is distinct from the statutory cash delivery schedule. If backtested under the full 32.29 bps statutory rate, high-turnover active models (E4, E5) would face ~60% greater cost drag, reinforcing that turnover friction heavily penalizes active ML reallocation.
 
 ### 3. Empirical Verification of HRP (B1)
 HRP is now evaluated empirically in backtests rather than merely existing in the codebase. As detailed in the Benchmark Track table above, HRP was executed across all 83 cycles with strict $T+1$ execution, daily asset drift, 10% asset cap, and 20 bps transaction costs, confirming its Sharpe ratio of 0.70 and maximum drawdown of -31.01%.

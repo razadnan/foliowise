@@ -1,7 +1,7 @@
 # FolioWise: Adaptive Machine Learning & Quantitative Portfolio Optimization
 
-> **FolioWise (v2.0 SmartFolio Integrated)** is an institutional-grade, explainable quantitative research platform and portfolio optimization system applied to the Indian Equity Market (**NIFTY 50**).
-> It bridges advanced statistical machine learning with constrained convex portfolio optimization, walk-forward out-of-sample backtesting, model governance, and transparent attribution.
+> **FolioWise (v2.0 SmartFolio Integrated)** is an explainable quantitative research platform that **implements and evaluates an adaptive portfolio optimization framework** applied to the Indian Equity Market (**NIFTY 50**).
+> It bridges statistical machine learning with constrained convex portfolio optimization, walk-forward out-of-sample backtesting, empirical model governance, and transparent attribution.
 
 ---
 
@@ -50,7 +50,7 @@ Minor_Project/
 │   │   └── engine.py
 │   ├── backtesting/                   # Walk-forward daily simulation (T+1 execution, drift, Indian costs)
 │   │   ├── engine.py
-│   │   └── cost_model.py              # 20 bps statutory delivery fee schedule (STT, Stamp, SEBI, GST)
+│   │   └── cost_model.py              # Flat 20 bps backtest rate & 32.3 bps statutory delivery schedule (STT, Stamp, SEBI, GST)
 │   ├── experiments/                   # SmartFolio Experiment Ladder E0-E6 & stationary bootstrap
 │   │   ├── runner.py
 │   │   └── bootstrap.py               # Politis & Romano (1994) stationary block bootstrap

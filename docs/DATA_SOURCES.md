@@ -48,13 +48,13 @@ $$\text{Coverage}(t) = \frac{|\mathcal{U}_{\text{available}} \cap \mathcal{U}_{\
 2. Distressed institutions (e.g., Yes Bank in March 2020, Indiabulls Housing in 2019).
 3. Corporate mergers (e.g., HDFC Ltd merged into HDFC Bank in July 2023).
 
-Because distressed deletions were omitted from the 27 continuous survivors, equal-weight or unconstrained strategies evaluated on this sub-universe have a known upward survivorship drift of approximately **0.8% to 1.4% annualized return**. The system transparently documents this bound and avoids asserting that survivorship bias has been eliminated.
+Because distressed deletions were omitted from the 27 continuous survivors, equal-weight or unconstrained strategies evaluated on this sub-universe have an upward survivorship drift (typically estimated in academic literature, e.g. Brown et al. 1995, at approximately 0.5% to 1.5% annualized return as an indicative literature-based estimate). The system transparently documents this limitation and avoids asserting that survivorship bias has been eliminated.
 
 ---
 
 ## 4. Benchmark Terminology & Three-Tier Hierarchy
 
-To ensure strict institutional compliance and eliminate ambiguity, FolioWise defines a clear three-tier benchmark taxonomy:
+To ensure clear benchmark attribution and eliminate ambiguity, FolioWise defines a clear three-tier benchmark taxonomy:
 
 1. **NIFTY 50 Price Return Index (`^NSEI`):**
    - **Nature:** Official capital-gains price benchmark computed by NSE Indices Limited.

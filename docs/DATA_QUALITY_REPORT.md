@@ -94,11 +94,7 @@ In compliance with empirical honesty requirements, the following methodological 
    - The historical daily pricing dataset covers **27 continuous survivor equities** of the NIFTY 50 index with unbroken trading records from January 2015 to November 2026.
    - While point-in-time constituent intervals (76 stocks, 58 reconstitutions) are tracked in `src/universe/resolver.py`, historical prices for delisted, defunct, or merged companies (such as Yes Bank, Indiabulls Housing Finance, Cairn India, and DHFL) are **not** reconstructed in the active pricing matrix.
 
-2. **Quantified Impact of Survivorship Bias:**
-   - Because distressed deletions from 2018–2020 are excluded from the 27 survivors, historical backtests evaluated on this universe exhibit an estimated upward survivorship bias of **+80 to +140 basis points annually** in raw returns.
-   - For an institutional college project submission, this limitation is documented as a known boundary constraint. Complete reconstruction of defunct tickers without institutional vendor terminal feeds (Bloomberg / Refinitiv) is infeasible and forbidden under strict project scope freeze.
-4. `test_market_data_prices_clean`: PASSED
-5. `test_benchmark_price_vs_tri_separation`: PASSED
-6. `test_india_vix_integrity`: PASSED
-7. `test_data_validator_catches_anomalies`: PASSED
-8. `test_storage_parquet_and_storage`: PASSED
+2. **Impact of Survivorship Bias:**
+   - Because distressed deletions from 2018–2020 are excluded from the 27 survivors, historical backtests evaluated on this universe exhibit an upward survivorship bias.
+   - In equity index literature (e.g., Brown, Goetzmann, Ibbotson, and Ross, 1995; Carhart et al., 2002), survivorship bias in equity universes typically introduces an indicative upward drift around 0.5% to 1.5% annually. However, because delisted historical tick-level data was not explicitly reconstructed for excluded firms in this study, any numerical range is an indicative literature-based estimate rather than a measured figure for this dataset. This research limitation is explicitly acknowledged.
+   - For this academic project submission, this limitation is documented as a known boundary constraint. Complete reconstruction of defunct tickers without institutional vendor terminal feeds (Bloomberg / Refinitiv) is infeasible and forbidden under strict project scope freeze.

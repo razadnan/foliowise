@@ -70,7 +70,8 @@ In `BacktestEngine.simulate_strategy`:
   - Buy Leg: 16.895 bps
   - Sell Leg: 15.395 bps
   - Total round-trip cost per unit rebalanced: **32.29 bps**.
-- Therefore, the 20 bps base rate represents a conservative, institutional fee schedule with highly competitive DMA execution slippage (e.g. ~2.5 bps per leg rather than 5 bps, or zero broker commission).
+- Therefore, the 20 bps base rate serves as a **stylized flat backtest convention** (a simplified constant-friction benchmark rate standard in academic backtesting literature). It is distinct from the statutory Indian delivery schedule (32.29 bps round-trip friction including statutory levies and 5 bps slippage) and should not be presented as a universally applicable execution cost across all market participants. While institutional desks with direct market access (DMA), zero broker commission, and minimal market impact (~2.5 bps per leg) may approach a 20 bps round-trip level, standard cash delivery incurs the statutory ~32.3 bps.
+- **Sensitivity Implication:** In backtests evaluated under 20 bps, active high-turnover models incur 88–137 bps cost drag. If re-evaluated under the full 32.29 bps statutory rate, those drags would expand by ~60% (e.g., reaching 140–220 bps/year), further reinforcing the research finding that excessive turnover degrades active ML performance.
 
 ---
 
@@ -114,7 +115,7 @@ Consider an institutional portfolio rebalance under real-world conditions:
 
 Under the engine's flat base rate ($0.0020 \times \text{one-way turnover}$):
 $$\text{Cost Deducted} = 0.0020 \times 0.20 = 0.00040 \text{ (4.00 bps of ₹1 Cr portfolio = ₹4,000.00)}$$
-This confirms that the 20 bps base rate provides an efficient, transparent, and reproducible proxy for institutional large-cap execution friction.
+This confirms that the 20 bps base rate provides an efficient, transparent, and reproducible proxy for constant-friction backtesting, while the itemized statutory model provides the legal cash delivery reference schedule.
 
 ---
 
