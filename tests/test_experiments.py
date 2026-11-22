@@ -55,3 +55,68 @@ def test_bootstrap_superior_series():
     assert res["observed_diff"] > 1.0
     assert res["ci_95_lower"] > 0.0
     assert res["significant_5pct"]
+
+
+def test_benchmark_hrp():
+    from src.optimization.engine import PortfolioOptimizer
+    optimizer = PortfolioOptimizer(default_stock_cap=0.10)
+    tickers = [f"STOCK_{i}" for i in range(20)]
+    rng = np.random.default_rng(42)
+    cov_arr = rng.standard_normal((20, 20))
+    cov_arr = cov_arr.T @ cov_arr + np.eye(20) * 0.1
+    cov_df = pd.DataFrame(cov_arr, index=tickers, columns=tickers)
+
+    w = optimizer.optimize_hrp(cov_df, tickers=tickers, stock_cap=0.10)
+    assert len(w) == 20
+    assert pytest.approx(sum(w.values()), abs=1e-4) == 1.0
+    assert all(val >= -1e-6 for val in w.values())
+    assert all(val <= 0.10 + 1e-4 for val in w.values())
+
+
+def test_benchmark_min_variance():
+    from src.optimization.engine import PortfolioOptimizer
+    optimizer = PortfolioOptimizer(default_stock_cap=0.10)
+    tickers = [f"STOCK_{i}" for i in range(20)]
+    sectors = {t: f"Sector_{i % 4}" for i, t in enumerate(tickers)}
+    rng = np.random.default_rng(42)
+    cov_arr = rng.standard_normal((20, 20))
+    cov_arr = cov_arr.T @ cov_arr + np.eye(20) * 0.1
+    cov_df = pd.DataFrame(cov_arr, index=tickers, columns=tickers)
+
+    w = optimizer.optimize_min_variance(cov_df, tickers=tickers, stock_cap=0.10, sector_cap=0.35, sector_mapping=sectors)
+    assert len(w) == 20
+    assert pytest.approx(sum(w.values()), abs=1e-4) == 1.0
+    assert all(val >= -1e-6 for val in w.values())
+    assert all(val <= 0.10 + 1e-4 for val in w.values())
+
+
+def test_benchmark_erc():
+    from src.optimization.engine import PortfolioOptimizer
+    optimizer = PortfolioOptimizer(default_stock_cap=0.10)
+    tickers = [f"STOCK_{i}" for i in range(20)]
+    rng = np.random.default_rng(42)
+    cov_arr = rng.standard_normal((20, 20))
+    cov_arr = cov_arr.T @ cov_arr + np.eye(20) * 0.1
+    cov_df = pd.DataFrame(cov_arr, index=tickers, columns=tickers)
+
+    w = optimizer.optimize_equal_risk_contribution(cov_df, tickers=tickers, stock_cap=0.10)
+    assert len(w) == 20
+    assert pytest.approx(sum(w.values()), abs=1e-4) == 1.0
+    assert all(val >= -1e-6 for val in w.values())
+    assert all(val <= 0.10 + 1e-4 for val in w.values())
+
+
+def test_benchmark_momentum_top_k():
+    from src.optimization.engine import PortfolioOptimizer
+    optimizer = PortfolioOptimizer(default_stock_cap=0.10)
+    tickers = [f"STOCK_{i}" for i in range(20)]
+    scores = pd.Series(range(20), index=tickers)  # STOCK_19 is highest
+
+    w = optimizer.optimize_momentum_top_k(scores, tickers=tickers, k=5)
+    assert len(w) == 20
+    assert pytest.approx(sum(w.values()), abs=1e-4) == 1.0
+    non_zero = [t for t, val in w.items() if val > 1e-4]
+    assert len(non_zero) == 5
+    for t in non_zero:
+        assert pytest.approx(w[t], abs=1e-4) == 0.20
+    assert "STOCK_19" in non_zero

@@ -106,7 +106,15 @@ def run_experiments(base_dir: str = ".") -> dict:
         "E6": "Adaptive FolioWise (Champion-Challenger)"
     }
 
+    benchmark_names = {
+        "B1": "Hierarchical Risk Parity (HRP)",
+        "B2": "Minimum Variance (Min-Var)",
+        "B3": "Equal Risk Contribution (ERC)",
+        "B4": "Momentum Top-5 (12M-1M Equal Weight)"
+    }
+
     experiment_weights = {k: {} for k in ladder_names}
+    benchmark_weights = {k: {} for k in benchmark_names}
     prev_w_e3 = None
     prev_w_e4 = None
     prev_w_e5 = None
@@ -228,6 +236,46 @@ def run_experiments(base_dir: str = ".") -> dict:
         experiment_weights["E6"][rebal_date] = w_e6
         prev_w_e6 = w_e6
 
+        # --- Benchmark Track Construction (B1 - B4) ---
+        # B1: Hierarchical Risk Parity (HRP)
+        w_b1 = optimizer.optimize_hrp(lw_cov, tickers=tickers, stock_cap=0.10)
+        benchmark_weights["B1"][rebal_date] = w_b1
+
+        # B2: Minimum Variance (Min-Var)
+        w_b2 = optimizer.optimize_min_variance(
+            cov_matrix=lw_cov,
+            tickers=tickers,
+            stock_cap=0.10,
+            sector_cap=0.35,
+            sector_mapping=sector_mapping,
+            date_str=date_str
+        )
+        benchmark_weights["B2"][rebal_date] = w_b2
+
+        # B3: Equal Risk Contribution (ERC / Risk Budgeting)
+        w_b3 = optimizer.optimize_equal_risk_contribution(
+            cov_matrix=lw_cov,
+            tickers=tickers,
+            stock_cap=0.10,
+            date_str=date_str
+        )
+        benchmark_weights["B3"][rebal_date] = w_b3
+
+        # B4: Momentum Top-5 (12M minus 1M price momentum)
+        hist_p = piv_prices.loc[:rebal_date]
+        if len(hist_p) >= 252:
+            p_21 = hist_p.iloc[-21]
+            p_252 = hist_p.iloc[-252]
+            mom_scores = (p_21 / p_252) - 1.0
+        else:
+            mom_scores = (hist_p.iloc[-1] / hist_p.iloc[0]) - 1.0
+        w_b4 = optimizer.optimize_momentum_top_k(
+            momentum_scores=mom_scores,
+            tickers=tickers,
+            k=5
+        )
+        benchmark_weights["B4"][rebal_date] = w_b4
+
     # 3. Simulate Daily Returns with BacktestEngine
     engine = BacktestEngine(cost_model=IndianTransactionCostModel(base_rate=0.0020), rf=0.06)
 
@@ -238,6 +286,7 @@ def run_experiments(base_dir: str = ".") -> dict:
     start_date = rebalance_dates[0]
     test_returns = piv_returns.loc[start_date:]
 
+    # 3a. Simulate E0 - E6
     for eid in ladder_names:
         daily_df, w_df, metrics = engine.simulate_strategy(
             strategy_name=eid,
@@ -265,12 +314,47 @@ def run_experiments(base_dir: str = ".") -> dict:
     weights_path = os.path.join(exp_dir, "weights_e0_e6.csv")
     weights_df.to_csv(weights_path, index=False)
 
-    all_daily_list = []
-    for eid, df_d in ladder_daily_dfs.items():
-        all_daily_list.append(df_d)
+    all_daily_list = [ladder_daily_dfs[eid] for eid in ladder_names]
     all_daily_df = pd.concat(all_daily_list, ignore_index=True)
     all_daily_path = os.path.join(exp_dir, "daily_returns_e0_e6.csv")
     all_daily_df.to_csv(all_daily_path, index=False)
+
+    # 3b. Simulate Benchmark Track (B1 - B4)
+    bench_metrics = []
+    bench_daily_dfs = {}
+    bench_weights_records = []
+
+    for bid in benchmark_names:
+        daily_df, w_df, metrics = engine.simulate_strategy(
+            strategy_name=bid,
+            returns_df=test_returns,
+            monthly_target_weights=benchmark_weights[bid]
+        )
+        metrics["benchmark"] = bid
+        metrics["description"] = benchmark_names[bid]
+        bench_metrics.append(metrics)
+        bench_daily_dfs[bid] = daily_df
+
+        # Accumulate weights
+        for dt, w_dict in benchmark_weights[bid].items():
+            for tk, val in w_dict.items():
+                if val > 1e-5:
+                    bench_weights_records.append({
+                        "date": dt.strftime("%Y-%m-%d"),
+                        "benchmark": bid,
+                        "ticker": tk,
+                        "weight": round(val, 6)
+                    })
+
+    # Save benchmark weights and daily returns
+    bench_weights_df = pd.DataFrame(bench_weights_records)
+    bench_weights_path = os.path.join(exp_dir, "weights_benchmarks.csv")
+    bench_weights_df.to_csv(bench_weights_path, index=False)
+
+    all_bench_daily_list = [bench_daily_dfs[bid] for bid in benchmark_names]
+    all_bench_daily_df = pd.concat(all_bench_daily_list, ignore_index=True)
+    bench_daily_path = os.path.join(exp_dir, "daily_returns_benchmarks.csv")
+    all_bench_daily_df.to_csv(bench_daily_path, index=False)
 
     # 4. Stationary Block Bootstrap Hypothesis Testing
     print("\nRunning Stationary Block Bootstrap Hypothesis Testing (1,000 resamples)...")
@@ -279,6 +363,7 @@ def run_experiments(base_dir: str = ".") -> dict:
 
     ret_e0 = ladder_daily_dfs["E0"]["net_return"].values
     ret_e1 = ladder_daily_dfs["E1"]["net_return"].values
+    ret_e3 = ladder_daily_dfs["E3"]["net_return"].values
 
     for eid in ["E1", "E2", "E3", "E4", "E5", "E6"]:
         ret_ei = ladder_daily_dfs[eid]["net_return"].values
@@ -296,22 +381,56 @@ def run_experiments(base_dir: str = ".") -> dict:
     bootstrap_df = pd.DataFrame(bootstrap_records)
     boot_path = os.path.join(exp_dir, "bootstrap_significance.csv")
     bootstrap_df.to_csv(boot_path, index=False)
-    print(f"Saved bootstrap significance results to {boot_path}")
+    print(f"Saved E0-E6 bootstrap significance results to {boot_path}")
 
-    # 5. Output Metrics Table
+    # 4b. Bootstrap Testing for Benchmarks (B1 - B4 vs E0 and vs E3)
+    print("\nRunning Stationary Block Bootstrap Testing for Benchmarks B1-B4...")
+    bench_bootstrap_records = []
+
+    for bid in benchmark_names:
+        ret_bi = bench_daily_dfs[bid]["net_return"].values
+        # Test vs E0 (1/N)
+        res_vs_e0 = bootstrap_tester.test_sharpe_difference(ret_bi, ret_e0, name_a=f"{bid}", name_b="E0 (1/N)")
+        res_vs_e0["baseline"] = "E0_1_over_N"
+        res_vs_e0["benchmark"] = bid
+        bench_bootstrap_records.append(res_vs_e0)
+
+        # Test vs E3 (XGBoost)
+        res_vs_e3 = bootstrap_tester.test_sharpe_difference(ret_bi, ret_e3, name_a=f"{bid}", name_b="E3 (XGBoost)")
+        res_vs_e3["baseline"] = "E3_XGBoost"
+        res_vs_e3["benchmark"] = bid
+        bench_bootstrap_records.append(res_vs_e3)
+
+    bench_boot_df = pd.DataFrame(bench_bootstrap_records)
+    bench_boot_path = os.path.join(exp_dir, "benchmark_bootstrap_significance.csv")
+    bench_boot_df.to_csv(bench_boot_path, index=False)
+    print(f"Saved benchmark bootstrap significance results to {bench_boot_path}")
+
+    # 5. Output Metrics Tables
     ladder_df = pd.DataFrame(ladder_metrics)
-    # Order columns
     col_order = ["experiment", "description", "cagr", "ann_volatility", "sharpe_ratio", "sortino_ratio", "max_drawdown", "calmar_ratio", "avg_monthly_turnover_pct", "annual_cost_drag_bps"]
     ladder_df = ladder_df[col_order]
     ladder_path = os.path.join(exp_dir, "experiment_ladder.csv")
     ladder_df.to_csv(ladder_path, index=False)
     print(f"Saved experiment ladder metrics to {ladder_path}")
 
-    # Print summary table
+    bench_df = pd.DataFrame(bench_metrics)
+    bench_col_order = ["benchmark", "description", "cagr", "ann_volatility", "sharpe_ratio", "sortino_ratio", "max_drawdown", "calmar_ratio", "avg_monthly_turnover_pct", "annual_cost_drag_bps"]
+    bench_df = bench_df[bench_col_order]
+    bench_path = os.path.join(exp_dir, "benchmark_track.csv")
+    bench_df.to_csv(bench_path, index=False)
+    print(f"Saved benchmark track metrics to {bench_path}")
+
+    # Print summary tables
     print("\nSmartFolio Experiment Ladder Performance Summary (Net of 20 bps Cost):")
     print("-" * 105)
     for _, row in ladder_df.iterrows():
         print(f"{row['experiment']:3s} | {row['description']:38s} | CAGR: {row['cagr']:5.2f}% | Vol: {row['ann_volatility']:5.2f}% | Sharpe: {row['sharpe_ratio']:5.2f} | MaxDD: {row['max_drawdown']:6.2f}% | Turn: {row['avg_monthly_turnover_pct']:5.2f}%")
+
+    print("\nPortfolio Strategy Benchmark Track Summary (Net of 20 bps Cost):")
+    print("-" * 105)
+    for _, row in bench_df.iterrows():
+        print(f"{row['benchmark']:3s} | {row['description']:38s} | CAGR: {row['cagr']:5.2f}% | Vol: {row['ann_volatility']:5.2f}% | Sharpe: {row['sharpe_ratio']:5.2f} | MaxDD: {row['max_drawdown']:6.2f}% | Turn: {row['avg_monthly_turnover_pct']:5.2f}%")
 
     # 6. Plot Equity Curves for E0 - E6
     plt.figure(figsize=(14, 7))
@@ -342,12 +461,44 @@ def run_experiments(base_dir: str = ".") -> dict:
     chart_path = os.path.join(exp_dir, "equity_curves_e0_e6.png")
     plt.savefig(chart_path, dpi=300)
     plt.close()
-    print(f"Saved equity curve comparison to {chart_path}")
+    print(f"Saved E0-E6 equity curve comparison to {chart_path}")
+
+    # 6b. Plot Equity Curves for Benchmark Track (B1 - B4 vs E0, E3)
+    plt.figure(figsize=(14, 7))
+    bench_palette = {
+        "B1": "#4F46E5", # Indigo (HRP)
+        "B2": "#0284C7", # Light Blue (Min-Var)
+        "B3": "#059669", # Emerald (ERC)
+        "B4": "#D97706", # Amber (Momentum)
+        "E0": "#9CA3AF", # Gray reference (1/N)
+        "E3": "#DC2626"  # Red reference (XGBoost)
+    }
+
+    # Reference curves
+    plt.plot(pd.to_datetime(ladder_daily_dfs["E0"]["date"]), ladder_daily_dfs["E0"]["cum_net"], label="E0: 1/N Equal Weight (Reference)", color=bench_palette["E0"], linewidth=1.8, linestyle=":")
+    plt.plot(pd.to_datetime(ladder_daily_dfs["E3"]["date"]), ladder_daily_dfs["E3"]["cum_net"], label="E3: XGBoost Markowitz (ML Reference)", color=bench_palette["E3"], linewidth=1.8, linestyle="--")
+
+    for bid in benchmark_names:
+        df_b = bench_daily_dfs[bid]
+        plt.plot(pd.to_datetime(df_b["date"]), df_b["cum_net"], label=f"{bid}: {benchmark_names[bid]}", color=bench_palette[bid], linewidth=2.2)
+
+    plt.title("Portfolio Strategy Benchmark Track (B1 - B4 vs E0, E3 Reference): Cumulative Returns (2020-2026)", fontsize=13, fontweight="bold")
+    plt.xlabel("Date", fontsize=11)
+    plt.ylabel("Portfolio Value (Base = 100)", fontsize=11)
+    plt.grid(True, linestyle="--", alpha=0.5)
+    plt.legend(loc="upper left", fontsize=9)
+    plt.tight_layout()
+    bench_chart_path = os.path.join(exp_dir, "equity_curves_benchmarks.png")
+    plt.savefig(bench_chart_path, dpi=300)
+    plt.close()
+    print(f"Saved benchmark equity curve comparison to {bench_chart_path}")
 
     return {
         "ladder_metrics": ladder_df,
         "bootstrap_results": bootstrap_df,
-        "daily_returns": all_daily_df
+        "daily_returns": all_daily_df,
+        "benchmark_metrics": bench_df,
+        "benchmark_bootstrap": bench_boot_df
     }
 
 

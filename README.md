@@ -69,10 +69,15 @@ Minor_Project/
 ├── results/
 │   ├── experiments/
 │   │   ├── experiment_ladder.csv      # Institutional metrics for E0 through E6
-│   │   ├── bootstrap_significance.csv # 1,000-sample bootstrap p-values and 95% CIs
-│   │   ├── daily_returns_e0_e6.csv    # Daily backtest returns for all experiments
-│   │   ├── weights_e0_e6.csv          # Rebalance weights history
-│   │   └── equity_curves_e0_e6.png    # Cumulative out-of-sample equity growth
+│   │   ├── benchmark_track.csv        # Metrics for Benchmark Track (B1 HRP, B2 Min-Var, B3 ERC, B4 Momentum)
+│   │   ├── bootstrap_significance.csv # E0-E6 1,000-sample bootstrap p-values and 95% CIs
+│   │   ├── benchmark_bootstrap_significance.csv # B1-B4 bootstrap p-values vs E0 and vs E3
+│   │   ├── daily_returns_e0_e6.csv    # Daily backtest returns for E0-E6
+│   │   ├── daily_returns_benchmarks.csv # Daily backtest returns for B1-B4
+│   │   ├── weights_e0_e6.csv          # Rebalance weights history for E0-E6
+│   │   ├── weights_benchmarks.csv     # Rebalance weights history for B1-B4
+│   │   ├── equity_curves_e0_e6.png    # Cumulative out-of-sample equity growth (E0-E6)
+│   │   └── equity_curves_benchmarks.png # Cumulative returns for B1-B4 vs E0, E3
 │   ├── feedback/
 │   │   ├── prediction_feedback.csv    # 15,309 point-in-time prediction vs realization records
 │   │   ├── rolling_ic_summary.csv     # 567 rolling IC cycles across models
@@ -92,7 +97,7 @@ Minor_Project/
 │   ├── index.html                     # 100% Preserved Investor UI (Plain language portfolio tool)
 │   ├── dashboard.html                 # 5-Tab Developer Quantitative Research Dashboard
 │   └── baseline_diff.txt              # Unified diff proving only 3 permitted data lines changed
-├── tests/                             # Full automated test suite (43 tests, 100% passing)
+├── tests/                             # Full automated test suite (47 tests, 100% passing)
 │   ├── test_data.py                   # Data integrity, PIT universe, TRI benchmarks
 │   ├── test_features.py               # Factor calculations and 0-leakage verification
 │   ├── test_models.py                 # Ridge, XGBoost, PyTorch LSTM, Ensemble, Newey-West
@@ -131,6 +136,21 @@ All experiments evaluated over the 2020–2026 walk-forward test period under st
 1. **DeMiguel et al. (2009) Estimation Risk Confirmed:** The simple 1/N heuristic (E0) delivers the highest raw Sharpe (0.68) because parameter estimation error in expected returns combined with trading friction degrades active Markowitz optimization.
 2. **Machine Learning with Risk Budgeting:** E3 (XGBoost with 10% asset cap, 35% sector cap, and L1 turnover penalty) achieves the lowest maximum drawdown (-27.19%) and outperforms sample Markowitz by +38 bps in Sharpe.
 3. **Sequence Model Reality:** PyTorch LSTM sequence model exhibits negative out-of-sample IC (-0.0166) on monthly equity ranks, confirming that deep architectures require multi-market pre-training to outperform regularized tree-based models in cross-sectional equity ranking.
+
+---
+
+## 2.1 Portfolio Strategy Benchmark Track (B1 – B4)
+
+Evaluates risk-based and heuristic strategies parallel to the ML ladder across the exact same 83 monthly cycles (2020–2026), point-in-time universe, next-day execution, and 20 bps statutory cost schedule:
+
+| ID | Benchmark Strategy | CAGR (%) | Annual Vol (%) | Sharpe Ratio | Sortino | Max DD (%) | Monthly Turnover (%) | vs E0 95% Bootstrap CI | p vs E0 | p vs E3 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| **B1** | Hierarchical Risk Parity (HRP) | **16.78%** | 15.45% | **0.70** | 0.96 | -31.01% | 10.66% | [-0.114, +0.128] | 0.861 | 0.425 |
+| **B2** | Minimum Variance (Min-Var) | 13.73% | **14.52%** | 0.53 | 0.75 | **-26.02%** | 10.40% | [-0.457, +0.136] | 0.340 | 0.686 |
+| **B3** | Equal Risk Contribution (ERC) | **16.42%** | 15.57% | **0.67** | 0.92 | -31.21% | **4.28%** | [-0.093, +0.058] | 0.717 | 0.537 |
+| **B4** | Momentum Top-5 (12M-1M Equal) | 5.91% | 21.38% | -0.00 | -0.01 | -41.00% | 26.14% | [-1.116, -0.136] | **0.021\*** | 0.086 |
+
+\* Statistically significant at $\alpha = 0.05$. B1 (HRP) achieves highest Sharpe (0.70); B2 (Min-Var) achieves lowest drawdown (-26.02%); B4 confirms momentum crash risk in concentrated equity portfolios ($p=0.021$).
 
 ---
 

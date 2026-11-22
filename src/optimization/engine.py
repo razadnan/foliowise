@@ -152,6 +152,25 @@ class PortfolioOptimizer:
         w = 1.0 / n
         return {t: w for t in tickers}
 
+    def optimize_momentum_top_k(
+        self,
+        momentum_scores: pd.Series,
+        tickers: List[str],
+        k: int = 5
+    ) -> Dict[str, float]:
+        """
+        Momentum Top-K Strategy (e.g. B4 Benchmark):
+        Select top k assets by 12M minus 1M momentum scores and allocate equally (1/k each).
+        """
+        scores = momentum_scores.reindex(tickers).fillna(-999.0)
+        top_k = scores.nlargest(k).index.tolist()
+        w = {t: 0.0 for t in tickers}
+        if len(top_k) > 0:
+            weight_per_asset = 1.0 / len(top_k)
+            for t in top_k:
+                w[t] = weight_per_asset
+        return w
+
     def optimize_min_variance(
         self,
         cov_matrix: pd.DataFrame,

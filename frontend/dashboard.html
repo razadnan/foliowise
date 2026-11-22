@@ -403,6 +403,95 @@ svg text { font-family: var(--sans); }
         </table>
       </div>
     </div>
+
+    <!-- Parallel Portfolio Strategy Benchmark Track (B1-B4) -->
+    <div class="card" style="margin-top:24px;">
+      <h3 style="margin-bottom:8px;font-size:17px;">Portfolio Strategy Benchmark Track (B1 – B4) & Bootstrap Validation</h3>
+      <p style="color:var(--mut);font-size:13px;margin-bottom:16px;">
+        Evaluates risk-based and heuristic strategies parallel to the ML ladder (B1 HRP, B2 Min-Var, B3 ERC, B4 Momentum). Exact same 2020–2026 test period, 83 monthly rebalance cycles, point-in-time universe, next-day (T+1) execution, 10% asset cap, and 20 bps statutory delivery cost model.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Strategy Description</th>
+              <th class="r">CAGR</th>
+              <th class="r">Annual Vol</th>
+              <th class="r">Sharpe</th>
+              <th class="r">Sortino</th>
+              <th class="r">Max DD</th>
+              <th class="r">Turnover</th>
+              <th class="r">Cost Drag</th>
+              <th class="r">vs E0 (1/N) 95% CI</th>
+              <th class="r">p vs E0</th>
+              <th class="r">p vs E3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="strat-tag" style="background:#4F46E5;color:#fff">B1</span></td>
+              <td class="bold">Hierarchical Risk Parity (HRP)</td>
+              <td class="r bold" style="color:var(--good)">16.78%</td>
+              <td class="r">15.45%</td>
+              <td class="r bold" style="color:var(--good)">0.70</td>
+              <td class="r">0.96</td>
+              <td class="r" style="color:var(--good)">-31.01%</td>
+              <td class="r">10.66%</td>
+              <td class="r">30.7 bps</td>
+              <td class="r">[-0.114, +0.128]</td>
+              <td class="r">0.861</td>
+              <td class="r">0.425</td>
+            </tr>
+            <tr>
+              <td><span class="strat-tag" style="background:#0284C7;color:#fff">B2</span></td>
+              <td class="bold">Minimum Variance (Min-Var)</td>
+              <td class="r">13.73%</td>
+              <td class="r bold" style="color:var(--good)">14.52%</td>
+              <td class="r">0.53</td>
+              <td class="r">0.75</td>
+              <td class="r bold" style="color:var(--good)">-26.02%</td>
+              <td class="r">10.40%</td>
+              <td class="r">29.2 bps</td>
+              <td class="r">[-0.457, +0.136]</td>
+              <td class="r">0.340</td>
+              <td class="r">0.686</td>
+            </tr>
+            <tr>
+              <td><span class="strat-tag" style="background:#059669;color:#fff">B3</span></td>
+              <td class="bold">Equal Risk Contribution (ERC)</td>
+              <td class="r bold" style="color:var(--good)">16.42%</td>
+              <td class="r">15.57%</td>
+              <td class="r bold" style="color:var(--good)">0.67</td>
+              <td class="r">0.92</td>
+              <td class="r" style="color:var(--good)">-31.21%</td>
+              <td class="r bold">4.28%</td>
+              <td class="r">12.3 bps</td>
+              <td class="r">[-0.093, +0.058]</td>
+              <td class="r">0.717</td>
+              <td class="r">0.537</td>
+            </tr>
+            <tr>
+              <td><span class="strat-tag" style="background:#D97706;color:#fff">B4</span></td>
+              <td>Momentum Top-5 (12M-1M Equal)</td>
+              <td class="r">5.91%</td>
+              <td class="r" style="color:var(--bad)">21.38%</td>
+              <td class="r" style="color:var(--bad)">-0.00</td>
+              <td class="r">-0.01</td>
+              <td class="r" style="color:var(--bad)">-41.00%</td>
+              <td class="r">26.14%</td>
+              <td class="r">68.6 bps</td>
+              <td class="r">[-1.116, -0.136]</td>
+              <td class="r bold" style="color:var(--bad)">0.021*</td>
+              <td class="r">0.086</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="color:var(--mut);font-size:12px;margin-top:12px;">
+        * Statistically significant at &alpha; = 0.05. Note: B1 (HRP) achieves the highest Sharpe ratio (0.70) with lower volatility (15.45% vs 16.32%) and lower drawdown (-31.01% vs -33.24%) than E0 (1/N). B2 achieves the lowest drawdown (-26.02%) across all strategies. B4 significantly underperforms E0 (p = 0.021), illustrating momentum crash risk in concentrated equity portfolios.
+      </p>
+    </div>
   </div>
 
   <!-- TAB 2: ALLOCATION -->
