@@ -3,7 +3,7 @@ S0,NIFTY 50 TRI (Benchmark),0.002,13.27,17.81,0.41,-37.54,0.35,0.0
 S1,Equal Weight (1/N),0.002,17.07,16.34,0.68,-33.18,0.51,0.12
 S2,Minimum Variance,0.002,13.21,14.51,0.5,-25.94,0.51,0.51
 S3,Max Sharpe (Historical),0.002,9.24,17.68,0.18,-33.4,0.28,1.2
-S4,Max Sharpe (ML Predicted + Blend),0.002,13.89,17.13,0.46,-29.02,0.48,1.44
-S5,Top-5 ML Equal Weight,0.002,24.0,23.34,0.77,-28.52,0.84,2.14
+S4,Max Sharpe (ML Predicted + Blend),0.002,16.84,15.5,0.7,-26.13,0.64,1.4
+S5,Top-5 ML Equal Weight,0.002,22.33,21.75,0.75,-26.48,0.84,3.15
 S6,Hierarchical Risk Parity (HRP),0.002,16.09,15.18,0.66,-29.8,0.54,0.48
 S7,Top-5 Momentum Equal Weight,0.002,6.14,21.3,0.01,-40.48,0.15,1.24
