@@ -86,4 +86,7 @@ class ModelEnsemble:
 
         p_xgb = self.xgb.predict(X)
         p_lstm = self.lstm.predict(X)
-        return self.w_xgb * p_xgb + self.w_lstm * p_lstm
+        total_w = self.w_xgb + self.w_lstm
+        if total_w <= 0:
+            return 0.5 * p_xgb + 0.5 * p_lstm
+        return (self.w_xgb * p_xgb + self.w_lstm * p_lstm) / total_w

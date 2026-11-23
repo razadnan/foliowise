@@ -3,6 +3,6 @@ E0,1/N Equal Weight,18.2,17.35,0.703,0.944,-36.79,0.495,4.08,11.9
 E1,Traditional Markowitz (Sample Cov),6.04,18.66,0.002,0.003,-34.21,0.177,30.22,79.2
 E2,Markowitz + Ledoit-Wolf Shrinkage,6.12,18.76,0.006,0.009,-33.91,0.18,29.82,78.3
 E3,XGBoost + Markowitz (Caps + Reg),15.97,15.4,0.647,0.913,-26.51,0.602,29.42,84.4
-E4,LSTM + Markowitz (Caps + Reg),8.61,16.83,0.155,0.212,-34.11,0.253,42.0,113.1
-E5,XGB-LSTM Ensemble + Markowitz,12.02,17.53,0.344,0.476,-31.87,0.377,58.74,163.3
+E4,LSTM + Markowitz (Caps + Reg),9.76,16.93,0.222,0.306,-34.1,0.286,41.67,113.4
+E5,XGB-LSTM Ensemble + Markowitz,10.98,17.46,0.285,0.394,-31.87,0.345,58.6,161.4
 E6,Adaptive FolioWise (Champion-Challenger),10.82,15.55,0.31,0.437,-26.51,0.408,26.91,73.8

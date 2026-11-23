@@ -31,8 +31,14 @@ from typing import Callable, Dict, Optional
 import numpy as np
 import pandas as pd
 
-from pypfopt import EfficientFrontier, HRPOpt, expected_returns, risk_models
-from pypfopt.risk_models import CovarianceShrinkage
+try:
+    from pypfopt import EfficientFrontier, HRPOpt, expected_returns, risk_models
+    from pypfopt.risk_models import CovarianceShrinkage
+    HAS_PYPFOPT = True
+except ImportError:
+    HAS_PYPFOPT = False
+    from sklearn.covariance import LedoitWolf
+    from src.optimization.engine import PortfolioOptimizer
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -153,11 +159,15 @@ class BacktestEngine:
             return cov
 
         try:
-            cs = CovarianceShrinkage(sub)
-            cov = cs.ledoit_wolf()
+            if HAS_PYPFOPT:
+                cs = CovarianceShrinkage(sub)
+                cov = cs.ledoit_wolf()
+            else:
+                lw = LedoitWolf().fit(sub)
+                cov = pd.DataFrame(lw.covariance_ * 252.0, index=sub.columns, columns=sub.columns)
         except Exception as exc:
             logger.warning("Ledoit-Wolf failed (%s); using sample cov.", exc)
-            cov = sub.cov()
+            cov = sub.cov() * 252.0
 
         return cov
 
@@ -192,15 +202,19 @@ class BacktestEngine:
             if len(valid) < 2:
                 return self._equal_weight_dict(universe_tickers)
 
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                ef = EfficientFrontier(
-                    None,
-                    cov.loc[valid, valid],
-                    weight_bounds=(0, self.config["weight_cap"]),
-                )
-                ef.min_volatility()
-                cleaned = ef.clean_weights()
+            if HAS_PYPFOPT:
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    ef = EfficientFrontier(
+                        None,
+                        cov.loc[valid, valid],
+                        weight_bounds=(0, self.config["weight_cap"]),
+                    )
+                    ef.min_volatility()
+                    cleaned = ef.clean_weights()
+            else:
+                opt = PortfolioOptimizer(default_stock_cap=self.config["weight_cap"])
+                cleaned = opt.optimize_min_variance(cov.loc[valid, valid], valid, stock_cap=self.config["weight_cap"])
 
             # Map back to full universe (missing = 0)
             weights = {t: 0.0 for t in universe_tickers}
@@ -227,19 +241,23 @@ class BacktestEngine:
             end_iloc = self.returns.index.get_loc(date)
             start_iloc = max(0, end_iloc - self.config["cov_lookback"] + 1)
             window = self.returns.iloc[start_iloc: end_iloc + 1][valid].dropna(axis=0, how="any")
-            mu = expected_returns.mean_historical_return(
-                window, returns_data=True, frequency=252
-            )
-
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                ef = EfficientFrontier(
-                    mu,
-                    cov.loc[valid, valid],
-                    weight_bounds=(0, self.config["weight_cap"]),
+            if HAS_PYPFOPT:
+                mu = expected_returns.mean_historical_return(
+                    window, returns_data=True, frequency=252
                 )
-                ef.max_sharpe(risk_free_rate=self.config["risk_free"])
-                cleaned = ef.clean_weights()
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    ef = EfficientFrontier(
+                        mu,
+                        cov.loc[valid, valid],
+                        weight_bounds=(0, self.config["weight_cap"]),
+                    )
+                    ef.max_sharpe(risk_free_rate=self.config["risk_free"])
+                    cleaned = ef.clean_weights()
+            else:
+                mu = window.mean() * 252.0
+                opt = PortfolioOptimizer(default_stock_cap=self.config["weight_cap"], default_rf=self.config["risk_free"])
+                cleaned = opt.optimize_max_sharpe(mu, cov.loc[valid, valid], valid, stock_cap=self.config["weight_cap"], rf=self.config["risk_free"])
 
             weights = {t: 0.0 for t in universe_tickers}
             weights.update({t: cleaned.get(t, 0.0) for t in valid})
@@ -270,15 +288,19 @@ class BacktestEngine:
             mu_vals = {t: preds[t] * (252 / 21) for t in valid}
             mu = pd.Series(mu_vals)
 
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                ef = EfficientFrontier(
-                    mu,
-                    cov.loc[valid, valid],
-                    weight_bounds=(0, self.config["weight_cap"]),
-                )
-                ef.max_sharpe(risk_free_rate=self.config["risk_free"])
-                cleaned = ef.clean_weights()
+            if HAS_PYPFOPT:
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    ef = EfficientFrontier(
+                        mu,
+                        cov.loc[valid, valid],
+                        weight_bounds=(0, self.config["weight_cap"]),
+                    )
+                    ef.max_sharpe(risk_free_rate=self.config["risk_free"])
+                    cleaned = ef.clean_weights()
+            else:
+                opt = PortfolioOptimizer(default_stock_cap=self.config["weight_cap"], default_rf=self.config["risk_free"])
+                cleaned = opt.optimize_max_sharpe(mu, cov.loc[valid, valid], valid, stock_cap=self.config["weight_cap"], rf=self.config["risk_free"])
 
             weights = {t: 0.0 for t in universe_tickers}
             weights.update({t: cleaned.get(t, 0.0) for t in valid})
@@ -328,11 +350,16 @@ class BacktestEngine:
             if sub.shape[0] < 10:
                 return self._equal_weight_dict(universe_tickers)
 
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                hrp = HRPOpt(returns=sub)
-                hrp.optimize()
-                cleaned = hrp.clean_weights()
+            if HAS_PYPFOPT:
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    hrp = HRPOpt(returns=sub)
+                    hrp.optimize()
+                    cleaned = hrp.clean_weights()
+            else:
+                opt = PortfolioOptimizer(default_stock_cap=self.config["weight_cap"])
+                cov_sub = sub.cov() * 252.0
+                cleaned = opt.optimize_hrp(cov_sub, valid, stock_cap=self.config["weight_cap"])
 
             weights = {t: 0.0 for t in universe_tickers}
             weights.update({t: cleaned.get(t, 0.0) for t in valid})

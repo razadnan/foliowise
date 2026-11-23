@@ -123,7 +123,7 @@ class PortfolioOptimizer:
 
         # Check and enforce sector caps if specified
         if sector_cap is not None and sector_mapping is not None and tickers is not None:
-            for _ in range(20):
+            for _ in range(50):
                 violated = False
                 for sec in set(sector_mapping.get(t, "Other") for t in tickers):
                     idxs = [i for i, t in enumerate(tickers) if sector_mapping.get(t, "Other") == sec]
@@ -131,13 +131,31 @@ class PortfolioOptimizer:
                     if sec_w > sector_cap + 1e-6:
                         violated = True
                         scale = sector_cap / sec_w
+                        excess_sec = sec_w - sector_cap
                         w[idxs] *= scale
-                if violated:
-                    w = np.minimum(w, stock_cap)
-                    w = w / np.sum(w)
-                else:
+                        other_idxs = [i for i in range(len(w)) if i not in idxs]
+                        other_under = [i for i in other_idxs if w[i] < stock_cap - 1e-6]
+                        if other_under:
+                            w[other_under] += excess_sec * (w[other_under] / np.sum(w[other_under]) if np.sum(w[other_under]) > 0 else 1.0 / len(other_under))
+                
+                # Re-clip stock cap and redistribute
+                w = np.minimum(w, stock_cap)
+                excess = 1.0 - np.sum(w)
+                under = w < stock_cap - 1e-6
+                if abs(excess) > 1e-7 and np.sum(under) > 0:
+                    w[under] += excess * (w[under] / np.sum(w[under]) if np.sum(w[under]) > 0 else 1.0 / np.sum(under))
+                if not violated:
                     break
 
+        # Final projection to guarantee exact budget sum and non-negativity
+        w = np.clip(w, 0.0, stock_cap)
+        w = w / np.sum(w)
+        if np.any(w > stock_cap + 1e-6):
+            excess = np.sum(np.maximum(0.0, w - stock_cap))
+            w = np.minimum(w, stock_cap)
+            under = w < stock_cap - 1e-6
+            if np.sum(under) > 0:
+                w[under] += excess * (w[under] / np.sum(w[under]) if np.sum(w[under]) > 0 else 1.0 / np.sum(under))
         return w / np.sum(w)
 
     # ---------------------------------------------------------------------------

@@ -19,7 +19,6 @@ from sklearn.preprocessing import StandardScaler
 
 import torch
 import torch.nn as nn
-from torch.utils.data import TensorDataset, DataLoader
 
 
 def set_seed(seed: int = 42):
@@ -89,17 +88,25 @@ class LSTMModel:
 
     def _prepare_sequences(self, X_scaled: np.ndarray) -> np.ndarray:
         """
-        Expand 2D feature matrix (N, F) to 3D pseudo-sequence (N, seq_len, F)
-        by repeating or using temporal slices.
-        For walk-forward rebalance slices where samples are (date, ticker),
-        we reshape each sample to (1, seq_len, F) via chronological lag windows or multi-head projection.
+        Construct genuine temporal sliding window sequences (N, seq_len, F)
+        from chronological feature observations.
+        If input is already 3D (N, seq_len, F), returns as is.
+        For 2D chronological arrays, each step t contains [x_{t-seq_len+1}, ..., x_t]
+        padded with the earliest historical observation for initial warm-up steps.
         """
+        if X_scaled.ndim == 3:
+            return X_scaled.astype(np.float32)
+
         N, F = X_scaled.shape
-        # Create sequence window of length seq_len
         seqs = np.zeros((N, self.seq_len, F), dtype=np.float32)
-        for i in range(self.seq_len):
-            decay = 1.0 - (0.05 * (self.seq_len - 1 - i))
-            seqs[:, i, :] = X_scaled * decay
+        for i in range(N):
+            start = max(0, i - self.seq_len + 1)
+            window = X_scaled[start : i + 1]
+            if len(window) < self.seq_len:
+                pad_len = self.seq_len - len(window)
+                pad = np.repeat(window[:1], pad_len, axis=0)
+                window = np.vstack([pad, window])
+            seqs[i] = window
         return seqs
 
     def fit(self, X: np.ndarray, y: np.ndarray) -> "LSTMModel":
@@ -107,14 +114,18 @@ class LSTMModel:
         Fit scaler and LSTM network on training fold.
         """
         set_seed(self.random_state)
-        X_scaled = self.scaler.fit_transform(X)
-        X_seq = self._prepare_sequences(X_scaled)
+        if X.ndim == 3:
+            # Flatten to scale features across all sequence steps then restore shape
+            N, S, F = X.shape
+            X_flat = X.reshape(-1, F)
+            X_scaled_flat = self.scaler.fit_transform(X_flat)
+            X_seq = X_scaled_flat.reshape(N, S, F).astype(np.float32)
+        else:
+            X_scaled = self.scaler.fit_transform(X)
+            X_seq = self._prepare_sequences(X_scaled)
 
         tensor_x = torch.tensor(X_seq, dtype=torch.float32)
         tensor_y = torch.tensor(y, dtype=torch.float32)
-
-        dataset = TensorDataset(tensor_x, tensor_y)
-        loader = DataLoader(dataset, batch_size=self.batch_size, shuffle=True)
 
         self.net = PyTorchLSTMNet(
             input_dim=self.input_dim,
@@ -127,8 +138,16 @@ class LSTMModel:
         criterion = nn.MSELoss()
         optimizer = torch.optim.AdamW(self.net.parameters(), lr=self.lr, weight_decay=1e-4)
 
+        N = len(tensor_x)
+        batch_size = min(self.batch_size, N)
+
         for epoch in range(self.epochs):
-            for batch_x, batch_y in loader:
+            perm = torch.randperm(N)
+            for i in range(0, N, batch_size):
+                idx = perm[i : i + batch_size]
+                batch_x = tensor_x[idx]
+                batch_y = tensor_y[idx]
+
                 optimizer.zero_grad()
                 pred = self.net(batch_x)
                 loss = criterion(pred, batch_y)
@@ -146,8 +165,15 @@ class LSTMModel:
             raise RuntimeError("Model must be fitted before predict.")
 
         self.net.eval()
-        X_scaled = self.scaler.transform(X)
-        X_seq = self._prepare_sequences(X_scaled)
+        if X.ndim == 3:
+            N, S, F = X.shape
+            X_flat = X.reshape(-1, F)
+            X_scaled_flat = self.scaler.transform(X_flat)
+            X_seq = X_scaled_flat.reshape(N, S, F).astype(np.float32)
+        else:
+            X_scaled = self.scaler.transform(X)
+            X_seq = self._prepare_sequences(X_scaled)
+
         tensor_x = torch.tensor(X_seq, dtype=torch.float32)
 
         with torch.no_grad():
