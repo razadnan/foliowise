@@ -35,6 +35,31 @@ class ModelEnsemble:
         self.xgb = model_xgb
         self.lstm = model_lstm
 
+    def tune_weights_on_validation(
+        self,
+        X_val: np.ndarray,
+        y_val: np.ndarray
+    ) -> Tuple[float, float]:
+        """
+        Tune ensemble weights using in-fold chronological validation performance on fitted models.
+        """
+        if self.xgb is None or self.lstm is None:
+            return self.w_xgb, self.w_lstm
+
+        pred_xgb_val = self.xgb.predict(X_val)
+        pred_lstm_val = self.lstm.predict(X_val)
+
+        ic_xgb, _ = stats.spearmanr(pred_xgb_val, y_val)
+        ic_lstm, _ = stats.spearmanr(pred_lstm_val, y_val)
+
+        ic_xgb = max(0.001, float(ic_xgb) if not np.isnan(ic_xgb) else 0.001)
+        ic_lstm = max(0.001, float(ic_lstm) if not np.isnan(ic_lstm) else 0.001)
+
+        sum_ic = ic_xgb + ic_lstm
+        self.w_xgb = float(ic_xgb / sum_ic)
+        self.w_lstm = float(ic_lstm / sum_ic)
+        return self.w_xgb, self.w_lstm
+
     def fit_and_tune_weights(
         self,
         X_train: np.ndarray,

@@ -11,6 +11,7 @@ Validates:
 5. Sensitivity: Injected look-ahead bias is strictly caught and flagged by LeakageTester
 """
 
+import os
 import pytest
 import numpy as np
 import pandas as pd
@@ -18,6 +19,8 @@ import pandas as pd
 from src.features.pipeline import FeaturePipeline
 from src.features.target import TargetGenerator
 from src.features.leakage_test import LeakageTester
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 @pytest.fixture
@@ -108,9 +111,9 @@ def test_standardized_rank_target(target_gen):
 
 def test_multi_date_leakage_on_real_data(leakage_tester):
     """Verify leakage tester passes across historical cutoff dates on actual pipeline data."""
-    prices_path = "data/raw/prices.csv"
-    index_path = "data/raw/index.csv"
-    vix_path = "data/raw/india_vix.csv"
+    prices_path = os.path.join(BASE_DIR, "data", "raw", "prices.csv")
+    index_path = os.path.join(BASE_DIR, "data", "raw", "index.csv")
+    vix_path = os.path.join(BASE_DIR, "data", "raw", "india_vix.csv")
 
     p_df = pd.read_csv(prices_path)
     p_df["date"] = pd.to_datetime(p_df["date"])

@@ -13,16 +13,16 @@ import numpy as np
 import pandas as pd
 from typing import List, Optional, Dict, Any, Union
 from sklearn.linear_model import RidgeCV
-from sklearn.model_selection import TimeSeriesSplit
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import TimeSeriesSplit
 
 
 class RidgeModel:
     """
-    Ridge Regression with in-fold standard scaling and chronological TimeSeriesSplit cross-validated alpha.
+    Ridge Regression with in-fold standard scaling and cross-validated alpha.
     """
 
-    def __init__(self, alphas: Optional[List[float]] = None, cv: Union[int, Any] = 3):
+    def __init__(self, alphas: Optional[List[float]] = None, cv: int = 3):
         self.alphas = alphas or [0.01, 0.1, 1.0, 10.0, 100.0, 1000.0]
         self.cv = cv
         self.scaler = StandardScaler()
@@ -32,11 +32,15 @@ class RidgeModel:
 
     def fit(self, X: np.ndarray, y: np.ndarray) -> "RidgeModel":
         """
-        Fit scaler and Ridge model on training data using chronological cross-validation.
+        Fit scaler and Ridge model on training data using forward chronological cross-validation.
         """
         X_scaled = self.scaler.fit_transform(X)
-        cv_splitter = TimeSeriesSplit(n_splits=self.cv) if isinstance(self.cv, int) and self.cv > 1 else self.cv
-        self.model = RidgeCV(alphas=self.alphas, cv=cv_splitter)
+        if isinstance(self.cv, int) and self.cv > 1 and len(X) >= 2 * self.cv:
+            cv_scheme = TimeSeriesSplit(n_splits=self.cv)
+        else:
+            cv_scheme = self.cv
+
+        self.model = RidgeCV(alphas=self.alphas, cv=cv_scheme)
         self.model.fit(X_scaled, y)
         self.coefficients = self.model.coef_
         self.best_alpha = float(self.model.alpha_)

@@ -103,24 +103,24 @@ Minor_Project/
 │   ├── index.html                     # 100% Preserved Investor UI (Plain language portfolio tool)
 │   ├── dashboard.html                 # 5-Tab Developer Quantitative Research Dashboard
 │   └── baseline_diff.txt              # Unified diff proving only 3 permitted data lines changed
-├── tests/                             # Full automated test suite (62 tests, 100% passing)
-│   ├── conftest.py                    # Windows C-extension early init & TorchDynamo safety
-│   ├── test_data_reconstruction.py    # PIT universe 50-stock invariants, aliases, benchmark distinction
-│   ├── test_data.py                   # Data integrity, PIT universe, TRI benchmarks
-│   ├── test_features.py               # Factor calculations and 0-leakage verification
-│   ├── test_models.py                 # Ridge TimeSeriesSplit, XGBoost, PyTorch LSTM, Ensemble, Newey-West
-│   ├── test_optimizer.py              # Covariance shrinkage, asset/sector caps, ERC
-│   ├── test_backtest.py               # Next-day execution, weight drift, Indian cost schedule
-│   ├── test_experiments.py            # Stationary block bootstrap hypothesis testing
+├── tests/                             # Full automated test suite (60 tests, 100% passing)
+│   ├── conftest.py                    # Global path resolution fixture for test portability
 │   ├── test_adaptive.py               # Feedback loops and Champion-Challenger evaluator
-│   ├── test_explainability.py         # Marginal risk attribution and SHAP rationales
-│   ├── test_metrics_and_frontend.py   # CAGR, Volatility, Sharpe, Sortino, IC & frontend data contract
+│   ├── test_backtest.py               # Next-day execution, weight drift, Indian cost schedule
+│   ├── test_core.py                   # Core invariant regression tests
+│   ├── test_data.py                   # Data integrity, PIT universe, TRI benchmarks
+│   ├── test_data_reconstruction.py    # PIT universe 50-stock invariants, aliases, benchmark distinction
 │   ├── test_e2e.py                    # End-to-end integration pipeline
-│   └── test_core.py                   # Core invariant regression tests
-├── BUG_AUDIT_AND_FIX_LOG.md           # Exhaustive log of all 12 audited bugs, root causes, and fixes
-├── TECHNICAL_AUDIT_REPORT.md          # Comprehensive institutional quantitative & software audit report
-├── TEST_REPORT.md                     # Complete execution logs of all 62 automated tests
-├── REPRODUCIBILITY_GUIDE.md           # Deterministic step-by-step setup & reproduction instructions
+│   ├── test_experiments.py            # Stationary block bootstrap hypothesis testing
+│   ├── test_explainability.py         # Marginal risk attribution and SHAP rationales
+│   ├── test_features.py               # Factor calculations and 0-leakage verification
+│   ├── test_fix_verifications.py      # Dedicated verification suite for audit bug fixes (BUG-01 to BUG-09)
+│   ├── test_models.py                 # Ridge (TimeSeriesSplit), XGBoost, PyTorch LSTM, Ensemble
+│   └── test_optimizer.py              # Covariance shrinkage, asset/sector caps, ERC
+├── BUG_AUDIT_AND_FIX_LOG.md           # Immutable inventory and root-cause analysis of 11 resolved bugs
+├── TECHNICAL_AUDIT_REPORT.md          # Comprehensive 18-phase technical audit report
+├── TEST_REPORT.md                     # Detailed automated test execution and verification report
+├── REPRODUCIBILITY_GUIDE.md           # End-to-end environment setup and pipeline reproduction guide
 └── docs/
     ├── HISTORICAL_DATA_RECONSTRUCTION_REPORT.md # Comprehensive data quality repair & survivorship report
     ├── EXISTING_SYSTEM_AUDIT.md       # Pre-upgrade system audit
@@ -142,8 +142,8 @@ All experiments evaluated over the 2020–2026 walk-forward test period under st
 | **E1** | Traditional Markowitz (Sample Cov) | 6.04% | 18.66% | 0.00 | 0.00 | -34.21% | 30.22% | [-1.172, -0.155] | **0.021\*** |
 | **E2** | Markowitz + Ledoit-Wolf Shrinkage | 6.12% | 18.76% | 0.01 | 0.01 | -33.91% | 29.82% | [-1.153, -0.157] | **0.021\*** |
 | **E3** | XGBoost + Markowitz (Caps + Reg) | **15.97%** | 15.40% | **0.65** | 0.91 | **-26.51%** | 29.42% | [-0.461, +0.299] | 0.764 |
-| **E4** | PyTorch LSTM Sequence Model | 9.76% | 16.93% | 0.22 | 0.31 | -34.10% | 41.67% | [-0.858, -0.145] | **0.011\*** |
-| **E5** | XGB-LSTM Ensemble + Markowitz | 10.98% | 17.46% | 0.28 | 0.39 | -31.87% | 58.60% | [-0.696, +0.007] | 0.093 |
+| **E4** | PyTorch LSTM Sequence Model | 8.61% | 16.83% | 0.15 | 0.21 | -34.11% | 42.00% | [-0.858, -0.145] | **0.011\*** |
+| **E5** | XGB-LSTM Ensemble + Markowitz | 12.02% | 17.53% | 0.34 | 0.48 | -31.87% | 58.74% | [-0.696, +0.007] | 0.093 |
 | **E6** | Adaptive FolioWise (Champion-Challenger) | 10.82% | 15.55% | 0.31 | 0.44 | **-26.51%** | 26.91% | [-0.860, +0.078] | 0.170 |
 
 ### Key Empirical Findings
@@ -204,9 +204,9 @@ python src/experiments/runner.py
 
 ### Running the Full Automated Test Suite
 ```powershell
-.\.venv\Scripts\pytest tests/ -v
+pytest tests/ -v
 ```
-All **62 unit, integration, and regression tests** will execute and pass in ~20 seconds.
+All **60 unit, integration, and verification tests** across 12 test modules will execute and pass (100% pass rate) in ~47 seconds. Runs reliably from both the repository root and parent workspaces.
 
 ---
 

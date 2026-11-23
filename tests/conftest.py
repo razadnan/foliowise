@@ -1,17 +1,13 @@
 """
 tests/conftest.py
 =================
-Root test configuration and early binary module stabilization for Windows Python 3.12.
-Ensures C-extensions (optree, torch) are cleanly loaded before thread pool initialization.
+Pytest configuration and global fixtures.
+Ensures repository root is always in sys.path regardless of execution directory.
 """
 
-import optree
-import torch
+import os
+import sys
 
-# Disable dynamo JIT hooks during unit tests on Windows
-try:
-    import torch._dynamo
-    torch._dynamo.config.suppress_errors = True
-    torch._dynamo.config.disable = True
-except Exception:
-    pass
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)

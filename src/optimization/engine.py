@@ -102,60 +102,56 @@ class PortfolioOptimizer:
         sector_cap: Optional[float] = None
     ) -> np.ndarray:
         """
-        Iteratively project weights to satisfy non-negativity, stock cap, and sum-to-1.
+        Convex projection of portfolio weights to strictly satisfy:
+        1. Non-negativity: w_i >= 0
+        2. Fully invested: sum(w_i) == 1.0
+        3. Single-stock cap: w_i <= stock_cap
+        4. Sector cap: sum_{i in sector} w_i <= sector_cap (if specified)
         """
         w = np.clip(weights, 0.0, None)
-        if np.sum(w) == 0:
-            return np.ones(len(w)) / len(w)
-        w = w / np.sum(w)
+        n = len(w)
+        if n == 0:
+            return w
+        if np.sum(w) <= 0:
+            w = np.ones(n) / n
+        else:
+            w = w / np.sum(w)
 
-        # Iterative asset capping
+        # Ensure mathematical feasibility of stock cap
+        eff_stock_cap = max(stock_cap, 1.0 / n)
+
+        # If sector constraints are present and feasible, solve convex quadratic projection
+        if sector_cap is not None and sector_mapping is not None and tickers is not None and len(tickers) == n:
+            feasible, _ = self.check_feasibility(n, eff_stock_cap, sector_cap, sector_mapping, tickers)
+            if feasible:
+                w_target = w.copy()
+                bounds = [(0.0, eff_stock_cap) for _ in range(n)]
+                constraints = [{"type": "eq", "fun": lambda x: np.sum(x) - 1.0}]
+                constraints.extend(self._build_sector_constraints(tickers, sector_mapping, sector_cap))
+
+                def proj_obj(x):
+                    return float(0.5 * np.sum((x - w_target) ** 2))
+
+                res = minimize(proj_obj, w_target, method="SLSQP", bounds=bounds, constraints=constraints, options={"maxiter": 200})
+                if res.success:
+                    # Clip to numerical bounds and normalize
+                    w_sol = np.clip(res.x, 0.0, eff_stock_cap)
+                    return w_sol / np.sum(w_sol)
+
+        # Standard iterative asset capping (Dykstra / cyclical projection)
         for _ in range(50):
-            excess = np.sum(np.maximum(0.0, w - stock_cap))
+            excess = np.sum(np.maximum(0.0, w - eff_stock_cap))
             if excess < 1e-7:
                 break
-            w = np.minimum(w, stock_cap)
-            under = w < stock_cap
+            w = np.minimum(w, eff_stock_cap)
+            under = w < eff_stock_cap
             if np.sum(under) > 0:
                 w[under] += excess * (w[under] / np.sum(w[under]) if np.sum(w[under]) > 0 else 1.0 / np.sum(under))
             else:
                 break
 
-        # Check and enforce sector caps if specified
-        if sector_cap is not None and sector_mapping is not None and tickers is not None:
-            for _ in range(50):
-                violated = False
-                for sec in set(sector_mapping.get(t, "Other") for t in tickers):
-                    idxs = [i for i, t in enumerate(tickers) if sector_mapping.get(t, "Other") == sec]
-                    sec_w = np.sum(w[idxs])
-                    if sec_w > sector_cap + 1e-6:
-                        violated = True
-                        scale = sector_cap / sec_w
-                        excess_sec = sec_w - sector_cap
-                        w[idxs] *= scale
-                        other_idxs = [i for i in range(len(w)) if i not in idxs]
-                        other_under = [i for i in other_idxs if w[i] < stock_cap - 1e-6]
-                        if other_under:
-                            w[other_under] += excess_sec * (w[other_under] / np.sum(w[other_under]) if np.sum(w[other_under]) > 0 else 1.0 / len(other_under))
-                
-                # Re-clip stock cap and redistribute
-                w = np.minimum(w, stock_cap)
-                excess = 1.0 - np.sum(w)
-                under = w < stock_cap - 1e-6
-                if abs(excess) > 1e-7 and np.sum(under) > 0:
-                    w[under] += excess * (w[under] / np.sum(w[under]) if np.sum(w[under]) > 0 else 1.0 / np.sum(under))
-                if not violated:
-                    break
-
-        # Final projection to guarantee exact budget sum and non-negativity
-        w = np.clip(w, 0.0, stock_cap)
-        w = w / np.sum(w)
-        if np.any(w > stock_cap + 1e-6):
-            excess = np.sum(np.maximum(0.0, w - stock_cap))
-            w = np.minimum(w, stock_cap)
-            under = w < stock_cap - 1e-6
-            if np.sum(under) > 0:
-                w[under] += excess * (w[under] / np.sum(w[under]) if np.sum(w[under]) > 0 else 1.0 / np.sum(under))
+        # Final safety clip & normalize
+        w = np.clip(w, 0.0, eff_stock_cap)
         return w / np.sum(w)
 
     # ---------------------------------------------------------------------------

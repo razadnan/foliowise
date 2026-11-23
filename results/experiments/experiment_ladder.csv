@@ -2,7 +2,7 @@ experiment,description,cagr,ann_volatility,sharpe_ratio,sortino_ratio,max_drawdo
 E0,1/N Equal Weight,18.2,17.35,0.703,0.944,-36.79,0.495,4.08,11.9
 E1,Traditional Markowitz (Sample Cov),6.04,18.66,0.002,0.003,-34.21,0.177,30.22,79.2
 E2,Markowitz + Ledoit-Wolf Shrinkage,6.12,18.76,0.006,0.009,-33.91,0.18,29.82,78.3
-E3,XGBoost + Markowitz (Caps + Reg),15.97,15.4,0.647,0.913,-26.51,0.602,29.42,84.4
-E4,LSTM + Markowitz (Caps + Reg),9.76,16.93,0.222,0.306,-34.1,0.286,41.67,113.4
-E5,XGB-LSTM Ensemble + Markowitz,10.98,17.46,0.285,0.394,-31.87,0.345,58.6,161.4
-E6,Adaptive FolioWise (Champion-Challenger),10.82,15.55,0.31,0.437,-26.51,0.408,26.91,73.8
+E3,XGBoost + Markowitz (Caps + Reg),9.48,17.98,0.193,0.26,-32.62,0.29,24.7,66.8
+E4,LSTM + Markowitz (Caps + Reg),9.8,17.94,0.212,0.285,-32.75,0.299,28.04,76.1
+E5,XGB-LSTM Ensemble + Markowitz,9.65,17.99,0.203,0.273,-32.73,0.295,24.71,66.9
+E6,Adaptive FolioWise (Champion-Challenger),8.32,18.26,0.127,0.172,-32.62,0.255,25.41,68.0

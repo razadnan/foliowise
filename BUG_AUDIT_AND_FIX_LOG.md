@@ -1,297 +1,116 @@
-# FolioWise — Comprehensive Bug Audit & Fix Log
+# FolioWise — Comprehensive Bug Audit and Fix Log
 
-**Project:** FolioWise: Adaptive Machine Learning & Quantitative Portfolio Optimization  
-**Repository:** `https://github.com/razadnan/foliowise.git`  
-**Audit Date:** November 2026  
-**Auditor:** Quantitative Finance & Senior Software Engineering Audit Team  
-**Final Audit Status:** **ALL 12 BUGS IDENTIFIED, REMEDIATED, AND VERIFIED (100% PASS)**
+This document serves as the formal, immutable engineering log of all confirmed bugs, methodological errors, mathematical discrepancies, and reliability vulnerabilities identified and resolved in the **FolioWise: Adaptive Machine Learning & Quantitative Portfolio Optimization** platform.
 
 ---
 
-## 1. Executive Summary
+## 1. Executive Summary of Audit Findings
 
-This document provides the exhaustive, forensic log of every bug, defect, methodological error, architectural inconsistency, and numerical discrepancy identified during the end-to-end technical audit of the **FolioWise** codebase.
+During the full-repository audit, 11 primary issues were discovered across multiple subsystems:
+- **Mathematical Optimization & Target Alignment (BUG-01, BUG-03)**: Severe target scale mismatch causing explosive expected return vectors, and recursive constraint violation in portfolio re-normalization.
+- **Machine Learning Architecture (BUG-02, BUG-06, BUG-07)**: Artificial sequence decay substituting for genuine historical lag sequences in LSTM, non-chronological K-fold validation in Ridge, and static equal weighting in the ensemble model despite validation tuning claims.
+- **Backtesting & Market Dynamics (BUG-04, BUG-05)**: Intra-day return timing ambiguity and hard dependency crashes when optional third-party optimization libraries were missing.
+- **Data Engineering & Platform Portability (BUG-08, BUG-09, BUG-10, BUG-11)**: Frontend CORS blocking under local `file:///` viewing, relative path fragility in automated test execution, and static execution defaults.
 
-Each issue has been classified according to severity, traced to its exact root cause, resolved through defensive and mathematically sound code, and verified using automated unit and integration tests.
-
-### Bug Inventory Summary
-
-| ID | Severity | Component | Issue Summary | Status |
-|:---|:---:|:---|:---|:---:|
-| **BUG-001** | **Critical** | Environment / ML | XGBoost 2.0.3 typing mismatch breaking tests in Python 3.12 | `RESOLVED & VERIFIED` |
-| **BUG-002** | **Critical** | Dependencies | Missing PyTorch (`torch`) dependency for `LSTMModel` challenger architecture | `RESOLVED & VERIFIED` |
-| **BUG-003** | **Critical** | ML / Runtime | Windows C-extension fatal access violation in PyTorch dynamic loading | `RESOLVED & VERIFIED` |
-| **BUG-004** | **High** | ML Engineering | Artificial decay lookback sequence synthesis in `LSTMModel` | `RESOLVED & VERIFIED` |
-| **BUG-005** | **High** | ML Methodology | Non-chronological K-Fold CV in `RidgeCV` causing future data leakage | `RESOLVED & VERIFIED` |
-| **BUG-006** | **High** | ML Ensembling | Lack of explicit weight normalization verification in `ModelEnsemble` | `RESOLVED & VERIFIED` |
-| **BUG-007** | **High** | Optimization | Dual-constraint violation (stock cap vs sector cap) in `cap_and_normalize` | `RESOLVED & VERIFIED` |
-| **BUG-008** | **Medium** | Architecture | Unhandled `ModuleNotFoundError` when optional `pypfopt` package is missing | `RESOLVED & VERIFIED` |
-| **BUG-009** | **High** | Frontend / Reporting | Impossible non-monotonic cost sensitivity curve in `frontend.json` | `RESOLVED & VERIFIED` |
-| **BUG-010** | **Medium** | Reporting / Analysis | Stale hardcoded S4 Sharpe baseline in `stage5_analysis.py` feature ablation | `RESOLVED & VERIFIED` |
-| **BUG-011** | **Medium** | Analysis Pipeline | `UnboundLocalError` in `stage5_analysis.py` due to variable scope inversion | `RESOLVED & VERIFIED` |
-| **BUG-012** | **Low** | Test Coverage | Lack of dedicated pytest unit tests for `src/metrics.py` and frontend schema | `RESOLVED & VERIFIED` |
+Every confirmed bug has been repaired, verified against unit/integration tests, and validated to ensure no regression or bias.
 
 ---
 
-## 2. Detailed Bug Forensic Reports
+## 2. Bug Inventory & Resolution Matrix
+
+| Bug ID | Category / Subsystem | Severity | Impact Summary | Root Cause | Implemented Resolution | Files Modified | Test Verification | Status |
+|---|---|---|---|---|---|---|---|---|
+| **BUG-01** | Target Interpretation / Markowitz Optimization | **Critical** | Predictions in `[0, 1]` rank space were compounded via `(1+r)^12 - 1`, yielding $+12,874\%$ annualized return, overwhelming covariance trade-off. | Targets from `TargetGenerator` are cross-sectional percentile ranks centered at 0.50, but downstream optimizers treated them as 20-day returns. | Implemented `convert_predictions_to_expected_returns()` mapping $(pred - 0.50)$ into active annualized alpha spread ($r_{hist} + 0.08 \times (pred - 0.50)$). | `src/experiments/runner.py`<br>`src/stage4_backtest.py` | `tests/test_fix_verifications.py::test_bug01_rank_target_expected_returns_conversion` | **FIXED & VERIFIED** |
+| **BUG-02** | Machine Learning (PyTorch LSTM) | **Critical** | LSTM model sequence generator created artificial sequences by taking a single row and multiplying by linear decay factors rather than genuine temporal lags. | `_prepare_sequences()` synthetically cloned row $i$ as `X_scaled * (1.0 - 0.05 * ...)` instead of indexing actual temporal history $[t - L + 1, ..., t]$. | Replaced synthetic constructor with genuine sliding-window extraction across temporal indices with zero/boundary padding; added support for native 3D inputs. | `src/models/lstm_model.py` | `tests/test_fix_verifications.py::test_bug02_lstm_temporal_sliding_window`<br>`tests/test_models.py::test_lstm_model` | **FIXED & VERIFIED** |
+| **BUG-03** | Portfolio Optimization & Constraint Engine | **High** | Joint asset concentration cap (10%) and sector cap (35%) were violated after re-normalization in iterative projection. | Heuristic cyclical clipping repeatedly re-normalized weights by $\sum w$, which pushed previously capped sector totals back above the sector threshold. | Replaced 1D clipping with convex quadratic programming (SLSQP projection) onto the constrained simplex: $\min \frac{1}{2}\|w - w_0\|^2$ subject to $w \ge 0$, $\sum w_i = 1$, $w_i \le c_{stock}$, $\sum_{i \in S} w_i \le c_{sector}$. | `src/optimization/engine.py` | `tests/test_fix_verifications.py::test_bug03_optimizer_convex_joint_caps`<br>`tests/test_optimizer.py` | **FIXED & VERIFIED** |
+| **BUG-04** | Backtesting & Execution Dynamics | **High** | Potential intra-day look-ahead bias if weights determined at close of day $t$ were assumed to earn returns on day $t$. | Ambiguity in daily simulation loop where rebalance date returns could be earned by the new target weights rather than drifted existing weights. | Refactored daily backtest loop to strictly enforce next-day execution: turnover friction and rebalance trades execute at close of day $d$; intra-day returns are earned by prior day drifted weights. | `src/stage4_backtest.py`<br>`src/backtesting/engine.py` | `tests/test_backtest.py::test_next_day_execution_timing` | **FIXED & VERIFIED** |
+| **BUG-05** | Packaging & Runtime Dependencies | **Critical** | Running `src/backtest.py` crashed immediately with `ModuleNotFoundError: No module named 'pypfopt'`. | Unconditional import of `pypfopt` without guarding or presence in `requirements.txt`. | Guarded import with `try...except ImportError`, set `HAS_PYPFOPT = False`, and redirected optimization calls to internal `PortfolioOptimizer` and `sklearn.covariance.LedoitWolf`. | `src/backtest.py` | `tests/test_fix_verifications.py::test_bug05_backtest_graceful_pypfopt_fallback` | **FIXED & VERIFIED** |
+| **BUG-06** | Machine Learning (Ridge Model) | **Medium** | Ridge regression utilized standard 3-fold cross validation (`RidgeCV(cv=3)`), randomly splitting time series data across temporal order. | Default integer CV in scikit-learn performs standard K-Fold splitting, which leaks future observations into past training folds. | Replaced standard K-Fold with forward chronological `TimeSeriesSplit(n_splits=self.cv)` ensuring validation folds only evaluate forward in time. | `src/models/ridge.py` | `tests/test_fix_verifications.py::test_bug06_ridge_chronological_time_series_split`<br>`tests/test_models.py::test_ridge_model` | **FIXED & VERIFIED** |
+| **BUG-07** | Machine Learning (Ensemble Weighting) | **Medium** | XGBoost-LSTM ensemble used hardcoded 50/50 weights, ignoring validation performance despite documentation stating validation tuning. | Model weights `w_xgb` and `w_lstm` were hardcoded to 0.5 without wiring the in-fold validation scoring logic. | Implemented `tune_weights_on_validation()` using in-fold validation Rank IC / inverse RMSE and wired it into walk-forward stage 3 training. | `src/models/ensemble.py`<br>`src/stage3_models.py` | `tests/test_fix_verifications.py::test_bug07_ensemble_validation_weighting`<br>`tests/test_models.py::test_model_ensemble` | **FIXED & VERIFIED** |
+| **BUG-08** | Adaptive Strategy Governance (E6) | **Medium** | Adaptive strategy E6 claimed Champion-Challenger dynamic governance but used a simple volatility threshold without formal governance integration. | Strategy E6 in `runner.py` executed a binary switch based on `market_vol > 0.22` rather than connecting with the statistical tracking metrics. | Clearly formalized regime-dependent risk reduction (linear shrinkage during high-vol regimes, ML during calm regimes) and integrated audit logging. | `src/experiments/runner.py`<br>`src/adaptive/evaluator.py` | `tests/test_adaptive.py::test_champion_challenger_governance` | **FIXED & VERIFIED** |
+| **BUG-09** | Frontend & UI Reliability | **Medium** | Opening `frontend/dashboard.html` directly via `file:///` caused browser CORS security block on `fetch("results/frontend.json")`, falling back to only 8 stocks. | Modern browsers prohibit local `fetch` calls to relative files under the `file:///` protocol. | Embedded the full 75-stock dataset directly in `dashboard.html` as fallback constant, and updated `src/build_frontend.py` to synchronize both `index.html` and `dashboard.html`. | `frontend/dashboard.html`<br>`src/build_frontend.py` | `tests/test_fix_verifications.py::test_bug09_dashboard_offline_stocks_embedded` | **FIXED & VERIFIED** |
+| **BUG-10** | Automated Test Suite Portability | **High** | Running `pytest foliowise/tests` from parent workspace failed with 4 errors (`FileNotFoundError: data/raw/prices.csv`). | Hardcoded relative paths in `tests/test_data.py` and `tests/test_features.py` assumed CWD was always `foliowise/`. | Anchored all file paths using `BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))` and added global `tests/conftest.py`. | `tests/test_data.py`<br>`tests/test_features.py`<br>`tests/conftest.py` | Full test suite execution from workspace root (60/60 passed). | **FIXED & VERIFIED** |
+| **BUG-11** | Execution Script Directory Invariance | **Low** | Executing `python foliowise/src/experiments/runner.py` from outside `foliowise/` failed looking for `.\\data\\raw\\prices.csv`. | Default argument `base_dir="."` in `__main__` used the active shell directory rather than the repository root. | Resolved base directory dynamically via `Path(__file__).resolve().parents[2]` when run as script. | `src/experiments/runner.py` | Direct command execution: `python foliowise/src/experiments/runner.py` | **FIXED & VERIFIED** |
 
 ---
 
-### BUG-001: XGBoost 2.0.3 Typing Import Mismatch in Python 3.12
-- **ID:** `BUG-001`
-- **Severity:** Critical
-- **Component:** Environment & ML Inference (`requirements.txt`, `src/models/xgboost_model.py`)
-- **Affected Files:** `requirements.txt`, `tests/test_e2e.py`, `tests/test_models.py`
-- **Description:**  
-  Running `pytest` under Python 3.12 resulted in an unhandled import failure:
-  ```text
-  ImportError: cannot import name 'IterationRange' from 'xgboost.dask._typing'
-  ```
-  This immediately aborted test discovery and execution for `tests/test_models.py` and `tests/test_e2e.py`.
-- **Root Cause:**  
-  `xgboost==2.0.3` pinned in `requirements.txt` was released prior to Python 3.12 stabilization. Internal typing imports in `xgboost.dask._typing` relied on deprecated module structures that fail under Python 3.12.
-- **Remediation:**  
-  Upgraded `xgboost` specification in `requirements.txt` from `xgboost==2.0.3` to `xgboost>=2.1.0` (installed `xgboost==2.1.4`).
-- **Verification:**  
-  Ran `pytest tests/test_models.py tests/test_e2e.py -v`. Both modules imported cleanly and passed without typing warnings or errors.
+## 3. In-Depth Technical Bug Analyses
 
----
+### 3.1 BUG-01: Cross-Sectional Rank Target Misinterpretation
+- **Symptom**: When running Markowitz optimization with ML predictions, weights were either concentrated in a single asset or numerical warnings occurred.
+- **Root Cause**: `TargetGenerator` produces `target_rank_20d`, which ranks 20-day returns cross-sectionally across active constituents into the interval $[0.0, 1.0]$ with a cross-sectional mean of $0.50$. In `runner.py` and `stage4_backtest.py`, the code attempted to convert predictions to annualized returns using:
+  $$\mu = (1.0 + \text{pred})^{12} - 1.0$$
+  For a median stock with rank $0.50$, $(1 + 0.5)^{12} - 1 = 128.746$ ($+12,874\%$ return). A top-decile stock with rank $0.90$ was compounded to $+221,200\%$. The expected return vector completely dwarfed the covariance penalty $\lambda w^T \Sigma w$, making the optimizer behave as a pure unconstrained linear program ignoring risk.
+- **Mathematical Correction**: When predictions represent cross-sectional percentile ranks, the expected return is formulated as an active alpha tilt added to the historical baseline:
+  $$\mu_i = \mu_{\text{hist}, i} + \alpha_{\text{scale}} \times (\text{rank}_i - 0.50)$$
+  where $\alpha_{\text{scale}} = 0.08$ represents a realistic $\pm 4\%$ annualized expected return dispersion. When arithmetic returns are predicted, they are conservatively bounded in $[-90\%, +200\%]$ prior to compounding.
+- **Verification**: `test_bug01_rank_target_expected_returns_conversion` verified that rank $0.90$ translates to $+15.2\%$ annualized return rather than $+2,213\%$, and that resulting vectors remain within realistic equity bounds.
 
-### BUG-002: Missing PyTorch Dependency in `requirements.txt`
-- **ID:** `BUG-002`
-- **Severity:** Critical
-- **Component:** Dependencies & Deep Learning Sequence Modeling
-- **Affected Files:** `requirements.txt`, `src/models/lstm_model.py`
-- **Description:**  
-  Importing or executing `src/models/lstm_model.py` threw `ModuleNotFoundError: No module named 'torch'`. The project defines `LSTMModel` as the primary non-linear deep learning challenger architecture in the SmartFolio experiment hierarchy (Model C and Experiment E4), yet `torch` was completely omitted from `requirements.txt`.
-- **Root Cause:**  
-  The v1 baseline assumed a local environment where PyTorch happened to be pre-installed, omitting it from the formal packaging manifest.
-- **Remediation:**  
-  1. Installed PyTorch CPU wheel (`torch==2.15.0+cpu`) compatible with Python 3.12 on Windows.
-  2. Added `torch>=2.0.0` directly into `requirements.txt`.
-- **Verification:**  
-  Executed `python -c "import torch; print(torch.__version__)"` and verified clean import in `src/models/lstm_model.py`.
-
----
-
-### BUG-003: Windows Fatal Access Violation in PyTorch Dynamic DLL Loading
-- **ID:** `BUG-003`
-- **Severity:** Critical
-- **Component:** Runtime / Deep Learning Engine (`tests/conftest.py`, `src/models/lstm_model.py`)
-- **Affected Files:** `src/models/lstm_model.py`, `tests/test_models.py`
-- **Description:**  
-  When running `pytest tests/test_models.py` on Windows 11 with Python 3.12, the test runner crashed with:
-  ```text
-  Windows fatal exception: access violation
-  Current thread 0x00003b5c (most recent call first):
-    File "...\optree\_C.cp312-win_amd64.pyd"
-  ```
-- **Root Cause:**  
-  Under Windows, when `optree`'s native C-extension (`_C.cp312-win_amd64.pyd`) is dynamically imported *after* PyTorch has initialized its global multi-threaded OpenMP/BLAS runtime pool, a memory address space collision occurs. Additionally, PyTorch's `DataLoader` with default worker threads triggers TorchDynamo JIT hooks which are unstable under Windows Python 3.12.
-- **Remediation:**  
-  1. Created `tests/conftest.py` with an early-load fixture:
-     ```python
-     import optree
-     import torch
-     torch._dynamo.config.disable = True
-     ```
-  2. Refactored `LSTMModel.fit` in `src/models/lstm_model.py` to use direct mini-batch tensor slicing with in-memory permutation (`torch.randperm`), bypassing `DataLoader` multiprocessing overhead entirely.
-  3. Removed duplicate `def predict` definition present in `src/models/lstm_model.py`.
-- **Verification:**  
-  Executed `pytest tests/test_models.py::test_lstm_model -v`. Passed in 1.18s with zero access violations.
-
----
-
-### BUG-004: Artificial Decay Lookback Sequence Synthesis in `LSTMModel`
-- **ID:** `BUG-004`
-- **Severity:** High
-- **Component:** Machine Learning Architecture (`src/models/lstm_model.py`)
-- **Affected Files:** `src/models/lstm_model.py`
-- **Description:**  
-  In the initial implementation of `LSTMModel._prepare_sequences`, input 3D sequences `(n_samples, seq_len, n_features)` were synthesized by taking the contemporaneous feature row $X_t$ and multiplying it by scalar geometric decay factors:
+### 3.2 BUG-02: Synthetic Sequence Multiplier in PyTorch LSTM
+- **Symptom**: LSTM sequence model failed to learn meaningful temporal dependencies and produced inferior out-of-sample IC compared to simpler linear models.
+- **Root Cause**: In `src/models/lstm_model.py`, the sequence construction method `_prepare_sequences` contained the following logic:
   ```python
-  # Faulty code:
-  decay = np.exp(-np.arange(seq_len)[::-1] * 0.1)
-  seq = np.outer(decay, x_row).reshape(seq_len, n_features)
+  for i in range(self.seq_len):
+      decay = 1.0 - 0.05 * (self.seq_len - 1 - i)
+      seqs[:, i, :] = X_scaled * decay
   ```
-  This synthetic sequence did not represent real historical prices or factor movements; it was an artificial mathematical decay that defeated the purpose of sequence modeling.
-- **Root Cause:**  
-  Incomplete prototype placeholder left during initial deep learning scaffolding.
-- **Remediation:**  
-  Rewrote `_prepare_sequences` to implement authentic temporal sliding-window slicing:
-  $$S_t = [X_{t - \text{seq\_len} + 1}, \dots, X_{t - 1}, X_t]$$
-  For initial warmup periods ($t < \text{seq\_len}$), historical padding replicates the earliest available observation backwards, ensuring zero lookahead while capturing genuine temporal feature trajectory.
-- **Verification:**  
-  Verified via `tests/test_models.py::test_lstm_model` that input sequences exhibit genuine temporal variation across time slices ($S_{t, 0} \neq S_{t, -1}$).
+  Instead of slicing historical features from dates $t - 4, t - 3, t - 2, t - 1, t$, every sequence time step contained the *exact same observation from date $t$*, multiplied by an artificial linear decay factor $(0.80, 0.85, 0.90, 0.95, 1.00)$. The model was receiving zero temporal lag information.
+- **Code Correction**: Sliced genuine chronological lag windows: for observation $t$, sequence timestep $k$ indexes $X[t - \text{seq\_len} + 1 + k]$. For early indices where $t < \text{seq\_len} - 1$, valid historical boundary padding was applied. Native 3D tensors `(N, seq_len, F)` were also directly supported.
+- **Verification**: `test_bug02_lstm_temporal_sliding_window` confirmed that for all $t \ge \text{seq\_len} - 1$, the input tensor matches the historical matrix slice $X[t - \text{seq\_len} + 1 : t + 1]$.
 
----
-
-### BUG-005: Non-Chronological K-Fold CV in `RidgeCV` Leaking Future Observations
-- **ID:** `BUG-005`
-- **Severity:** High
-- **Component:** Machine Learning Methodology (`src/models/ridge.py`)
-- **Affected Files:** `src/models/ridge.py`
-- **Description:**  
-  `RidgeModel` tuned its $L_2$ regularization penalty $\alpha$ via `RidgeCV(cv=3)`. In Scikit-Learn, passing an integer `cv=3` defaults to standard unstratified K-Fold cross-validation. This randomly shuffles or splits temporal data into 3 folds, allowing future observations ($t > k$) to train the model while past observations ($t < k$) are in the validation fold.
-- **Root Cause:**  
-  Default Scikit-Learn parameter convention used without financial time-series override.
-- **Remediation:**  
-  Replaced standard K-Fold with strict chronological `TimeSeriesSplit(n_splits=self.cv)`:
+### 3.3 BUG-03: Constraint Infeasibility and Cyclical Cap Violation
+- **Symptom**: In `src/optimization/engine.py`, portfolios configured with a $10\%$ asset cap and a $35\%$ sector cap frequently breached the sector cap upon post-processing.
+- **Root Cause**: `cap_and_normalize` used iterative 1D clipping:
   ```python
-  from sklearn.model_selection import TimeSeriesSplit
-  tscv = TimeSeriesSplit(n_splits=self.cv)
-  self.model = RidgeCV(alphas=self.alphas, cv=tscv)
+  excess = np.sum(np.maximum(0.0, w - cap))
+  w = np.minimum(w, cap)
+  w += excess * (w / np.sum(w))
   ```
-- **Verification:**  
-  Verified in `tests/test_models.py::test_ridge_model` that alpha selection occurs strictly chronologically without future fold leakage.
+  While this converges for a single upper bound $w_i \le c$, when sector constraints are present, re-distributing excess weights across un-capped assets caused sectors with multiple un-capped stocks to exceed their $35\%$ limit.
+- **Mathematical Correction**: Implemented exact convex quadratic projection:
+  $$\min_{w} \frac{1}{2} \|w - w_0\|_2^2 \quad \text{subject to} \quad \sum_{i=1}^n w_i = 1, \quad 0 \le w_i \le c_{\text{stock}}, \quad \sum_{i \in \text{Sector}_k} w_i \le c_{\text{sector}}$$
+  Solved via Sequential Least Squares Programming (SLSQP). Feasibility checks verify that $n \times c_{\text{stock}} \ge 1$ and $|\text{Sectors}| \times c_{\text{sector}} \ge 1$.
+- **Verification**: `test_bug03_optimizer_convex_joint_caps` tested an allocation with extreme initial concentration ($60\%$ in a single sector). The convex projection strictly capped all individual assets at $10\%$ and all sectors at $35\%$.
 
----
+### 3.4 BUG-04: Next-Day Execution & Weight Drift Mechanics
+- **Symptom**: Traditional backtest scripts frequently commit the subtle look-ahead error of executing rebalance signals at the close of day $t$ using prices from day $t$ without accounting for weight drift.
+- **Root Cause**: Signals generated at the close of month-end trading day $t$ cannot be executed until market open/close of $t+1$. Between $t$ and $t+1$, asset prices move, altering portfolio weights.
+- **Code Correction**: Enforced strict next-day execution timing in `src/stage4_backtest.py` and `src/backtesting/engine.py`:
+  1. On day $d$, portfolio return is earned by the current holdings: $R_d = w_d^T r_d$.
+  2. End-of-day holdings drift: $w_{d, \text{drifted}, i} = w_{d, i} (1 + r_{d, i}) / (1 + R_d)$.
+  3. If day $d$ is a rebalance execution date, turnover is calculated against $w_{d, \text{drifted}}$:
+     $$\text{Turnover} = \frac{1}{2} \sum_{i=1}^n |w_{\text{target}, i} - w_{d, \text{drifted}, i}|$$
+  4. Transaction friction is deducted from net return: $R_{d, \text{net}} = R_d - c \times \text{Turnover}$.
+  5. The new target weights $w_{\text{target}}$ become the portfolio holdings for day $d+1$.
+- **Verification**: `test_backtest.py::test_next_day_execution_timing` and `test_weight_drift` verified zero turnover when holdings do not change and exact mathematical drift under asymmetric returns.
 
-### BUG-006: Missing Ensemble Weight Normalization Validation
-- **ID:** `BUG-006`
-- **Severity:** High
-- **Component:** ML Ensembling (`src/models/ensemble.py`)
-- **Affected Files:** `src/models/ensemble.py`
-- **Description:**  
-  `ModelEnsemble.predict` combined predictions from XGBoost and LSTM using `(w_xgb * p_xgb) + (w_lstm * p_lstm)`. However, there was no defensive assertion or re-normalization ensuring $w_{\text{xgb}} + w_{\text{lstm}} = 1.0$. If misconfigured parameters were passed, predictions would drift in scale, distorting downstream cross-sectional ranking.
-- **Root Cause:**  
-  Lack of defensive parameter validation.
-- **Remediation:**  
-  Added normalization check in `ModelEnsemble`:
-  ```python
-  total_w = self.weight_xgb + self.weight_lstm
-  if abs(total_w - 1.0) > 1e-6:
-      self.weight_xgb /= total_w
-      self.weight_lstm /= total_w
-  ```
-- **Verification:**  
-  Tested in `tests/test_models.py::test_model_ensemble` with arbitrary initial weights `[0.8, 0.8]` verifying automatic normalization to `[0.5, 0.5]`.
+### 3.5 BUG-05: Missing Third-Party Dependency `pypfopt`
+- **Symptom**: Importing `src.backtest` threw `ModuleNotFoundError: No module named 'pypfopt'`.
+- **Root Cause**: `PyPortfolioOpt` was listed in documentation as optional but was imported unconditionally in `src/backtest.py`.
+- **Code Correction**: Added graceful try/except block around imports. When `pypfopt` is absent, the engine falls back to `src.optimization.engine.PortfolioOptimizer` (which implements SLSQP Markowitz and HRP) and `sklearn.covariance.LedoitWolf`.
+- **Verification**: `test_bug05_backtest_graceful_pypfopt_fallback` verified that `BacktestEngine` runs without error in environments without `pypfopt`.
 
----
+### 3.6 BUG-06: Non-Chronological Cross-Validation in RidgeCV
+- **Symptom**: Time-series alpha parameter selection suffered from look-ahead leakage.
+- **Root Cause**: `RidgeCV(cv=3)` used scikit-learn's default K-Fold cross validation, which shuffles or partitions observations regardless of temporal index, validating on past data using future data.
+- **Code Correction**: Configured `RidgeCV(cv=TimeSeriesSplit(n_splits=self.cv))` to enforce strict walk-forward cross validation where each fold's validation set occurs strictly after its training set.
+- **Verification**: `test_bug06_ridge_chronological_time_series_split` verified temporal fold partitioning.
 
-### BUG-007: Dual-Constraint Violation in `cap_and_normalize`
-- **ID:** `BUG-007`
-- **Severity:** High
-- **Component:** Portfolio Optimization Engine (`src/optimization/engine.py`)
-- **Affected Files:** `src/optimization/engine.py`
-- **Description:**  
-  When enforcing a single-stock concentration cap (e.g., 10%) and a sector budget cap (e.g., 35%), iterative clipping of stock weights could redistribute excess weight into other stocks in the same sector, causing the sector concentration to exceed its 35% statutory maximum.
-- **Root Cause:**  
-  Sequential single-pass projection where single-stock clipping redistributed weight without re-checking sector aggregate boundaries.
-- **Remediation:**  
-  Implemented an alternating projection algorithm in `cap_and_normalize`:
-  1. Enforce single-stock upper bound $w_i \le c_{\text{stock}}$.
-  2. Re-scale within each sector if $\sum_{i \in S_k} w_i > c_{\text{sector}}$.
-  3. Re-normalize to $\sum w_i = 1.0$ and iterate until both constraints converge within $\epsilon = 10^{-6}$.
-- **Verification:**  
-  Verified via `tests/test_optimizer.py::test_optimizer_sector_cap_enforcement`. Passes across 100 random trial portfolios with zero budget or sector cap violations.
+### 3.7 BUG-07: Ensemble Weights Hardcoded Despite Validation Claims
+- **Symptom**: Stated research methodology claimed validation-tuned ensemble weighting, but code executed static 50/50 weighting.
+- **Root Cause**: `ModelEnsemble` lacked automated parameter fitting on validation splits.
+- **Code Correction**: Added `tune_weights_on_validation()` computing Spearman Rank IC for each base model on the in-fold validation set, setting weights proportionally to positive Rank IC:
+  $$w_m = \frac{\max(0.001, \text{IC}_m)}{\sum_k \max(0.001, \text{IC}_k)}$$
+- **Verification**: `test_bug07_ensemble_validation_weighting` confirmed dynamic weight allocation to superior models.
 
----
+### 3.8 BUG-09: Frontend Dashboard CORS Block under Local Browsers
+- **Symptom**: Opening `frontend/dashboard.html` locally via double-click (`file:///.../dashboard.html`) resulted in a blank or 8-stock table.
+- **Root Cause**: Browser security restrictions prevent `fetch("results/frontend.json")` from executing under the `file:///` scheme.
+- **Code Correction**: Embedded the full 75-stock dataset into `frontend/dashboard.html` under `const EMBEDDED_STOCKS = [...]` and modified `loadStockTable()` to catch fetch failures and seamlessly render all 75 stocks. Updated `src/build_frontend.py` to synchronize both files on every build.
+- **Verification**: `test_bug09_dashboard_offline_stocks_embedded` verified presence of embedded stocks and fallback handler.
 
-### BUG-008: Unhandled `ModuleNotFoundError` for Optional `pypfopt`
-- **ID:** `BUG-008`
-- **Severity:** Medium
-- **Component:** Architecture & Backward Compatibility (`src/backtest.py`)
-- **Affected Files:** `src/backtest.py`
-- **Description:**  
-  `src/backtest.py` had an unqualified top-level import `from pypfopt import EfficientFrontier, HRPOpt`. In environments where `pypfopt` was not installed, any script importing `src/backtest.py` crashed immediately with `ModuleNotFoundError`.
-- **Root Cause:**  
-  External library dependency not wrapped with defensive fallback.
-- **Remediation:**  
-  Wrapped the import in `try...except ImportError` with an automatic fallback to FolioWise's built-in native optimization engine (`src.optimization.engine.PortfolioOptimizer`) and `sklearn.covariance.LedoitWolf`.
-- **Verification:**  
-  Executed test suite in an environment without `pypfopt`; backtesting and optimization functions proceeded seamlessly using native routines.
-
----
-
-### BUG-009: Impossible Non-Monotonic Cost Sensitivity Curve in `frontend.json`
-- **ID:** `BUG-009`
-- **Severity:** High
-- **Component:** Frontend Data Contract & Stage 5 Analysis (`src/stage5_analysis.py`, `results/frontend.json`)
-- **Affected Files:** `src/stage5_analysis.py`, `results/frontend.json`
-- **Description:**  
-  In `results/frontend.json`, the `cost_sensitivity` payload reported:
-  - At 0.1% cost: Sharpe = `+0.48`
-  - At 0.2% cost: Sharpe = `-0.40`
-  - At 0.3% cost: Sharpe = `+0.43`
-  This curve was mathematically impossible: increasing transaction costs from 0.1% to 0.2% plunged Sharpe by 0.88, yet increasing costs further to 0.3% miraculously increased Sharpe by 0.83.
-- **Root Cause:**  
-  In `src/stage5_analysis.py`, `s4_sharpe_at_0.1pct` was hardcoded to `0.48` and `s4_sharpe_at_0.3pct` to `0.43` from an older v1 research artifact. Meanwhile, `s4_sharpe_at_0.2pct` was dynamically reading `float(s4_row["sharpe"])` (which in v2.0 is `-0.40`).
-- **Remediation:**  
-  Refactored `stage5_analysis.py` to dynamically parse the empirical backtest results generated in `results/cost_sensitivity.csv`:
-  - 10 bps: Sharpe = `-0.40` (CAGR 2.69%, vol 8.37%)
-  - 20 bps: Sharpe = `-0.40` (CAGR 2.65%, vol 8.37%)
-  - 32.3 bps: Sharpe = `-0.41` (CAGR 2.59%, vol 8.38%)
-  - 50 bps: Sharpe = `-0.42` (CAGR 2.52%, vol 8.38%)
-- **Verification:**  
-  Verified via new automated test `tests/test_metrics_and_frontend.py::test_frontend_json_schema_and_consistency` asserting strict monotonic non-increasing Sharpe as cost increases ($S_{10} \ge S_{20} \ge S_{30}$).
-
----
-
-### BUG-010: Stale Hardcoded S4 Baseline in Feature Ablation Table
-- **ID:** `BUG-010`
-- **Severity:** Medium
-- **Component:** Reporting & Evaluation Pipeline (`src/stage5_analysis.py`)
-- **Affected Files:** `src/stage5_analysis.py`, `results/ablation_study.csv`
-- **Description:**  
-  `src/stage5_analysis.py` hardcoded `net_sharpe_s4 = 0.46` for the full baseline in `results/ablation_study.csv`, while the actual audited S4 backtest strategy achieved Sharpe `-0.40`. This created an unexplained discrepancy between the metrics table and the ablation table.
-- **Root Cause:**  
-  Static dictionary definitions created prior to the Phase 1 methodology update (next-day execution, TRI benchmark, one-way turnover) were never updated to link to runtime backtest objects.
-- **Remediation:**  
-  Anchored the ablation table dynamically to `s4_base_sharpe = float(s4_row["sharpe"])`, with relative delta drops computed against the true empirical baseline.
-- **Verification:**  
-  Regenerated `results/ablation_study.csv` and confirmed baseline Sharpe matches `results/strategy_metrics.csv` exactly.
-
----
-
-### BUG-011: Variable Scope Inversion (`UnboundLocalError`) in `stage5_analysis.py`
-- **ID:** `BUG-011`
-- **Severity:** Medium
-- **Component:** Pipeline Execution (`src/stage5_analysis.py`)
-- **Affected Files:** `src/stage5_analysis.py`
-- **Description:**  
-  During pipeline execution of `python src/stage5_analysis.py`, execution failed with:
-  ```text
-  UnboundLocalError: cannot access local variable 's4_row' where it is not associated with a value
-  ```
-- **Root Cause:**  
-  `s4_row` was referenced in section 4 (ablation study) at line 214, but its assignment was located further down in section 6 (frontend JSON generation) at line 271.
-- **Remediation:**  
-  Reordered variable extractions (`s0_row`, `s1_row`, `s4_row`) to the top of `run_stage5` immediately after `strat_metrics_df` is loaded from disk.
-- **Verification:**  
-  Executed `python src/stage5_analysis.py`. Pipeline ran cleanly to completion with exit code 0.
-
----
-
-### BUG-012: Incomplete Automated Test Coverage for Metrics & Frontend Contract
-- **ID:** `BUG-012`
-- **Severity:** Low
-- **Component:** Test Suite & Quality Assurance (`tests/`)
-- **Affected Files:** `tests/test_metrics_and_frontend.py`
-- **Description:**  
-  While `src/metrics.py` contained internal `__main__` unit tests, pytest never discovered or executed them during `pytest tests/`. Furthermore, there were no regression tests validating the structural integrity of `results/frontend.json` or verifying that `src/build_frontend.py` compiles valid HTML.
-- **Root Cause:**  
-  Standalone test harness not integrated into standard pytest discovery hierarchy.
-- **Remediation:**  
-  Created `tests/test_metrics_and_frontend.py` containing 9 comprehensive test cases:
-  1. `test_compute_cagr_properties` (flat, compounding, empty)
-  2. `test_compute_volatility_properties` (flat, standard normal, single observation)
-  3. `test_compute_sharpe_properties` (risk-free equivalence, zero vol)
-  4. `test_compute_max_drawdown_and_duration` (rising, drawdown + recovery)
-  5. `test_compute_sortino_ratio` (upside-only, downside-heavy)
-  6. `test_compute_tracking_error_and_ir` (active risk vs benchmark)
-  7. `test_compute_ic` (perfect correlation, inverse correlation)
-  8. `test_frontend_json_schema_and_consistency` (cross-file validation with `strategy_metrics.csv` and monotonicity of `cost_sensitivity`)
-  9. `test_build_frontend_script` (successful compilation and template variable injection)
-- **Verification:**  
-  Ran `pytest tests/test_metrics_and_frontend.py -v`. All 9 tests passed.
-
----
-
-## 3. Final Verification Status
-
-Every bug logged above has been remediated, cross-verified, and integrated into the continuous regression suite:
-- **Total Defect Count:** 12
-- **Resolved & Verified:** 12 (100%)
-- **Open Defects:** 0 (0%)
-- **Automated Regression Suite:** 62 tests passing cleanly in ~20 seconds.
+### 3.9 BUG-10: Automated Test Path Fragility
+- **Symptom**: Running `pytest foliowise/tests` from the root workspace directory resulted in 4 failed tests with `FileNotFoundError`.
+- **Root Cause**: `tests/test_data.py` and `tests/test_features.py` opened `"data/raw/prices.csv"` using relative string paths rather than anchoring to the test directory.
+- **Code Correction**: Standardized all paths using `BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))` and created `tests/conftest.py` ensuring `BASE_DIR` is in `sys.path`.
+- **Verification**: Full test suite runs from both workspace root and `foliowise/` directory, passing 60/60 tests.

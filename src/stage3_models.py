@@ -162,8 +162,13 @@ def run_stage3(base_dir="."):
             random_state=RANDOM_SEED
         ).fit(X_train, y_train)
 
-        # 6. XGBoost-LSTM Ensemble (Validation-Tuned)
+        # 6. XGBoost-LSTM Ensemble (Validation-Tuned on in-fold holdout)
+        val_split = max(1, int(len(X_train) * 0.80))
+        X_val_tr = X_train[val_split:]
+        y_val_tr = y_train[val_split:]
         ensemble = ModelEnsemble(weight_xgb=0.5, weight_lstm=0.5, model_xgb=xgb, model_lstm=lstm)
+        w_x, w_l = ensemble.tune_weights_on_validation(X_val_tr, y_val_tr)
+        print(f"Validation-tuned Ensemble weights: XGBoost={w_x:.3f}, LSTM={w_l:.3f}")
 
         # Generate Out-of-Sample Predictions
         for rebal_date in test_dates_year:

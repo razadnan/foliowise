@@ -315,11 +315,18 @@ def run_stage4(base_dir="."):
         w_s3 = optimize_max_sharpe(hist_mean_ann, cov_matrix, eligible_tickers, cap=WEIGHT_CAP, rf=RISK_FREE_RATE, fallback_log=fallback_records, rebal_date=rebal_date, strat_name="S3")
         rebal_weights["S3"][exec_date] = w_s3
 
-        # S4: Max Sharpe ML (Annualized prediction conversion)
+        # S4: Max Sharpe ML (Safe prediction conversion: rank tilt vs arithmetic compounding)
         if rebal_date in ml_pred_piv.index:
-            ml_21d = ml_pred_piv.loc[rebal_date].reindex(eligible_tickers).fillna(0.0)
-            ml_ann = (1.0 + ml_21d) ** 12.0 - 1.0 # Standard compounding conversion
-            blend_returns = 0.5 * ml_ann + 0.5 * hist_mean_ann
+            ml_21d = ml_pred_piv.loc[rebal_date].reindex(eligible_tickers).fillna(0.50)
+            mean_ml = float(ml_21d.mean())
+            if 0.20 <= mean_ml <= 0.80 and ml_21d.min() >= -0.05 and ml_21d.max() <= 1.05:
+                # Standardized cross-sectional rank target: map (rank - 0.50) into annualized alpha tilt
+                alpha_tilt = (ml_21d - 0.50) * 0.08
+                blend_returns = hist_mean_ann + alpha_tilt
+            else:
+                ml_clipped = np.clip(ml_21d, -0.90, 2.0)
+                ml_ann = (1.0 + ml_clipped) ** 12.0 - 1.0
+                blend_returns = 0.5 * ml_ann + 0.5 * hist_mean_ann
         else:
             blend_returns = hist_mean_ann
         w_s4 = optimize_max_sharpe(blend_returns, cov_matrix, eligible_tickers, cap=WEIGHT_CAP, rf=RISK_FREE_RATE, fallback_log=fallback_records, rebal_date=rebal_date, strat_name="S4")
@@ -404,20 +411,39 @@ def run_stage4(base_dir="."):
             held_tickers = current_weights[current_weights > 1e-6].index.tolist()
             day_returns = piv_returns.loc[d].reindex(held_tickers).fillna(0.0)
 
-            # Rebalance occurs at close of execution day d
+            # 1. Return earned during today's session by existing holdings (pre-close)
+            gross_ret = float(np.sum(current_weights * day_returns)) if len(day_returns) > 0 else 0.0
+
+            # 2. Rebalance executes at market close of execution day d
             turnover = 0.0
             if d in execution_dates_set and i > 0:
                 target_w = pd.Series(rebal_weights[s][d])
-                # One-way turnover: 0.5 * sum(|w_target - w_drifted|)
-                all_t = sorted(list(set(current_weights.index).union(set(target_w.index))))
-                w_curr_al = current_weights.reindex(all_t, fill_value=0.0)
+                # Drift current weights through today's session prior to rebalance
+                current_weights = current_weights * (1.0 + day_returns)
+                port_growth = 1.0 + gross_ret
+                drifted_w = (current_weights / port_growth) if port_growth > 0 else current_weights
+
+                # One-way turnover against drifted weights
+                all_t = sorted(list(set(drifted_w.index).union(set(target_w.index))))
+                w_curr_al = drifted_w.reindex(all_t, fill_value=0.0)
                 w_targ_al = target_w.reindex(all_t, fill_value=0.0)
                 turnover = 0.5 * float(np.sum(np.abs(w_targ_al - w_curr_al)))
+                # Target weights execute at close and become effective post-close
                 current_weights = target_w.copy()
             elif i == 0:
                 turnover = 1.0 # Initial setup
+                current_weights = current_weights * (1.0 + day_returns)
+                if (1.0 + gross_ret) > 0:
+                    current_weights = current_weights / (1.0 + gross_ret)
+            else:
+                # Normal drift on non-rebalance days
+                current_weights = current_weights * (1.0 + day_returns)
+                port_growth = 1.0 + gross_ret
+                if port_growth > 0:
+                    current_weights = current_weights / port_growth
+                else:
+                    current_weights = pd.Series(1.0 / len(current_weights), index=current_weights.index)
 
-            gross_ret = float(np.sum(current_weights * day_returns)) if len(day_returns) > 0 else 0.0
             cost_penalty = BASE_COST * turnover if turnover > 0 and i > 0 else 0.0
             net_ret = gross_ret - cost_penalty
 
@@ -428,14 +454,6 @@ def run_stage4(base_dir="."):
                 "net_ret": net_ret,
                 "turnover": turnover
             })
-
-            # Weight drift with price changes
-            current_weights = current_weights * (1.0 + day_returns)
-            port_growth = 1.0 + gross_ret
-            if port_growth > 0:
-                current_weights = current_weights / port_growth
-            else:
-                current_weights = pd.Series(1.0 / len(current_weights), index=current_weights.index)
 
     all_daily_records = []
     for s in strategies:

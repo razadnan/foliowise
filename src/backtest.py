@@ -30,6 +30,7 @@ from typing import Callable, Dict, Optional
 
 import numpy as np
 import pandas as pd
+from sklearn.covariance import LedoitWolf
 
 try:
     from pypfopt import EfficientFrontier, HRPOpt, expected_returns, risk_models
@@ -37,8 +38,8 @@ try:
     HAS_PYPFOPT = True
 except ImportError:
     HAS_PYPFOPT = False
-    from sklearn.covariance import LedoitWolf
-    from src.optimization.engine import PortfolioOptimizer
+
+from src.optimization.engine import PortfolioOptimizer
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -163,7 +164,8 @@ class BacktestEngine:
                 cs = CovarianceShrinkage(sub)
                 cov = cs.ledoit_wolf()
             else:
-                lw = LedoitWolf().fit(sub)
+                lw = LedoitWolf()
+                lw.fit(sub.values)
                 cov = pd.DataFrame(lw.covariance_ * 252.0, index=sub.columns, columns=sub.columns)
         except Exception as exc:
             logger.warning("Ledoit-Wolf failed (%s); using sample cov.", exc)
@@ -241,6 +243,7 @@ class BacktestEngine:
             end_iloc = self.returns.index.get_loc(date)
             start_iloc = max(0, end_iloc - self.config["cov_lookback"] + 1)
             window = self.returns.iloc[start_iloc: end_iloc + 1][valid].dropna(axis=0, how="any")
+            
             if HAS_PYPFOPT:
                 mu = expected_returns.mean_historical_return(
                     window, returns_data=True, frequency=252
@@ -257,7 +260,7 @@ class BacktestEngine:
             else:
                 mu = window.mean() * 252.0
                 opt = PortfolioOptimizer(default_stock_cap=self.config["weight_cap"], default_rf=self.config["risk_free"])
-                cleaned = opt.optimize_max_sharpe(mu, cov.loc[valid, valid], valid, stock_cap=self.config["weight_cap"], rf=self.config["risk_free"])
+                cleaned = opt.optimize_max_sharpe(mu, cov.loc[valid, valid], valid, stock_cap=self.config["weight_cap"])
 
             weights = {t: 0.0 for t in universe_tickers}
             weights.update({t: cleaned.get(t, 0.0) for t in valid})
@@ -284,8 +287,8 @@ class BacktestEngine:
             if len(valid) < 2:
                 return self._equal_weight_dict(universe_tickers)
 
-            # Build mu series from ML predictions (annualise 21-day return)
-            mu_vals = {t: preds[t] * (252 / 21) for t in valid}
+            # Build mu series from ML predictions (annualise return or alpha)
+            mu_vals = {t: preds[t] * (252 / 21) if abs(preds[t]) < 1.0 and abs(preds[t]) > 0.05 else preds[t] for t in valid}
             mu = pd.Series(mu_vals)
 
             if HAS_PYPFOPT:
@@ -300,7 +303,7 @@ class BacktestEngine:
                     cleaned = ef.clean_weights()
             else:
                 opt = PortfolioOptimizer(default_stock_cap=self.config["weight_cap"], default_rf=self.config["risk_free"])
-                cleaned = opt.optimize_max_sharpe(mu, cov.loc[valid, valid], valid, stock_cap=self.config["weight_cap"], rf=self.config["risk_free"])
+                cleaned = opt.optimize_max_sharpe(mu, cov.loc[valid, valid], valid, stock_cap=self.config["weight_cap"])
 
             weights = {t: 0.0 for t in universe_tickers}
             weights.update({t: cleaned.get(t, 0.0) for t in valid})
@@ -335,7 +338,7 @@ class BacktestEngine:
         self, date: pd.Timestamp, universe_tickers: list
     ) -> dict:
         """
-        S6: Hierarchical Risk Parity (PyPortfolioOpt HRPOpt).
+        S6: Hierarchical Risk Parity.
         """
         try:
             end_iloc = self.returns.index.get_loc(date)
@@ -358,8 +361,8 @@ class BacktestEngine:
                     cleaned = hrp.clean_weights()
             else:
                 opt = PortfolioOptimizer(default_stock_cap=self.config["weight_cap"])
-                cov_sub = sub.cov() * 252.0
-                cleaned = opt.optimize_hrp(cov_sub, valid, stock_cap=self.config["weight_cap"])
+                cov = sub.cov() * 252.0
+                cleaned = opt.optimize_hrp(cov, tickers=valid, stock_cap=self.config["weight_cap"])
 
             weights = {t: 0.0 for t in universe_tickers}
             weights.update({t: cleaned.get(t, 0.0) for t in valid})
@@ -370,6 +373,8 @@ class BacktestEngine:
             return self._normalise(weights, universe_tickers)
 
         except Exception as exc:
+            logger.warning("HRP failed on %s (%s); fallback EW.", date, exc)
+            return self._equal_weight_dict(universe_tickers)
             logger.warning("HRP failed on %s (%s); fallback EW.", date, exc)
             return self._equal_weight_dict(universe_tickers)
 

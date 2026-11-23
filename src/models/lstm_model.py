@@ -19,6 +19,7 @@ from sklearn.preprocessing import StandardScaler
 
 import torch
 import torch.nn as nn
+from torch.utils.data import TensorDataset, DataLoader
 
 
 def set_seed(seed: int = 42):
@@ -88,47 +89,55 @@ class LSTMModel:
 
     def _prepare_sequences(self, X_scaled: np.ndarray) -> np.ndarray:
         """
-        Construct genuine temporal sliding window sequences (N, seq_len, F)
-        from chronological feature observations.
-        If input is already 3D (N, seq_len, F), returns as is.
-        For 2D chronological arrays, each step t contains [x_{t-seq_len+1}, ..., x_t]
-        padded with the earliest historical observation for initial warm-up steps.
+        Construct genuine historical sliding-window sequences of shape (N, seq_len, F).
+
+        If input is already a 3D temporal sequence matrix (N, seq_len, F), it is returned directly.
+        If input is a 2D matrix (N, F), genuine chronological lag windows are formed:
+        for each sample at temporal index t, the sequence consists of actual historical observations
+        [X[t - seq_len + 1], ..., X[t]]. Early boundary samples (t < seq_len - 1) are left-padded
+        with the earliest available historical observation.
         """
         if X_scaled.ndim == 3:
             return X_scaled.astype(np.float32)
 
         N, F = X_scaled.shape
         seqs = np.zeros((N, self.seq_len, F), dtype=np.float32)
-        for i in range(N):
-            start = max(0, i - self.seq_len + 1)
-            window = X_scaled[start : i + 1]
-            if len(window) < self.seq_len:
-                pad_len = self.seq_len - len(window)
-                pad = np.repeat(window[:1], pad_len, axis=0)
-                window = np.vstack([pad, window])
-            seqs[i] = window
+        for t in range(N):
+            start_idx = max(0, t - self.seq_len + 1)
+            hist = X_scaled[start_idx : t + 1]
+            pad_len = self.seq_len - len(hist)
+            if pad_len > 0:
+                pad = np.repeat(X_scaled[start_idx : start_idx + 1], pad_len, axis=0)
+                seqs[t] = np.vstack([pad, hist])
+            else:
+                seqs[t] = hist
         return seqs
 
     def fit(self, X: np.ndarray, y: np.ndarray) -> "LSTMModel":
         """
         Fit scaler and LSTM network on training fold.
+        Supports both 2D (N, F) and genuine 3D (N, seq_len, F) inputs.
         """
         set_seed(self.random_state)
         if X.ndim == 3:
-            # Flatten to scale features across all sequence steps then restore shape
             N, S, F = X.shape
-            X_flat = X.reshape(-1, F)
-            X_scaled_flat = self.scaler.fit_transform(X_flat)
-            X_seq = X_scaled_flat.reshape(N, S, F).astype(np.float32)
+            X_reshaped = X.reshape(-1, F)
+            X_scaled = self.scaler.fit_transform(X_reshaped).reshape(N, S, F)
+            X_seq = X_scaled.astype(np.float32)
+            input_dim = F
         else:
             X_scaled = self.scaler.fit_transform(X)
             X_seq = self._prepare_sequences(X_scaled)
+            input_dim = X.shape[1]
 
         tensor_x = torch.tensor(X_seq, dtype=torch.float32)
         tensor_y = torch.tensor(y, dtype=torch.float32)
 
+        dataset = TensorDataset(tensor_x, tensor_y)
+        loader = DataLoader(dataset, batch_size=self.batch_size, shuffle=True)
+
         self.net = PyTorchLSTMNet(
-            input_dim=self.input_dim,
+            input_dim=input_dim,
             hidden_dim=self.hidden_dim,
             num_layers=self.num_layers,
             dropout=0.1
@@ -138,16 +147,8 @@ class LSTMModel:
         criterion = nn.MSELoss()
         optimizer = torch.optim.AdamW(self.net.parameters(), lr=self.lr, weight_decay=1e-4)
 
-        N = len(tensor_x)
-        batch_size = min(self.batch_size, N)
-
         for epoch in range(self.epochs):
-            perm = torch.randperm(N)
-            for i in range(0, N, batch_size):
-                idx = perm[i : i + batch_size]
-                batch_x = tensor_x[idx]
-                batch_y = tensor_y[idx]
-
+            for batch_x, batch_y in loader:
                 optimizer.zero_grad()
                 pred = self.net(batch_x)
                 loss = criterion(pred, batch_y)
@@ -160,6 +161,7 @@ class LSTMModel:
     def predict(self, X: np.ndarray) -> np.ndarray:
         """
         Generate out-of-sample predictions.
+        Supports both 2D (N, F) and genuine 3D (N, seq_len, F) inputs.
         """
         if self.net is None:
             raise RuntimeError("Model must be fitted before predict.")
@@ -167,9 +169,9 @@ class LSTMModel:
         self.net.eval()
         if X.ndim == 3:
             N, S, F = X.shape
-            X_flat = X.reshape(-1, F)
-            X_scaled_flat = self.scaler.transform(X_flat)
-            X_seq = X_scaled_flat.reshape(N, S, F).astype(np.float32)
+            X_reshaped = X.reshape(-1, F)
+            X_scaled = self.scaler.transform(X_reshaped).reshape(N, S, F)
+            X_seq = X_scaled.astype(np.float32)
         else:
             X_scaled = self.scaler.transform(X)
             X_seq = self._prepare_sequences(X_scaled)

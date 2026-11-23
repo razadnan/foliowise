@@ -81,9 +81,12 @@ def test_universe_sector_mapping(resolver):
     assert sectors["SUNPHARMA.NS"] == "Pharma"
 
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
 def test_market_data_prices_clean():
     """Verify raw prices table has no nulls, non-positive prices, or duplicate records."""
-    prices_path = "data/raw/prices.csv"
+    prices_path = os.path.join(BASE_DIR, "data", "raw", "prices.csv")
     assert os.path.exists(prices_path), "prices.csv does not exist"
     df = pd.read_csv(prices_path)
 
@@ -108,8 +111,8 @@ def test_market_data_prices_clean():
 
 def test_benchmark_price_vs_tri_separation():
     """Verify Price Index and TRI benchmarks are separate and TRI reflects dividend premium."""
-    idx_path = "data/raw/index.csv"
-    tri_path = "data/raw/index_tri.csv"
+    idx_path = os.path.join(BASE_DIR, "data", "raw", "index.csv")
+    tri_path = os.path.join(BASE_DIR, "data", "raw", "index_tri.csv")
     assert os.path.exists(idx_path)
     assert os.path.exists(tri_path)
 
@@ -131,7 +134,7 @@ def test_benchmark_price_vs_tri_separation():
 
 def test_india_vix_integrity():
     """Verify India VIX dataset is complete, continuous, and within realistic limits."""
-    vix_path = "data/raw/india_vix.csv"
+    vix_path = os.path.join(BASE_DIR, "data", "raw", "india_vix.csv")
     assert os.path.exists(vix_path)
     df_vix = pd.read_csv(vix_path)
 
@@ -169,7 +172,7 @@ def test_storage_parquet_and_sqlite(storage):
         "ticker": ["RELIANCE.NS", "TCS.NS"],
         "weight": [0.6, 0.4]
     })
-    test_parquet_path = "data/processed/test_roundtrip.parquet"
+    test_parquet_path = os.path.join(BASE_DIR, "data", "processed", "test_roundtrip.parquet")
     storage.save_parquet(test_df, test_parquet_path)
     loaded_parquet = storage.load_parquet(test_parquet_path)
     pd.testing.assert_frame_equal(test_df, loaded_parquet)

@@ -19,6 +19,7 @@ runs stationary block bootstrap hypothesis tests, and outputs immutable results 
 
 import os
 import sys
+from typing import Optional, Dict, List, Tuple, Any
 
 # Ensure root directory is in sys.path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -48,6 +49,41 @@ def load_sector_mapping(base_dir: str = ".") -> dict:
             df_uni = pd.read_csv(uni_path)
             return dict(zip(df_uni["ticker"], df_uni["sector"]))
         return {}
+
+
+def convert_predictions_to_expected_returns(
+    preds: pd.Series,
+    hist_means: pd.Series,
+    annualize: bool = True,
+    target_type: Optional[str] = None
+) -> pd.Series:
+    """
+    Safely convert model predictions into annualized expected returns for Markowitz optimization.
+    
+    Prevents catastrophic compounding bugs when predictions are cross-sectional percentile ranks
+    in [0, 1] centered at 0.50.
+    """
+    if preds is None or len(preds) == 0:
+        return hist_means
+
+    p = preds.reindex(hist_means.index).fillna(0.50 if target_type == "rank" else 0.0)
+
+    # Auto-detect or use target_type
+    is_rank = (target_type == "rank")
+    if target_type is None:
+        mean_p = float(p.mean())
+        if 0.20 <= mean_p <= 0.80 and p.min() >= -0.05 and p.max() <= 1.05:
+            is_rank = True
+
+    if is_rank:
+        # Cross-sectional rank target: map (rank - 0.50) into active expected return tilt (+/- 4% annualized)
+        alpha_tilt = (p - 0.50) * 0.08
+        return hist_means + alpha_tilt
+    else:
+        # Arithmetic return target
+        p_clipped = np.clip(p, -0.90, 2.0)
+        p_ann = (1.0 + p_clipped) ** 12.0 - 1.0 if annualize else p_clipped
+        return 0.5 * p_ann + 0.5 * hist_means
 
 
 def run_experiments(base_dir: str = ".") -> dict:
@@ -178,10 +214,8 @@ def run_experiments(base_dir: str = ".") -> dict:
         # Helper for ML expected return conversion
         def get_ml_expected_returns(model_name: str):
             if model_name in model_preds and rebal_date in model_preds[model_name].index:
-                p_20d = model_preds[model_name].loc[rebal_date].reindex(eligible_tickers).fillna(0.0)
-                # Convert 20-day return to annualized rate and blend 50/50 with historical mean
-                p_ann = (1.0 + p_20d) ** 12.0 - 1.0
-                return 0.5 * p_ann + 0.5 * hist_mean_ann
+                p_20d = model_preds[model_name].loc[rebal_date].reindex(eligible_tickers).fillna(0.50)
+                return convert_predictions_to_expected_returns(p_20d, hist_mean_ann)
             return hist_mean_ann
 
         # E3: XGBoost + Markowitz (10% asset cap, 35% sector cap, turnover regularized)
@@ -512,4 +546,5 @@ def run_experiments(base_dir: str = ".") -> dict:
 
 
 if __name__ == "__main__":
-    run_experiments(".")
+    base = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    run_experiments(base)

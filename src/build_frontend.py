@@ -38,9 +38,78 @@ DIFF_FILE = FRONTEND_DIR / "baseline_diff.txt"
 FRONTEND_JSON = RESULTS_DIR / "frontend.json"
 
 
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
+DASHBOARD_HTML = FRONTEND_DIR / "dashboard.html"
+
+
+def _update_dashboard_html(dashboard_path: Path, stocks: list) -> bool:
+    """
+    Ensure dashboard.html embeds all stocks so it renders correctly
+    even when opened locally under file:/// without CORS/web server.
+    """
+    if not dashboard_path.exists():
+        return False
+    
+    with open(dashboard_path, "r", encoding="utf-8") as fh:
+        html = fh.read()
+
+    stocks_json = json.dumps(stocks)
+    
+    # Check if EMBEDDED_STOCKS is already defined
+    if "const EMBEDDED_STOCKS =" in html:
+        html = re.sub(
+            r"const EMBEDDED_STOCKS\s*=\s*\[.*?\];",
+            f"const EMBEDDED_STOCKS = {stocks_json};",
+            html,
+            flags=re.DOTALL
+        )
+    else:
+        # Define EMBEDDED_STOCKS right before loadStockTable
+        embed_def = f"\n// Pre-embedded 75-stock dataset for direct offline / file:/// navigation\nconst EMBEDDED_STOCKS = {stocks_json};\n\n"
+        html = html.replace("function loadStockTable() {", embed_def + "function loadStockTable() {")
+
+    # Update loadStockTable implementation to use renderStockRows and EMBEDDED_STOCKS on catch
+    new_load_logic = """function renderStockRows(stocks) {
+  const tb = document.getElementById("allocationStockTable");
+  if (!tb || !stocks) return;
+  tb.innerHTML = stocks.map(s => {
+    const name = s.name || s[0];
+    const sector = s.sector || s[1] || "Equity";
+    const m = (s.m !== undefined ? s.m : s[2]);
+    const v = (s.v !== undefined ? s.v : s[3]);
+    return `
+      <tr>
+        <td class="bold">${name}</td>
+        <td>${sector}</td>
+        <td class="r">${(m * 100).toFixed(1)}%</td>
+        <td class="r">${(v * 100).toFixed(1)}%</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function loadStockTable() {
+  fetch("results/frontend.json")
+    .then(r => r.json())
+    .then(data => {
+      if (data && data.stocks && data.stocks.length > 0) {
+        renderStockRows(data.stocks);
+      } else {
+        renderStockRows(EMBEDDED_STOCKS);
+      }
+    })
+    .catch(() => {
+      // Offline file:/// or CORS fallback: render all point-in-time universe stocks
+      renderStockRows(EMBEDDED_STOCKS);
+    });
+}"""
+
+    pattern = re.compile(r"function loadStockTable\(\)\s*\{.*?\}\s*function drawEquityChart", re.DOTALL)
+    if pattern.search(html):
+        html = pattern.sub(new_load_logic + "\n\nfunction drawEquityChart", html)
+
+    with open(dashboard_path, "w", encoding="utf-8") as fh:
+        fh.write(html)
+    return True
 
 def _stocks_to_js(stocks: list) -> str:
     """
@@ -164,6 +233,10 @@ def main():
         fh.writelines(diff)
     n_changed = sum(1 for line in diff if line.startswith("+") or line.startswith("-"))
     print(f"Saved diff ({n_changed} changed lines): {DIFF_FILE}")
+    # --- Update dashboard.html if present ---
+    if _update_dashboard_html(DASHBOARD_HTML, payload["stocks"]):
+        print(f"Updated: {DASHBOARD_HTML} with {len(payload['stocks'])} embedded stocks for offline/file:/// view.")
+
     print(
         f"Stock count: {len(payload['stocks'])} | "
         f"NIFTY m={payload['nifty']['m']:.3f} v={payload['nifty']['v']:.3f} | "
