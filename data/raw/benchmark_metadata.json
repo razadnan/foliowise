@@ -1,0 +1,35 @@
+{
+  "price_return_benchmark": {
+    "symbol": "^NSEI",
+    "ticker": "^NSEI",
+    "name": "NIFTY 50 Price Return Index",
+    "source": "Yahoo Finance / NSE India",
+    "type": "OFFICIAL_PRICE_RETURN_INDEX",
+    "dividend_reinvested": false,
+    "start_date": "2015-01-02",
+    "end_date": "2026-11-13",
+    "rows": 2921,
+    "total_return_pct": 199.5,
+    "notes": "Official capitalization-weighted price index excluding dividend cashflows"
+  },
+  "total_return_proxy": {
+    "symbol": "NIFTYBEES.NS",
+    "source_ticker": "NIFTYBEES.NS",
+    "name": "NIFTY 50 Total Return Benchmark (Investable ETF Proxy)",
+    "source": "Nippon India ETF Nifty 50 BeES / Yahoo Finance",
+    "type": "INVESTABLE_ETF_TOTAL_RETURN_PROXY",
+    "dividend_reinvested": true,
+    "start_date": "2015-01-02",
+    "end_date": "2026-11-13",
+    "rows": 2921,
+    "total_return_pct": 247.85,
+    "dividend_drift_premium_pct": 48.35,
+    "expense_ratio_pct": 0.04,
+    "tracking_error_and_drag_disclosures": {
+      "tracking_error_pct": "0.05% - 0.12%",
+      "expense_ratio_pct": 0.04,
+      "trading_frictions": "Bid-ask spread, impact cost, and NAV premium/discount variations"
+    },
+    "methodology_disclaimer": "NIFTYBEES.NS is an exchange-traded fund tracking NIFTY 50 with automatic dividend reinvestment into the portfolio basket. Used as an investable Total Return Index proxy. Reflects real fund-level frictions including ~4 bps TER and bid-ask spreads, avoiding artificial synthetic dividend yield modeling."
+  }
+}

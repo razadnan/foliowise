@@ -4,76 +4,43 @@ src/data/market_data.py
 Market Data Pipeline for FolioWise.
 
 Fetches, aligns, cleans, validates, and stores:
-1. Daily stock OHLCV for point-in-time verified constituents
+1. Daily stock OHLCV for all point-in-time verified historical NIFTY 50 constituents
 2. NIFTY 50 Benchmark Price Index (^NSEI)
-3. Investable NIFTY 50 Total Return Index (NIFTYBEES.NS)
+3. Investable NIFTY 50 Total Return Index Proxy (NIFTYBEES.NS)
 4. India VIX (^INDIAVIX) daily volatility index
 5. Sector classifications and metadata
 6. Apache Parquet and SQLite persistence
 
 Enforces:
+- Point-in-time universe resolution (no hardcoded 27-survivor restriction)
 - Forward fill limit = 3 days (FR-1.5)
 - Strict `filled` tracking column
 - Zero backward filling
 - Zero silent synthetic substitutions
+- Never interprets a missing price as a zero return
 """
 
 import os
 import sys
+from typing import Dict, List, Optional, Tuple, Any
+import numpy as np
+import pandas as pd
+import yfinance as yf
 
 # Ensure repository root is in sys.path
 _ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
-import warnings
-from typing import Dict, List, Optional, Tuple, Any
-import numpy as np
-import pandas as pd
-import yfinance as yf
-
 from src.data.benchmark import BenchmarkManager
 from src.data.validator import DataValidator
 from src.data.storage import DataStorage
 from src.universe.resolver import UniverseResolver
 
-warnings.filterwarnings("ignore")
-
-# 27 candidate stocks with continuous 2015-2026 data
-CANDIDATE_UNIVERSE = {
-    "RELIANCE.NS": ("Reliance Industries", "Energy"),
-    "TCS.NS": ("Tata Consultancy Services", "IT"),
-    "HDFCBANK.NS": ("HDFC Bank", "Banking"),
-    "INFY.NS": ("Infosys", "IT"),
-    "ICICIBANK.NS": ("ICICI Bank", "Banking"),
-    "HINDUNILVR.NS": ("Hindustan Unilever", "FMCG"),
-    "ITC.NS": ("ITC", "FMCG"),
-    "SUNPHARMA.NS": ("Sun Pharma", "Pharma"),
-    "LT.NS": ("Larsen & Toubro", "Industrials"),
-    "MARUTI.NS": ("Maruti Suzuki", "Auto"),
-    "BHARTIARTL.NS": ("Bharti Airtel", "Telecom"),
-    "TITAN.NS": ("Titan", "Consumer"),
-    "NESTLEIND.NS": ("Nestle India", "FMCG"),
-    "AXISBANK.NS": ("Axis Bank", "Banking"),
-    "KOTAKBANK.NS": ("Kotak Mahindra Bank", "Banking"),
-    "BAJFINANCE.NS": ("Bajaj Finance", "Banking"),
-    "WIPRO.NS": ("Wipro", "IT"),
-    "HCLTECH.NS": ("HCL Technologies", "IT"),
-    "ULTRACEMCO.NS": ("UltraTech Cement", "Industrials"),
-    "ASIANPAINT.NS": ("Asian Paints", "Consumer"),
-    "TECHM.NS": ("Tech Mahindra", "IT"),
-    "POWERGRID.NS": ("Power Grid", "Energy"),
-    "NTPC.NS": ("NTPC", "Energy"),
-    "ONGC.NS": ("ONGC", "Energy"),
-    "COALINDIA.NS": ("Coal India", "Energy"),
-    "BAJAJFINSV.NS": ("Bajaj Finserv", "Banking"),
-    "DRREDDY.NS": ("Dr. Reddy's Laboratories", "Pharma"),
-}
-
 
 class MarketDataPipeline:
     """
-    Core data pipeline orchestrator for FolioWise.
+    Core market data pipeline orchestrator for FolioWise.
     """
 
     def __init__(self, base_dir: str = "."):
@@ -94,7 +61,7 @@ class MarketDataPipeline:
     def fetch_india_vix(
         self,
         start_date: str = "2015-01-01",
-        end_date: str = "2026-11-15",
+        end_date: str = "2026-11-20",
         use_cache: bool = True
     ) -> pd.DataFrame:
         """
@@ -120,22 +87,42 @@ class MarketDataPipeline:
         print(f"Saved India VIX to {vix_path} ({len(df_vix)} rows)")
         return df_vix
 
+    def get_historical_universe_spec(self) -> Dict[str, Tuple[str, str]]:
+        """
+        Dynamically extract all historical constituent tickers, names, and sectors
+        from the point-in-time universe database.
+        
+        Returns:
+        --------
+        Dict[trading_ticker -> (company_name, sector)]
+        """
+        df_pit = self.resolver.df_pit
+        universe_spec = {}
+        for _, row in df_pit.iterrows():
+            current_t = row.get("current_ticker", row["ticker"])
+            trading_t = self.resolver.resolve_ticker(current_t)
+            name = row.get("company_name", row.get("name", trading_t))
+            sector = row.get("sector", "Equity")
+            universe_spec[trading_t] = (name, sector)
+        return universe_spec
+
     def run_pipeline(
         self,
         start_date: str = "2015-01-01",
-        end_date: str = "2026-11-15",
+        end_date: str = "2026-11-20",
         use_cache: bool = True
     ) -> Dict[str, Any]:
         """
         Execute full data engineering pipeline:
-        - Ingest/load Benchmark Price Index & TRI
-        - Ingest/load India VIX
-        - Ingest/load 27 constituent price histories with strict forward fill limit = 3
+        - Ingest Benchmark Price Index (^NSEI) & Investable ETF TRI Proxy (NIFTYBEES.NS)
+        - Ingest India VIX (^INDIAVIX)
+        - Ingest historical constituent prices for ALL point-in-time verified members
+        - Forward fill limit = 3, filled boolean tracking, zero backward filling
         - Save universe, returns, parquet, sqlite
         - Validate datasets and return quality report
         """
         print("=" * 60)
-        print("FOLIO-WISE DATA PIPELINE: MILESTONE M1")
+        print("FOLIO-WISE DATA PIPELINE: HISTORICAL RECONSTRUCTION")
         print("=" * 60)
 
         # 1. Benchmarks
@@ -149,75 +136,107 @@ class MarketDataPipeline:
         # 2. India VIX
         df_vix = self.fetch_india_vix(start_date=start_date, end_date=end_date, use_cache=use_cache)
 
-        # 3. Stock Price Data
+        # 3. Dynamic Historical Universe Extraction
+        universe_spec = self.get_historical_universe_spec()
+        print(f"Reconstructed point-in-time candidate universe: {len(universe_spec)} constituents")
+
         prices_path = os.path.join(self.data_raw_dir, "prices.csv")
-        if use_cache and os.path.exists(prices_path):
-            print(f"Loading cached stock prices from {prices_path}...")
-            all_prices_df = pd.read_csv(prices_path)
-            kept_universe = {t: (name, sec) for t, (name, sec) in CANDIDATE_UNIVERSE.items() if t in all_prices_df["ticker"].unique()}
-        else:
-            print(f"Downloading {len(CANDIDATE_UNIVERSE)} candidate stocks...")
-            all_prices = []
-            kept_universe = {}
+        cached_prices_df = None
+        cached_tickers = set()
+        if os.path.exists(prices_path):
+            cached_prices_df = pd.read_csv(prices_path)
+            cached_tickers = set(cached_prices_df["ticker"].unique())
+            print(f"Existing prices cache contains {len(cached_tickers)} tickers ({len(cached_prices_df)} rows)")
 
-            for ticker, (name, sector) in CANDIDATE_UNIVERSE.items():
-                print(f"Downloading {ticker} ({name})...")
-                try:
-                    df = yf.download(ticker, start=start_date, end=end_date, progress=False, auto_adjust=False)
-                    if df.empty or len(df) < 1500:
-                        continue
+        # Download / collect prices for all tickers in universe_spec
+        all_prices = []
+        kept_universe = {}
 
-                    if isinstance(df.columns, pd.MultiIndex):
-                        if ticker in df.columns.levels[1]:
-                            df = df.xs(ticker, level=1, axis=1)
+        # First add cached tickers if valid
+        if cached_prices_df is not None:
+            for ticker in cached_tickers:
+                if ticker in universe_spec:
+                    t_df = cached_prices_df[cached_prices_df["ticker"] == ticker].copy()
+                    all_prices.append(t_df)
+                    kept_universe[ticker] = universe_spec[ticker]
 
-                    adj_col = "Adj Close" if "Adj Close" in df.columns else "Close"
-                    vol_col = "Volume" if "Volume" in df.columns else None
+        # Determine tickers that need to be fetched
+        needed_tickers = [t for t in universe_spec.keys() if t not in kept_universe]
+        print(f"Tickers needing historical market data ingestion: {len(needed_tickers)}")
 
-                    stock_df = pd.DataFrame({
-                        "date": pd.to_datetime(df.index),
-                        "adj_close": df[adj_col].values,
-                        "volume": df[vol_col].values if vol_col else 0
-                    }).dropna(subset=["adj_close"]).drop_duplicates(subset=["date"])
+        for ticker in needed_tickers:
+            name, sector = universe_spec[ticker]
+            print(f"Downloading {ticker} ({name})...")
+            try:
+                df = yf.download(ticker, start=start_date, end=end_date, progress=False, auto_adjust=False)
+                if df.empty or len(df) < 50:
+                    print(f"  -> Insufficient/no data for {ticker} ({len(df)} rows)")
+                    continue
 
-                    if stock_df["date"].min() > pd.to_datetime("2015-06-01"):
-                        continue
+                if isinstance(df.columns, pd.MultiIndex):
+                    if ticker in df.columns.levels[1]:
+                        df = df.xs(ticker, level=1, axis=1)
 
-                    stock_df = stock_df.set_index("date").reindex(calendar)
-                    raw_na = stock_df["adj_close"].isna()
+                adj_col = "Adj Close" if "Adj Close" in df.columns else "Close"
+                vol_col = "Volume" if "Volume" in df.columns else None
 
-                    # FR-1.5: Forward-fill limit=3, record filled flag, zero backward fill
-                    stock_df["adj_close"] = stock_df["adj_close"].ffill(limit=3)
-                    stock_df["volume"] = stock_df["volume"].fillna(0)
-                    stock_df["filled"] = raw_na & stock_df["adj_close"].notna()
+                stock_df = pd.DataFrame({
+                    "date": pd.to_datetime(df.index),
+                    "adj_close": df[adj_col].values,
+                    "volume": df[vol_col].values if vol_col else 0
+                }).dropna(subset=["adj_close"]).drop_duplicates(subset=["date"])
 
-                    valid_mask = stock_df["adj_close"].notna()
-                    clean_df = stock_df[valid_mask].reset_index()
-                    clean_df["ticker"] = ticker
-                    clean_df["date"] = clean_df["date"].dt.strftime("%Y-%m-%d")
+                # Align against market calendar
+                # Only align dates within the stock's actual trading span (do not backward fill before IPO/listing!)
+                stock_min_date = stock_df["date"].min()
+                stock_max_date = stock_df["date"].max()
+                active_calendar = [d for d in calendar if stock_min_date <= d <= stock_max_date]
 
-                    all_prices.append(clean_df[["date", "ticker", "adj_close", "volume", "filled"]])
-                    kept_universe[ticker] = (name, sector)
-                except Exception as e:
-                    print(f"Error fetching {ticker}: {e}")
+                stock_df = stock_df.set_index("date").reindex(active_calendar)
+                raw_na = stock_df["adj_close"].isna()
 
-            all_prices_df = pd.concat(all_prices, ignore_index=True)
-            all_prices_df.to_csv(prices_path, index=False)
-            print(f"Saved stock prices to {prices_path} ({len(all_prices_df)} rows)")
+                # FR-1.5: Forward-fill limit=3, record filled flag, zero backward fill
+                stock_df["adj_close"] = stock_df["adj_close"].ffill(limit=3)
+                stock_df["volume"] = stock_df["volume"].fillna(0)
+                stock_df["filled"] = (raw_na & stock_df["adj_close"].notna()).astype(bool)
 
-        # 4. Save Universe CSV (for backward compatibility)
+                # Keep strictly valid observations
+                valid_mask = stock_df["adj_close"].notna()
+                clean_df = stock_df[valid_mask].reset_index()
+                clean_df["ticker"] = ticker
+                clean_df["date"] = clean_df["date"].dt.strftime("%Y-%m-%d")
+
+                all_prices.append(clean_df[["date", "ticker", "adj_close", "volume", "filled"]])
+                kept_universe[ticker] = (name, sector)
+                print(f"  -> Successfully ingested {ticker}: {len(clean_df)} daily observations ({clean_df['date'].min()} to {clean_df['date'].max()})")
+            except Exception as e:
+                print(f"  -> Error fetching {ticker}: {e}")
+
+        if not all_prices:
+            raise RuntimeError("No stock prices collected!")
+
+        all_prices_df = pd.concat(all_prices, ignore_index=True).drop_duplicates(subset=["date", "ticker"]).sort_values(["ticker", "date"]).reset_index(drop=True)
+        all_prices_df.to_csv(prices_path, index=False)
+        print(f"Saved consolidated historical stock prices to {prices_path} ({len(all_prices_df)} rows, {all_prices_df['ticker'].nunique()} tickers)")
+
+        # 4. Save Universe CSV
         universe_df = pd.DataFrame([
             {"ticker": t, "name": name, "sector": sec}
-            for t, (name, sec) in kept_universe.items()
+            for t, (name, sec) in sorted(kept_universe.items())
         ])
         universe_path = os.path.join(self.data_raw_dir, "universe.csv")
         universe_df.to_csv(universe_path, index=False)
+        print(f"Saved investable universe to {universe_path} ({len(universe_df)} stocks)")
 
         # 5. Compute and Save Daily Returns (data/processed/returns.csv)
+        # Never interpret missing prices as zero returns; pct_change within ticker
         ret_df = all_prices_df.sort_values(["ticker", "date"]).copy()
-        ret_df["ret_1d"] = ret_df.groupby("ticker")["adj_close"].pct_change().fillna(0.0)
+        ret_df["ret_1d"] = ret_df.groupby("ticker")["adj_close"].pct_change()
+        # Drop the first unobservable NaN return per ticker
+        ret_clean = ret_df.dropna(subset=["ret_1d"])[["date", "ticker", "ret_1d"]].reset_index(drop=True)
         returns_path = os.path.join(self.data_proc_dir, "returns.csv")
-        ret_df[["date", "ticker", "ret_1d"]].to_csv(returns_path, index=False)
+        ret_clean.to_csv(returns_path, index=False)
+        print(f"Saved daily returns to {returns_path} ({len(ret_clean)} rows)")
 
         # 6. Save Parquet and SQLite formats
         parquet_path = os.path.join(self.data_proc_dir, "prices.parquet")
@@ -227,7 +246,7 @@ class MarketDataPipeline:
         self.storage.save_sqlite(df_price_idx, "index_price")
         self.storage.save_sqlite(df_tri_idx, "index_tri")
         self.storage.save_sqlite(df_vix, "india_vix")
-        print("Exported Apache Parquet and SQLite datasets successfully.")
+        print("Exported Apache Parquet and SQLite transactional datasets successfully.")
 
         # 7. Run Data Quality Validation Audit
         audit_report = self.validator.run_full_audit(

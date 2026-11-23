@@ -1,59 +1,61 @@
-date,action,symbol,ticker,name,sector,reason
-2015-03-27,DELETION,DLF,DLF.NS,DLF Ltd,Real Estate,Excluded in semi-annual rebalance
-2015-03-27,DELETION,JINDALSTEL,JINDALSTEL.NS,Jindal Steel & Power,Metals & Mining,Excluded in semi-annual rebalance
-2015-03-27,DELETION,IDFC,IDFC.NS,IDFC Ltd,Financial Services,Excluded in semi-annual rebalance
-2015-03-27,ADDITION,BOSCHLTD,BOSCHLTD.NS,Bosch Ltd,Auto,Included in semi-annual rebalance
-2015-03-27,ADDITION,IBULHSGFIN,IBULHSGFIN.NS,Indiabulls Housing Finance,Financial Services,Included in semi-annual rebalance
-2015-03-27,ADDITION,TECHM,TECHM.NS,Tech Mahindra,IT,Included in semi-annual rebalance
-2015-03-27,ADDITION,ZEEL,ZEEL.NS,Zee Entertainment,Media,Included in semi-annual rebalance
-2015-09-28,DELETION,NMDC,NMDC.NS,NMDC Ltd,Metals & Mining,Excluded in semi-annual rebalance
-2015-09-28,ADDITION,ADANIPORTS,ADANIPORTS.NS,Adani Ports & SEZ,Services,Included in semi-annual rebalance
-2016-04-01,DELETION,CAIRN,CAIRN.NS,Cairn India,Energy,Excluded / Vedanta merger
-2016-04-01,DELETION,PNB,PNB.NS,Punjab National Bank,Banking,Excluded in semi-annual rebalance
-2016-04-01,DELETION,VEDL,VEDL.NS,Vedanta Ltd,Metals & Mining,Excluded in semi-annual rebalance
-2016-04-01,ADDITION,AUROPHARMA,AUROPHARMA.NS,Aurobindo Pharma,Pharma,Included in semi-annual rebalance
-2016-04-01,ADDITION,BHARTIINFR,INDUSTOWER.NS,Bharti Infratel (Indus Towers),Telecom,Included in semi-annual rebalance
-2016-04-01,ADDITION,EICHERMOT,EICHERMOT.NS,Eicher Motors,Auto,Included in semi-annual rebalance
-2017-03-31,DELETION,BHEL,BHEL.NS,Bharat Heavy Electricals,Industrials,Excluded in semi-annual rebalance
-2017-03-31,DELETION,IDEA,IDEA.NS,Vodafone Idea,Telecom,Excluded in semi-annual rebalance
-2017-03-31,ADDITION,IOC,IOC.NS,Indian Oil Corporation,Energy,Included in semi-annual rebalance
-2017-09-29,DELETION,ACC,ACC.NS,ACC Ltd,Industrials,Excluded in semi-annual rebalance
-2017-09-29,DELETION,BANKBARODA,BANKBARODA.NS,Bank of Baroda,Banking,Excluded in semi-annual rebalance
-2017-09-29,DELETION,TATAPOWER,TATAPOWER.NS,Tata Power,Energy,Excluded in semi-annual rebalance
-2017-09-29,ADDITION,BAJFINANCE,BAJFINANCE.NS,Bajaj Finance,Banking,Included in semi-annual rebalance
-2017-09-29,ADDITION,HINDPETRO,HINDPETRO.NS,Hindustan Petroleum,Energy,Included in semi-annual rebalance
-2017-09-29,ADDITION,UPL,UPL.NS,UPL Ltd,Commodities,Included in semi-annual rebalance
-2018-04-02,DELETION,AMBUJACEM,AMBUJACEM.NS,Ambuja Cements,Industrials,Excluded in semi-annual rebalance
-2018-04-02,DELETION,AUROPHARMA,AUROPHARMA.NS,Aurobindo Pharma,Pharma,Excluded in semi-annual rebalance
-2018-04-02,DELETION,BOSCHLTD,BOSCHLTD.NS,Bosch Ltd,Auto,Excluded in semi-annual rebalance
-2018-04-02,ADDITION,BAJAJFINSV,BAJAJFINSV.NS,Bajaj Finserv,Banking,Included in semi-annual rebalance
-2018-04-02,ADDITION,GRASIM,GRASIM.NS,Grasim Industries,Commodities,Included in semi-annual rebalance
-2018-04-02,ADDITION,TITAN,TITAN.NS,Titan Company,Consumer,Included in semi-annual rebalance
-2018-09-28,DELETION,LUPIN,LUPIN.NS,Lupin Ltd,Pharma,Excluded in semi-annual rebalance
-2018-09-28,ADDITION,JSWSTEEL,JSWSTEEL.NS,JSW Steel,Metals & Mining,Included in semi-annual rebalance
-2019-03-29,DELETION,HINDPETRO,HINDPETRO.NS,Hindustan Petroleum,Energy,Excluded in semi-annual rebalance
-2019-03-29,ADDITION,BRITANNIA,BRITANNIA.NS,Britannia Industries,FMCG,Included in semi-annual rebalance
-2019-09-27,DELETION,IBULHSGFIN,IBULHSGFIN.NS,Indiabulls Housing Finance,Financial Services,Excluded in semi-annual rebalance
-2019-09-27,ADDITION,NESTLEIND,NESTLEIND.NS,Nestle India,FMCG,Included in semi-annual rebalance
-2020-03-27,DELETION,YESBANK,YESBANK.NS,Yes Bank,Banking,RBI restructuring / excluded
-2020-03-27,ADDITION,SHREECEM,SHREECEM.NS,Shree Cement,Industrials,Included in semi-annual rebalance
-2020-09-25,DELETION,BHARTIINFR,INDUSTOWER.NS,Bharti Infratel,Telecom,Excluded in semi-annual rebalance
-2020-09-25,DELETION,ZEEL,ZEEL.NS,Zee Entertainment,Media,Excluded in semi-annual rebalance
-2020-09-25,DELETION,VEDL,VEDL.NS,Vedanta Ltd,Metals & Mining,Delisting proposal / excluded
-2020-09-25,ADDITION,DIVISLAB,DIVISLAB.NS,Divi's Laboratories,Pharma,Included in semi-annual rebalance
-2020-09-25,ADDITION,HDFCLIFE,HDFCLIFE.NS,HDFC Life Insurance,Banking,Included in semi-annual rebalance
-2020-09-25,ADDITION,SBILIFE,SBILIFE.NS,SBI Life Insurance,Banking,Included in semi-annual rebalance
-2021-03-31,DELETION,GAIL,GAIL.NS,GAIL India,Energy,Excluded in semi-annual rebalance
-2021-03-31,ADDITION,TATACONSUM,TATACONSUM.NS,Tata Consumer Products,FMCG,Included in semi-annual rebalance
-2022-03-31,DELETION,IOC,IOC.NS,Indian Oil Corporation,Energy,Excluded in semi-annual rebalance
-2022-03-31,ADDITION,APOLLOHOSP,APOLLOHOSP.NS,Apollo Hospitals Enterprise,Pharma,Included in semi-annual rebalance
-2022-09-30,DELETION,SHREECEM,SHREECEM.NS,Shree Cement,Industrials,Excluded in semi-annual rebalance
-2022-09-30,ADDITION,ADANIENT,ADANIENT.NS,Adani Enterprises,Metals & Mining,Included in semi-annual rebalance
-2023-07-13,MERGER,HDFC,HDFC.NS,Housing Development Finance Corp,Banking,Amalgamated into HDFC Bank Ltd
-2023-07-13,ADDITION,LTIM,LTIM.NS,LTIMindtree Ltd,IT,Included replacing merged HDFC
-2024-03-28,DELETION,UPL,UPL.NS,UPL Ltd,Commodities,Excluded in semi-annual rebalance
-2024-03-28,ADDITION,SHRIRAMFIN,SHRIRAMFIN.NS,Shriram Finance,Banking,Included in semi-annual rebalance
-2024-09-30,DELETION,DIVISLAB,DIVISLAB.NS,Divi's Laboratories,Pharma,Excluded in semi-annual rebalance
-2024-09-30,DELETION,LTIM,LTIM.NS,LTIMindtree,IT,Excluded in semi-annual rebalance
-2024-09-30,ADDITION,BEL,BEL.NS,Bharat Electronics,Industrials,Included in semi-annual rebalance
-2024-09-30,ADDITION,TRENT,TRENT.NS,Trent Ltd,Consumer,Included in semi-annual rebalance
+announcement_date,date,action,symbol,ticker,name,sector,reason,source,source_url,verification_status
+2015-02-13,2015-03-27,DELETION,DLF,DLF.NS,DLF Ltd,Real Estate,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2015-02-13,2015-03-27,DELETION,JINDALSTEL,JINDALSTEL.NS,Jindal Steel & Power,Metals & Mining,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2015-02-13,2015-03-27,ADDITION,IDEA,IDEA.NS,Idea Cellular Ltd,Telecom,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2015-02-13,2015-03-27,ADDITION,YESBANK,YESBANK.NS,Yes Bank Ltd,Banking,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2015-04-28,2015-05-29,DELETION,IDFC,IDFC.NS,IDFC Ltd,Financial Services,Demerger of financing undertaking to IDFC Bank,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2015-04-28,2015-05-29,ADDITION,BOSCHLTD,BOSCHLTD.NS,Bosch Ltd,Auto,Included replacing demerged IDFC,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2015-08-20,2015-09-28,DELETION,NMDC,NMDC.NS,NMDC Ltd,Metals & Mining,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2015-08-20,2015-09-28,ADDITION,ADANIPORTS,ADANIPORTS.NS,Adani Ports & SEZ,Services,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2016-02-22,2016-04-01,DELETION,CAIRN,CAIRN.NS,Cairn India,Energy,Merger with Vedanta Ltd,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2016-02-22,2016-04-01,DELETION,PNB,PNB.NS,Punjab National Bank,Banking,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2016-02-22,2016-04-01,DELETION,VEDL,VEDL.NS,Vedanta Ltd,Metals & Mining,Excluded in semi-annual rebalance / Corporate restructuring,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2016-02-22,2016-04-01,ADDITION,AUROPHARMA,AUROPHARMA.NS,Aurobindo Pharma,Pharma,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2016-02-22,2016-04-01,ADDITION,BHARTIINFR,INDUSTOWER.NS,Bharti Infratel (Indus Towers),Telecom,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2016-02-22,2016-04-01,ADDITION,EICHERMOT,EICHERMOT.NS,Eicher Motors,Auto,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2017-02-17,2017-03-31,DELETION,BHEL,BHEL.NS,Bharat Heavy Electricals,Industrials,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2017-02-17,2017-03-31,DELETION,IDEA,IDEA.NS,Vodafone Idea Ltd,Telecom,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2017-02-17,2017-03-31,ADDITION,IBULHSGFIN,SAMMAANCAP.NS,Indiabulls Housing Finance (Sammaan Capital),Financial Services,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2017-02-17,2017-03-31,ADDITION,IOC,IOC.NS,Indian Oil Corporation,Energy,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2017-04-26,2017-05-26,DELETION,GRASIM,GRASIM.NS,Grasim Industries,Commodities,Scheme of arrangement / demerger of financial services,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2017-04-26,2017-05-26,ADDITION,VEDL,VEDL.NS,Vedanta Ltd,Metals & Mining,Included replacing demerging Grasim,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2017-08-28,2017-09-29,DELETION,ACC,ACC.NS,ACC Ltd,Industrials,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2017-08-28,2017-09-29,DELETION,BANKBARODA,BANKBARODA.NS,Bank of Baroda,Banking,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2017-08-28,2017-09-29,DELETION,TATAPOWER,TATAPOWER.NS,Tata Power,Energy,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2017-08-28,2017-09-29,ADDITION,BAJFINANCE,BAJFINANCE.NS,Bajaj Finance,Banking,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2017-08-28,2017-09-29,ADDITION,HINDPETRO,HINDPETRO.NS,Hindustan Petroleum,Energy,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2017-08-28,2017-09-29,ADDITION,UPL,UPL.NS,UPL Ltd,Commodities,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2018-02-27,2018-04-02,DELETION,AMBUJACEM,AMBUJACEM.NS,Ambuja Cements,Industrials,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2018-02-27,2018-04-02,DELETION,AUROPHARMA,AUROPHARMA.NS,Aurobindo Pharma,Pharma,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2018-02-27,2018-04-02,DELETION,BOSCHLTD,BOSCHLTD.NS,Bosch Ltd,Auto,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2018-02-27,2018-04-02,ADDITION,BAJAJFINSV,BAJAJFINSV.NS,Bajaj Finserv,Banking,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2018-02-27,2018-04-02,ADDITION,GRASIM,GRASIM.NS,Grasim Industries,Commodities,Re-included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2018-02-27,2018-04-02,ADDITION,TITAN,TITAN.NS,Titan Company,Consumer,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2018-08-28,2018-09-28,DELETION,LUPIN,LUPIN.NS,Lupin Ltd,Pharma,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2018-08-28,2018-09-28,ADDITION,JSWSTEEL,JSWSTEEL.NS,JSW Steel,Metals & Mining,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2019-02-25,2019-03-29,DELETION,HINDPETRO,HINDPETRO.NS,Hindustan Petroleum,Energy,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2019-02-25,2019-03-29,ADDITION,BRITANNIA,BRITANNIA.NS,Britannia Industries,FMCG,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2019-08-28,2019-09-27,DELETION,IBULHSGFIN,SAMMAANCAP.NS,Indiabulls Housing Finance,Financial Services,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2019-08-28,2019-09-27,ADDITION,NESTLEIND,NESTLEIND.NS,Nestle India,FMCG,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2020-03-16,2020-03-27,DELETION,YESBANK,YESBANK.NS,Yes Bank,Banking,RBI Reconstruction Scheme / exclusion from F&O segment,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2020-02-27,2020-03-27,ADDITION,SHREECEM,SHREECEM.NS,Shree Cement,Industrials,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2020-07-16,2020-07-31,DELETION,VEDL,VEDL.NS,Vedanta Ltd,Metals & Mining,Proposed voluntary delisting by promoters,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2020-07-16,2020-07-31,ADDITION,HDFCLIFE,HDFCLIFE.NS,HDFC Life Insurance,Banking,Included replacing delisting Vedanta,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2020-08-20,2020-09-25,DELETION,BHARTIINFR,INDUSTOWER.NS,Bharti Infratel,Telecom,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2020-08-20,2020-09-25,DELETION,ZEEL,ZEEL.NS,Zee Entertainment,Media,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2020-08-20,2020-09-25,ADDITION,DIVISLAB,DIVISLAB.NS,Divi's Laboratories,Pharma,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2020-08-20,2020-09-25,ADDITION,SBILIFE,SBILIFE.NS,SBI Life Insurance,Banking,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2021-02-22,2021-03-31,DELETION,GAIL,GAIL.NS,GAIL India,Energy,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2021-02-22,2021-03-31,ADDITION,TATACONSUM,TATACONSUM.NS,Tata Consumer Products,FMCG,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2022-02-25,2022-03-31,DELETION,IOC,IOC.NS,Indian Oil Corporation,Energy,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2022-02-25,2022-03-31,ADDITION,APOLLOHOSP,APOLLOHOSP.NS,Apollo Hospitals Enterprise,Pharma,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2022-09-01,2022-09-30,DELETION,SHREECEM,SHREECEM.NS,Shree Cement,Industrials,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2022-09-01,2022-09-30,ADDITION,ADANIENT,ADANIENT.NS,Adani Enterprises,Metals & Mining,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2023-07-03,2023-07-13,MERGER,HDFC,HDFC.NS,Housing Development Finance Corp,Banking,Amalgamated into HDFC Bank Ltd (42 shares HDFC Bank for 25 shares HDFC),NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2023-07-03,2023-07-13,ADDITION,LTIM,LTM.NS,LTIMindtree Ltd (LTM),IT,Included replacing merged HDFC Ltd,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2024-02-28,2024-03-28,DELETION,UPL,UPL.NS,UPL Ltd,Commodities,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2024-02-28,2024-03-28,ADDITION,SHRIRAMFIN,SHRIRAMFIN.NS,Shriram Finance,Banking,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2024-08-23,2024-09-30,DELETION,DIVISLAB,DIVISLAB.NS,Divi's Laboratories,Pharma,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2024-08-23,2024-09-30,DELETION,LTIM,LTM.NS,LTIMindtree,IT,Excluded in semi-annual rebalance / Inadequate market capitalization,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2024-08-23,2024-09-30,ADDITION,BEL,BEL.NS,Bharat Electronics,Industrials,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD
+2024-08-23,2024-09-30,ADDITION,TRENT,TRENT.NS,Trent Ltd,Consumer,Included in semi-annual rebalance,NSE Indices Official Press Releases,https://www.niftyindices.com/reports/press-releases,VERIFIED_OFFICIAL_RECORD

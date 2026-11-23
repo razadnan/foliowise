@@ -1,0 +1,46 @@
+[
+  {
+    "ticker": "HDFC.NS",
+    "name": "Housing Development Finance Corporation Ltd",
+    "active_period": "2015-01-01 to 2023-07-13",
+    "terminal_event": "AMALGAMATION",
+    "terminal_date": "2023-07-13",
+    "consideration": "42 HDFC Bank shares (HDFCBANK.NS) for every 25 HDFC Ltd shares held",
+    "attempted_sources": [
+      "yfinance: HDFC.NS",
+      "yfinance: HDFC.BO",
+      "BSE: 500010.BO"
+    ],
+    "failure_reason": "Yahoo Finance purged historical price quotes upon statutory amalgamation",
+    "treatment": "Excluded from active allocation while unobserved; survivorship limitation explicitly flagged"
+  },
+  {
+    "ticker": "CAIRN.NS",
+    "name": "Cairn India Ltd",
+    "active_period": "2015-01-01 to 2016-04-01",
+    "terminal_event": "MERGER",
+    "terminal_date": "2016-04-01",
+    "consideration": "1 equity share of Vedanta Ltd (VEDL.NS) + 1 7.5% preference share for each Cairn share",
+    "attempted_sources": [
+      "yfinance: CAIRN.NS",
+      "yfinance: CAIRN.BO"
+    ],
+    "failure_reason": "Historical price series purged by commercial vendor post corporate absorption",
+    "treatment": "Pre-2020 backtest interval unobserved; explicit survivorship limitation documented"
+  },
+  {
+    "ticker": "IDFC.NS",
+    "name": "IDFC Ltd",
+    "active_period": "2015-01-01 to 2015-05-29",
+    "terminal_event": "DEMERGER_AND_MERGER",
+    "terminal_date": "2015-05-29",
+    "consideration": "Demerged financing undertaking to IDFC Bank; subsequently merged into IDFC First Bank Oct 2024",
+    "attempted_sources": [
+      "yfinance: IDFC.NS",
+      "yfinance: IDFC.BO",
+      "BSE: 532659.BO"
+    ],
+    "failure_reason": "Vendor purged historical IDFC parent quotes following October 2024 statutory amalgamation",
+    "treatment": "Pre-2020 exit; explicit audit note maintained"
+  }
+]

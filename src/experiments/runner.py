@@ -34,15 +34,20 @@ from src.optimization.engine import PortfolioOptimizer
 from src.backtesting.cost_model import IndianTransactionCostModel
 from src.backtesting.engine import BacktestEngine
 from src.experiments.bootstrap import StationaryBootstrapTester
+from src.universe.resolver import UniverseResolver
 
 
 def load_sector_mapping(base_dir: str = ".") -> dict:
-    """Load ticker to sector mapping from data/raw/universe.csv."""
-    uni_path = os.path.join(base_dir, "data", "raw", "universe.csv")
-    if os.path.exists(uni_path):
-        df_uni = pd.read_csv(uni_path)
-        return dict(zip(df_uni["ticker"], df_uni["sector"]))
-    return {}
+    """Load ticker to sector mapping from UniverseResolver or universe.csv."""
+    try:
+        resolver = UniverseResolver(base_dir=base_dir)
+        return resolver.get_sector_mapping(use_ticker=True, resolve_aliases=True)
+    except Exception:
+        uni_path = os.path.join(base_dir, "data", "raw", "universe.csv")
+        if os.path.exists(uni_path):
+            df_uni = pd.read_csv(uni_path)
+            return dict(zip(df_uni["ticker"], df_uni["sector"]))
+        return {}
 
 
 def run_experiments(base_dir: str = ".") -> dict:
@@ -72,6 +77,7 @@ def run_experiments(base_dir: str = ".") -> dict:
     preds_df["date"] = pd.to_datetime(preds_df["date"])
 
     sector_mapping = load_sector_mapping(base_dir)
+    resolver = UniverseResolver(base_dir=base_dir)
     tickers = piv_prices.columns.tolist()
     N = len(tickers)
 
@@ -125,7 +131,15 @@ def run_experiments(base_dir: str = ".") -> dict:
 
     for rebal_date in rebalance_dates:
         date_str = rebal_date.strftime("%Y-%m-%d")
-        hist_returns = piv_returns.loc[:rebal_date].iloc[-252:]
+        pit_constituents = resolver.get_constituents(rebal_date, use_ticker=True, resolve_aliases=True)
+        eligible_tickers = [
+            t for t in pit_constituents
+            if t in piv_prices.columns and piv_prices[t].loc[:rebal_date].dropna().count() >= 126
+        ]
+        if len(eligible_tickers) < 5:
+            continue
+
+        hist_returns = piv_returns.loc[:rebal_date, eligible_tickers].iloc[-252:]
         if len(hist_returns) < 126:
             continue
 
@@ -134,14 +148,14 @@ def run_experiments(base_dir: str = ".") -> dict:
         hist_mean_ann = hist_returns.mean() * 252.0
 
         # E0: 1/N Equal Weight
-        w_e0 = optimizer.optimize_equal_weight(tickers)
+        w_e0 = optimizer.optimize_equal_weight(eligible_tickers)
         experiment_weights["E0"][rebal_date] = w_e0
 
         # E1: Traditional Markowitz (Sample Cov, 15% stock cap, unregularized)
         w_e1 = optimizer.optimize_max_sharpe(
             expected_returns=hist_mean_ann,
             cov_matrix=sample_cov,
-            tickers=tickers,
+            tickers=eligible_tickers,
             stock_cap=0.15,
             sector_cap=None,
             date_str=date_str,
@@ -153,7 +167,7 @@ def run_experiments(base_dir: str = ".") -> dict:
         w_e2 = optimizer.optimize_max_sharpe(
             expected_returns=hist_mean_ann,
             cov_matrix=lw_cov,
-            tickers=tickers,
+            tickers=eligible_tickers,
             stock_cap=0.15,
             sector_cap=None,
             date_str=date_str,
@@ -164,7 +178,7 @@ def run_experiments(base_dir: str = ".") -> dict:
         # Helper for ML expected return conversion
         def get_ml_expected_returns(model_name: str):
             if model_name in model_preds and rebal_date in model_preds[model_name].index:
-                p_20d = model_preds[model_name].loc[rebal_date].reindex(tickers).fillna(0.0)
+                p_20d = model_preds[model_name].loc[rebal_date].reindex(eligible_tickers).fillna(0.0)
                 # Convert 20-day return to annualized rate and blend 50/50 with historical mean
                 p_ann = (1.0 + p_20d) ** 12.0 - 1.0
                 return 0.5 * p_ann + 0.5 * hist_mean_ann
@@ -175,7 +189,7 @@ def run_experiments(base_dir: str = ".") -> dict:
         w_e3 = optimizer.optimize_max_sharpe(
             expected_returns=mu_xgb,
             cov_matrix=lw_cov,
-            tickers=tickers,
+            tickers=eligible_tickers,
             stock_cap=0.10,
             sector_cap=0.35,
             sector_mapping=sector_mapping,
@@ -192,7 +206,7 @@ def run_experiments(base_dir: str = ".") -> dict:
         w_e4 = optimizer.optimize_max_sharpe(
             expected_returns=mu_lstm,
             cov_matrix=lw_cov,
-            tickers=tickers,
+            tickers=eligible_tickers,
             stock_cap=0.10,
             sector_cap=0.35,
             sector_mapping=sector_mapping,
@@ -209,7 +223,7 @@ def run_experiments(base_dir: str = ".") -> dict:
         w_e5 = optimizer.optimize_max_sharpe(
             expected_returns=mu_ens,
             cov_matrix=lw_cov,
-            tickers=tickers,
+            tickers=eligible_tickers,
             stock_cap=0.10,
             sector_cap=0.35,
             sector_mapping=sector_mapping,
@@ -222,15 +236,10 @@ def run_experiments(base_dir: str = ".") -> dict:
         prev_w_e5 = w_e5
 
         # E6: Adaptive FolioWise (Champion-Challenger Engine)
-        # Evaluates trailing market volatility & model stability:
-        # Under high market volatility (annualized volatility > 25%), allocate defensively to E2 (Shrinkage).
-        # In stable/bull regimes, allocate to top-performing ML champion (XGBoost / E3).
         market_vol = float(hist_returns.mean(axis=1).std() * np.sqrt(252))
         if market_vol > 0.22:
-            # Defensive regime: fallback to regularized shrinkage E2 with asset caps
             w_e6 = w_e2.copy()
         else:
-            # Growth regime: use XGBoost ML with asset/sector caps
             w_e6 = w_e3.copy()
 
         experiment_weights["E6"][rebal_date] = w_e6
@@ -238,13 +247,13 @@ def run_experiments(base_dir: str = ".") -> dict:
 
         # --- Benchmark Track Construction (B1 - B4) ---
         # B1: Hierarchical Risk Parity (HRP)
-        w_b1 = optimizer.optimize_hrp(lw_cov, tickers=tickers, stock_cap=0.10)
+        w_b1 = optimizer.optimize_hrp(lw_cov, tickers=eligible_tickers, stock_cap=0.10)
         benchmark_weights["B1"][rebal_date] = w_b1
 
         # B2: Minimum Variance (Min-Var)
         w_b2 = optimizer.optimize_min_variance(
             cov_matrix=lw_cov,
-            tickers=tickers,
+            tickers=eligible_tickers,
             stock_cap=0.10,
             sector_cap=0.35,
             sector_mapping=sector_mapping,
@@ -255,14 +264,14 @@ def run_experiments(base_dir: str = ".") -> dict:
         # B3: Equal Risk Contribution (ERC / Risk Budgeting)
         w_b3 = optimizer.optimize_equal_risk_contribution(
             cov_matrix=lw_cov,
-            tickers=tickers,
+            tickers=eligible_tickers,
             stock_cap=0.10,
             date_str=date_str
         )
         benchmark_weights["B3"][rebal_date] = w_b3
 
         # B4: Momentum Top-5 (12M minus 1M price momentum)
-        hist_p = piv_prices.loc[:rebal_date]
+        hist_p = piv_prices.loc[:rebal_date, eligible_tickers]
         if len(hist_p) >= 252:
             p_21 = hist_p.iloc[-21]
             p_252 = hist_p.iloc[-252]
@@ -270,8 +279,8 @@ def run_experiments(base_dir: str = ".") -> dict:
         else:
             mom_scores = (hist_p.iloc[-1] / hist_p.iloc[0]) - 1.0
         w_b4 = optimizer.optimize_momentum_top_k(
-            momentum_scores=mom_scores,
-            tickers=tickers,
+            momentum_scores=mom_scores.reindex(eligible_tickers).fillna(-999.0),
+            tickers=eligible_tickers,
             k=5
         )
         benchmark_weights["B4"][rebal_date] = w_b4

@@ -1,0 +1,53 @@
+{
+  "project": "FolioWise Quantitative Research Platform",
+  "manifest_version": "2.1.0",
+  "generated_at": "2026-11-23T09:28:52.643129",
+  "datasets": [
+    {
+      "name": "NIFTY 50 Historical Constituent Universe (Point-in-Time)",
+      "file": "data/raw/universe_pit.csv",
+      "source": "NSE Indices Official Periodic Reconstitution Circulars",
+      "source_url": "https://www.niftyindices.com/reports/press-releases",
+      "date_range": "2015-01-01 to 2026-11-23",
+      "records_count": 80,
+      "active_daily_count": 50,
+      "verification_status": "VERIFIED_OFFICIAL_RECORD"
+    },
+    {
+      "name": "NIFTY 50 Index Reconstitution Changes Log",
+      "file": "data/raw/membership_changes.csv",
+      "source": "NSE Indices Media Releases & Semi-Annual Reviews",
+      "source_url": "https://www.niftyindices.com/reports/press-releases",
+      "events_count": 60,
+      "date_range": "2015-03-27 to 2024-09-30",
+      "verification_status": "VERIFIED_OFFICIAL_RECORD"
+    },
+    {
+      "name": "Historical Stock Daily OHLCV Prices",
+      "file": "data/raw/prices.csv",
+      "source": "National Stock Exchange of India / Yahoo Finance Market Data",
+      "adjustment_methodology": "Strict forward-fill limit=3 days, zero backward-fill, filled boolean tracking",
+      "status": "EXPANDED_SURVIVORSHIP_AWARE_UNIVERSE"
+    },
+    {
+      "name": "NIFTY 50 Price Return Index (^NSEI)",
+      "file": "data/raw/index.csv",
+      "source": "National Stock Exchange of India (^NSEI)",
+      "type": "PRICE_RETURN",
+      "dividend_treatment": "Excludes dividends"
+    },
+    {
+      "name": "NIFTY 50 Investable Total Return Benchmark Proxy (NIFTYBEES.NS)",
+      "file": "data/raw/index_tri.csv",
+      "source": "Nippon India ETF Nifty 50 BeES (NIFTYBEES.NS)",
+      "type": "INVESTABLE_ETF_TOTAL_RETURN_PROXY",
+      "dividend_treatment": "Dividends automatically reinvested in ETF basket; models 0.04% TER and trading frictions"
+    },
+    {
+      "name": "India VIX Daily Volatility Index (^INDIAVIX)",
+      "file": "data/raw/india_vix.csv",
+      "source": "National Stock Exchange of India (^INDIAVIX)",
+      "type": "ANNUALIZED_IMPLIED_VOLATILITY"
+    }
+  ]
+}

@@ -1,28 +1,76 @@
 ticker,name,sector
-RELIANCE.NS,Reliance Industries,Energy
-TCS.NS,Tata Consultancy Services,IT
-HDFCBANK.NS,HDFC Bank,Banking
-INFY.NS,Infosys,IT
-ICICIBANK.NS,ICICI Bank,Banking
-HINDUNILVR.NS,Hindustan Unilever,FMCG
-ITC.NS,ITC,FMCG
-SUNPHARMA.NS,Sun Pharma,Pharma
-LT.NS,Larsen & Toubro,Industrials
-MARUTI.NS,Maruti Suzuki,Auto
-BHARTIARTL.NS,Bharti Airtel,Telecom
-TITAN.NS,Titan,Consumer
-NESTLEIND.NS,Nestle India,FMCG
-AXISBANK.NS,Axis Bank,Banking
-KOTAKBANK.NS,Kotak Mahindra Bank,Banking
-BAJFINANCE.NS,Bajaj Finance,Banking
-WIPRO.NS,Wipro,IT
-HCLTECH.NS,HCL Technologies,IT
-ULTRACEMCO.NS,UltraTech Cement,Industrials
-ASIANPAINT.NS,Asian Paints,Consumer
-TECHM.NS,Tech Mahindra,IT
-POWERGRID.NS,Power Grid,Energy
-NTPC.NS,NTPC,Energy
-ONGC.NS,ONGC,Energy
-COALINDIA.NS,Coal India,Energy
-BAJAJFINSV.NS,Bajaj Finserv,Banking
-DRREDDY.NS,Dr. Reddy's Laboratories,Pharma
+ACC.NS,ACC Ltd,Industrials
+ADANIENT.NS,Adani Enterprises Ltd,Metals & Mining
+ADANIPORTS.NS,Adani Ports & Special Economic Zone Ltd,Services
+AMBUJACEM.NS,Ambuja Cements Ltd,Industrials
+APOLLOHOSP.NS,Apollo Hospitals Enterprise Ltd,Pharma
+ASIANPAINT.NS,Asian Paints Ltd,Consumer
+AUROPHARMA.NS,Aurobindo Pharma Ltd,Pharma
+AXISBANK.NS,Axis Bank Ltd,Banking
+BAJAJ-AUTO.NS,Bajaj Auto Ltd,Auto
+BAJAJFINSV.NS,Bajaj Finserv Ltd,Banking
+BAJFINANCE.NS,Bajaj Finance Ltd,Banking
+BANKBARODA.NS,Bank of Baroda,Banking
+BEL.NS,Bharat Electronics Ltd,Industrials
+BHARTIARTL.NS,Bharti Airtel Ltd,Telecom
+BHEL.NS,Bharat Heavy Electricals Ltd,Industrials
+BOSCHLTD.NS,Bosch Ltd,Auto
+BPCL.NS,Bharat Petroleum Corporation Ltd,Energy
+BRITANNIA.NS,Britannia Industries Ltd,FMCG
+CIPLA.NS,Cipla Ltd,Pharma
+COALINDIA.NS,Coal India Ltd,Energy
+DIVISLAB.NS,Divi's Laboratories Ltd,Pharma
+DLF.NS,DLF Ltd,Real Estate
+DRREDDY.NS,Dr. Reddy's Laboratories Ltd,Pharma
+EICHERMOT.NS,Eicher Motors Ltd,Auto
+GAIL.NS,GAIL (India) Ltd,Energy
+GRASIM.NS,Grasim Industries Ltd (Period 2),Commodities
+HCLTECH.NS,HCL Technologies Ltd,IT
+HDFCBANK.NS,HDFC Bank Ltd,Banking
+HDFCLIFE.NS,HDFC Life Insurance Company Ltd,Banking
+HEROMOTOCO.NS,Hero MotoCorp Ltd,Auto
+HINDALCO.NS,Hindalco Industries Ltd,Metals & Mining
+HINDPETRO.NS,Hindustan Petroleum Corporation Ltd,Energy
+HINDUNILVR.NS,Hindustan Unilever Ltd,FMCG
+ICICIBANK.NS,ICICI Bank Ltd,Banking
+IDEA.NS,Vodafone Idea Ltd,Telecom
+INDUSINDBK.NS,IndusInd Bank Ltd,Banking
+INDUSTOWER.NS,Indus Towers Ltd,Telecom
+INFY.NS,Infosys Ltd,IT
+IOC.NS,Indian Oil Corporation Ltd,Energy
+ITC.NS,ITC Ltd,FMCG
+JINDALSTEL.NS,Jindal Steel & Power Ltd,Metals & Mining
+JSWSTEEL.NS,JSW Steel Ltd,Metals & Mining
+KOTAKBANK.NS,Kotak Mahindra Bank Ltd,Banking
+LT.NS,Larsen & Toubro Ltd,Industrials
+LTM.NS,LTIMindtree Ltd (LTM),IT
+LUPIN.NS,Lupin Ltd,Pharma
+M&M.NS,Mahindra & Mahindra Ltd,Auto
+MARUTI.NS,Maruti Suzuki India Ltd,Auto
+NESTLEIND.NS,Nestle India Ltd,FMCG
+NMDC.NS,NMDC Ltd,Metals & Mining
+NTPC.NS,NTPC Ltd,Energy
+ONGC.NS,Oil & Natural Gas Corporation Ltd,Energy
+PNB.NS,Punjab National Bank,Banking
+POWERGRID.NS,Power Grid Corporation of India Ltd,Energy
+RELIANCE.NS,Reliance Industries Ltd,Energy
+SAMMAANCAP.NS,Sammaan Capital Ltd,Financial Services
+SBILIFE.NS,SBI Life Insurance Company Ltd,Banking
+SBIN.NS,State Bank of India,Banking
+SHREECEM.NS,Shree Cement Ltd,Industrials
+SHRIRAMFIN.NS,Shriram Finance Ltd,Banking
+SUNPHARMA.NS,Sun Pharmaceutical Industries Ltd,Pharma
+TATACONSUM.NS,Tata Consumer Products Ltd,FMCG
+TATAPOWER.NS,Tata Power Company Ltd,Energy
+TATASTEEL.NS,Tata Steel Ltd,Metals & Mining
+TCS.NS,Tata Consultancy Services Ltd,IT
+TECHM.NS,Tech Mahindra Ltd,IT
+TITAN.NS,Titan Company Ltd,Consumer
+TMPV.NS,Tata Motors Ltd (Tata Motors Passenger Vehicles),Auto
+TRENT.NS,Trent Ltd,Consumer
+ULTRACEMCO.NS,UltraTech Cement Ltd,Industrials
+UPL.NS,UPL Ltd,Commodities
+VEDL.NS,Vedanta Ltd (Period 2),Metals & Mining
+WIPRO.NS,Wipro Ltd,IT
+YESBANK.NS,Yes Bank Ltd,Banking
+ZEEL.NS,Zee Entertainment Enterprises Ltd,Media

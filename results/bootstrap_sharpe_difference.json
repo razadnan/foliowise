@@ -1,8 +1,8 @@
 {
-  "mean_sharpe_difference_s4_minus_s1": 0.001,
-  "ci_95_lower": -0.423,
-  "ci_95_upper": 0.374,
-  "probability_s4_beats_s1": 51.3,
+  "mean_sharpe_difference_s4_minus_s1": -1.054,
+  "ci_95_lower": -1.968,
+  "ci_95_upper": -0.344,
+  "probability_s4_beats_s1": 0.0,
   "block_size_days": 21,
   "statistical_significance": "S1 statistically superior or equal to S4 (CI entirely below or spanning zero)"
 }

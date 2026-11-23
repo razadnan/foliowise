@@ -1,3 +1,43 @@
 date,ticker,adj_close,return_pct,explanation
-2020-03-23,AXISBANK.NS,307.1297607421875,-27.91,COVID-19 national lockdown declaration; lower circuit market halt across Indian equities
-2020-03-23,BAJAJFINSV.NS,460.6746215820313,-25.86,COVID-19 national lockdown declaration; lower circuit market halt across Indian equities
+2015-06-03,ADANIENT.NS,56.31924057006836,-38.75,High-volatility market session / circuit limit / corporate restructuring
+2019-05-20,ADANIENT.NS,150.0048370361328,27.37,High-volatility market session / circuit limit / corporate restructuring
+2023-02-01,ADANIENT.NS,2131.47216796875,-28.2,High-volatility market session / circuit limit / corporate restructuring
+2023-02-02,ADANIENT.NS,1562.4073486328125,-26.7,High-volatility market session / circuit limit / corporate restructuring
+2020-03-23,AXISBANK.NS,307.1297607421875,-27.91,High-volatility market session / circuit limit / corporate restructuring
+2020-03-23,BAJAJFINSV.NS,460.6746215820313,-25.86,High-volatility market session / circuit limit / corporate restructuring
+2017-10-25,BANKBARODA.NS,161.57205200195312,31.44,High-volatility market session / circuit limit / corporate restructuring
+2017-01-30,IDEA.NS,58.910072326660156,25.26,High-volatility market session / circuit limit / corporate restructuring
+2019-07-29,IDEA.NS,6.75,-27.03,High-volatility market session / circuit limit / corporate restructuring
+2019-11-19,IDEA.NS,6.050000190734863,35.96,High-volatility market session / circuit limit / corporate restructuring
+2020-02-19,IDEA.NS,4.199999809265137,40.0,High-volatility market session / circuit limit / corporate restructuring
+2020-03-13,IDEA.NS,5.599999904632568,33.33,High-volatility market session / circuit limit / corporate restructuring
+2020-03-18,IDEA.NS,3.1500000953674316,-35.05,High-volatility market session / circuit limit / corporate restructuring
+2020-09-03,IDEA.NS,12.550000190734863,26.77,High-volatility market session / circuit limit / corporate restructuring
+2021-09-16,IDEA.NS,11.25,25.7,High-volatility market session / circuit limit / corporate restructuring
+2020-03-26,INDUSINDBK.NS,420.26971435546875,44.67,High-volatility market session / circuit limit / corporate restructuring
+2025-03-11,INDUSINDBK.NS,654.8892822265625,-27.16,High-volatility market session / circuit limit / corporate restructuring
+2015-02-19,JINDALSTEL.NS,192.28334045410156,25.75,High-volatility market session / circuit limit / corporate restructuring
+2020-04-07,JINDALSTEL.NS,80.12216186523438,28.9,High-volatility market session / circuit limit / corporate restructuring
+2017-10-25,PNB.NS,182.17535400390625,46.2,High-volatility market session / circuit limit / corporate restructuring
+2019-09-30,SAMMAANCAP.NS,204.01162719726562,-34.4,High-volatility market session / circuit limit / corporate restructuring
+2020-03-19,SAMMAANCAP.NS,75.3458251953125,-33.74,High-volatility market session / circuit limit / corporate restructuring
+2020-06-19,SAMMAANCAP.NS,170.755859375,31.1,High-volatility market session / circuit limit / corporate restructuring
+2017-10-25,SBIN.NS,294.4825744628906,27.69,High-volatility market session / circuit limit / corporate restructuring
+2019-10-29,TMPV.NS,168.0062713623047,35.95,High-volatility market session / circuit limit / corporate restructuring
+2025-10-14,TMPV.NS,392.1966247558594,-40.15,High-volatility market session / circuit limit / corporate restructuring
+2026-01-01,TRENT.NS,2860.7060546875,-33.05,High-volatility market session / circuit limit / corporate restructuring
+2026-04-30,VEDL.NS,266.25250244140625,-64.9,High-volatility market session / circuit limit / corporate restructuring
+2018-09-21,YESBANK.NS,223.43504333496094,-29.04,High-volatility market session / circuit limit / corporate restructuring
+2019-02-14,YESBANK.NS,218.25608825683594,28.15,High-volatility market session / circuit limit / corporate restructuring
+2019-04-30,YESBANK.NS,165.72665405273438,-29.17,High-volatility market session / circuit limit / corporate restructuring
+2019-10-03,YESBANK.NS,42.5,32.81,High-volatility market session / circuit limit / corporate restructuring
+2020-03-05,YESBANK.NS,36.79999923706055,25.6,High-volatility market session / circuit limit / corporate restructuring
+2020-03-06,YESBANK.NS,16.149999618530273,-56.11,High-volatility market session / circuit limit / corporate restructuring
+2020-03-09,YESBANK.NS,21.25,31.58,High-volatility market session / circuit limit / corporate restructuring
+2020-03-11,YESBANK.NS,28.799999237060547,35.53,High-volatility market session / circuit limit / corporate restructuring
+2020-03-16,YESBANK.NS,37.099998474121094,45.21,High-volatility market session / circuit limit / corporate restructuring
+2020-03-17,YESBANK.NS,58.650001525878906,58.09,High-volatility market session / circuit limit / corporate restructuring
+2019-01-25,ZEEL.NS,291.2524108886719,-26.61,High-volatility market session / circuit limit / corporate restructuring
+2021-09-14,ZEEL.NS,245.51966857910156,39.98,High-volatility market session / circuit limit / corporate restructuring
+2021-09-22,ZEEL.NS,316.1576232910156,31.72,High-volatility market session / circuit limit / corporate restructuring
+2024-01-23,ZEEL.NS,147.98568725585938,-33.64,High-volatility market session / circuit limit / corporate restructuring

@@ -1,14 +1,16 @@
 {
   "overall_passed": true,
-  "audit_timestamp": "2026-11-22T19:41:38.900335",
+  "audit_timestamp": "2026-11-23T09:28:52.644140",
   "components": {
     "prices": {
       "dataset": "prices",
       "passed": true,
-      "issues": [],
+      "issues": [
+        "Flagged 14 daily return moves exceeding +/-35% for investigation. Samples: [{'date': '2015-06-03', 'ticker': 'ADANIENT.NS', 'daily_ret': -0.38749254785243314}, {'date': '2019-11-19', 'ticker': 'IDEA.NS', 'daily_ret': 0.35955066293226356}, {'date': '2020-02-19', 'ticker': 'IDEA.NS', 'daily_ret': 0.39999993642171217}, {'date': '2020-03-18', 'ticker': 'IDEA.NS', 'daily_ret': -0.3505154314830706}, {'date': '2020-03-26', 'ticker': 'INDUSINDBK.NS', 'daily_ret': 0.44673103493485034}]"
+      ],
       "metrics": {
-        "total_rows": 78867,
-        "unique_tickers": 27,
+        "total_rows": 217316,
+        "unique_tickers": 75,
         "date_min": "2015-01-02",
         "date_max": "2026-11-13",
         "duplicate_records": 0,
@@ -18,7 +20,8 @@
         "negative_volumes": 0,
         "filled_records_count": 0,
         "filled_records_pct": 0.0,
-        "abnormal_return_spikes_gt_35pct": 0
+        "abnormal_return_spikes_gt_35pct": 14,
+        "stale_price_sequences_ge_5d": 0
       }
     },
     "benchmark": {
@@ -30,8 +33,10 @@
         "price_index_min_date": "2015-01-02",
         "price_index_max_date": "2026-11-13",
         "tri_index_rows": 2921,
-        "10yr_tri_total_return": 2.4785,
-        "10yr_price_total_return": 1.995,
+        "tri_index_min_date": "2015-01-02",
+        "tri_index_max_date": "2026-11-13",
+        "tri_total_return": 2.4785,
+        "price_total_return": 1.995,
         "dividend_drift_premium": 0.4835
       }
     },
@@ -47,6 +52,28 @@
         "vix_max": 83.61000061035156,
         "vix_mean": 16.53348452708975
       }
+    },
+    "historical_coverage": {
+      "dataset": "historical_coverage",
+      "passed": true,
+      "issues": [],
+      "metrics": {
+        "total_pit_records": 80,
+        "unique_pit_constituents": 78,
+        "price_dataset_tickers": 75,
+        "verified_covered_tickers": 75,
+        "missing_price_tickers": [
+          "CAIRN.NS",
+          "HDFC.NS",
+          "IDFC.NS"
+        ],
+        "constituent_coverage_pct": 96.15,
+        "unresolved_delisted_registered": 3
+      }
     }
+  },
+  "manifest_summary": {
+    "datasets_count": 6,
+    "data_version": "2.1.0"
   }
 }

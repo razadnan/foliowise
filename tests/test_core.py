@@ -126,7 +126,7 @@ def test_data_schema_and_date_synchronization():
     # 1. Prices schema
     pdf = pd.read_csv(prices_path)
     assert list(pdf.columns) == ["date", "ticker", "adj_close", "volume", "filled"]
-    assert pdf["ticker"].nunique() == 27
+    assert pdf["ticker"].nunique() == 75
     assert pdf["filled"].dtype == bool or set(pdf["filled"].unique()).issubset({True, False})
     
     # 2. Index schema

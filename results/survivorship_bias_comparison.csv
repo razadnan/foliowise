@@ -1,0 +1,4 @@
+dataset,universe_type,constituent_count,cagr_pct,volatility_pct,sharpe_ratio,max_drawdown_pct,calmar_ratio,survivorship_premium_vs_benchmark_bps,bias_verdict
+Baseline A (Original Hardcoded Survivors),27 Continuous Survivors (Survivor-Biased),27,18.37,16.55,0.75,-33.68,0.55,510.0,CONFIRMED_SURVIVORSHIP_BIAS: Excludes 33+ historical companies that suffered severe drawdowns or exits.
+Baseline B (Point-in-Time Reconstructed),"Point-in-Time NIFTY 50 (50 Constituents/Date, 75 Total)",75,16.57,16.02,0.66,-36.77,0.45,330.0,"REALISTIC_INSTITUTIONAL_BENCHMARK: Reflects genuine constituent dynamics, delistings, and reconstitutions."
+Benchmark S0 (NIFTY 50 Investable Proxy),NIFTYBEES.NS ETF Total Return Proxy,50,13.27,17.81,0.41,-37.54,0.35,0.0,OFFICIAL_INDEX_TRACKER: Benchmark reference.

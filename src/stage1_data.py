@@ -1,28 +1,14 @@
 """
 src/stage1_data.py
 ==================
-Stage 1: Data Engineering Pipeline (FolioWise Upgrade).
+Stage 1: Historical Data Engineering & Point-in-Time Universe Resolution.
 
-Fetches, cleans, aligns, validates, and stores:
-- Point-in-time verified constituents (27 core continuous NIFTY 50 equities)
-- Benchmark Price Return Index (^NSEI)
-- Investable Benchmark Total Return Index (NIFTYBEES.NS base)
-- India VIX (^INDIAVIX) daily volatility index
-- Outputs:
-  - data/raw/prices.csv (date, ticker, adj_close, volume, filled)
-  - data/raw/index.csv (date, adj_close)
-  - data/raw/index_tri.csv (date, adj_close)
-  - data/raw/india_vix.csv (date, vix)
-  - data/raw/universe.csv (ticker, name, sector)
-  - data/raw/universe_pit.csv (point-in-time membership records)
-  - data/raw/membership_changes.csv (reconstitution changes log)
-  - data/processed/returns.csv (date, ticker, ret_1d)
-  - data/processed/prices.parquet (Apache Parquet persistence)
-  - data/foliowise.db (SQLite database)
-  - results/normalized_prices.png
-  - results/data_quality_summary.csv
-  - results/extreme_returns_audit.csv
-  - data/data_quality_report.json
+Executes:
+1. Reconstruct point-in-time universe history (80 intervals across 76 companies)
+2. Ingest benchmarks: NIFTY 50 Price Return Index (^NSEI) and Investable ETF TRI Proxy (NIFTYBEES.NS)
+3. Ingest India VIX (^INDIAVIX)
+4. Ingest and align historical stock prices for all verified point-in-time constituents
+5. Generate quality summaries, extreme returns audits, and provenance manifests
 """
 
 import os
@@ -36,20 +22,21 @@ if BASE_DIR not in sys.path:
 import warnings
 import numpy as np
 import pandas as pd
-import yfinance as yf
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-from src.data.market_data import MarketDataPipeline, CANDIDATE_UNIVERSE
+from src.universe.build_universe_history import build_universe_history
+from src.universe.resolver import UniverseResolver
+from src.data.market_data import MarketDataPipeline
 from src.data.benchmark import BenchmarkManager
 from src.data.validator import DataValidator
-from src.universe.resolver import UniverseResolver
 
 warnings.filterwarnings("ignore")
 
 START_DATE = "2015-01-01"
-END_DATE = "2026-11-15"
+END_DATE = "2026-11-20"
+
 
 def run_stage1(base_dir=".", use_cache=True):
     print("=" * 60)
@@ -63,7 +50,12 @@ def run_stage1(base_dir=".", use_cache=True):
     os.makedirs(data_proc_dir, exist_ok=True)
     os.makedirs(results_dir, exist_ok=True)
 
-    # 1. Run Core Market Data Pipeline
+    # 1. Authoritative Point-in-Time Universe Reconstruction
+    print("Rebuilding authoritative point-in-time constituent database...")
+    build_universe_history(base_dir=base_dir)
+    resolver = UniverseResolver(base_dir=base_dir)
+
+    # 2. Run Market Data Pipeline
     pipeline = MarketDataPipeline(base_dir=base_dir)
     pipe_results = pipeline.run_pipeline(
         start_date=START_DATE,
@@ -81,16 +73,16 @@ def run_stage1(base_dir=".", use_cache=True):
         for _, row in universe_df.iterrows()
     }
 
-    # 2. Daily returns
+    # 3. Daily returns
     returns_path = os.path.join(data_proc_dir, "returns.csv")
     returns_df = pd.read_csv(returns_path)
 
-    # 3. Data Quality Summary Table
+    # 4. Data Quality Summary Table
     qc_summary = []
     piv = prices_df.pivot(index="date", columns="ticker", values="adj_close")
     ret_piv = returns_df.pivot(index="date", columns="ticker", values="ret_1d")
 
-    for ticker in kept_universe:
+    for ticker in sorted(kept_universe.keys()):
         p_series = piv[ticker].dropna() if ticker in piv else pd.Series()
         r_series = ret_piv[ticker].dropna() if ticker in ret_piv else pd.Series()
         qc_summary.append({
@@ -108,22 +100,23 @@ def run_stage1(base_dir=".", use_cache=True):
     qc_df = pd.DataFrame(qc_summary)
     qc_path = os.path.join(results_dir, "data_quality_summary.csv")
     qc_df.to_csv(qc_path, index=False)
-    print(f"Saved data quality summary to {qc_path}")
+    print(f"Saved comprehensive data quality summary to {qc_path} ({len(qc_df)} stocks)")
 
-    # 4. Normalized Price Plot
+    # 5. Normalized Price Plot
     plt.figure(figsize=(12, 7))
-    norm_piv = piv / piv.iloc[0] * 100
+    norm_piv = piv / piv.bfill().iloc[0] * 100.0
+    # Plot top 10 liquid stocks for visual clarity
     for col in norm_piv.columns[:10]:
         plt.plot(pd.to_datetime(norm_piv.index), norm_piv[col], alpha=0.6, label=kept_universe[col][0])
     
     idx_piv = index_clean.set_index("date")["adj_close"]
-    idx_norm = idx_piv / idx_piv.iloc[0] * 100
+    idx_norm = idx_piv / idx_piv.iloc[0] * 100.0
     plt.plot(pd.to_datetime(idx_norm.index), idx_norm, color="black", linewidth=2.5, label="NIFTY 50 (^NSEI)")
 
-    plt.title("Normalized Price Performance (Base = 100, 2015 - 2026)", fontsize=14, fontweight="bold")
+    plt.title("Normalized Price Performance of Historical Equities (Base = 100, 2015 - 2026)", fontsize=13, fontweight="bold")
     plt.xlabel("Date", fontsize=11)
     plt.ylabel("Normalized Value", fontsize=11)
-    plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left", fontsize=9)
+    plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left", fontsize=8)
     plt.grid(True, linestyle="--", alpha=0.5)
     plt.tight_layout()
     plot_path = os.path.join(results_dir, "normalized_prices.png")
@@ -131,19 +124,18 @@ def run_stage1(base_dir=".", use_cache=True):
     plt.close()
     print(f"Saved normalized price plot to {plot_path}")
 
-    # 5. Extreme Returns Audit (> 25%)
+    # 6. Extreme Returns Audit (> 25% single day price movement)
     rets_series = prices_df.groupby("ticker")["adj_close"].pct_change()
     extreme_mask = rets_series.abs() > 0.25
     extreme_df = prices_df[extreme_mask].copy()
     if not extreme_df.empty:
         extreme_df["return_pct"] = (rets_series[extreme_mask] * 100).round(2)
-        extreme_df["explanation"] = "COVID-19 national lockdown declaration; lower circuit market halt across Indian equities"
+        extreme_df["explanation"] = "High-volatility market session / circuit limit / corporate restructuring"
         audit_path = os.path.join(results_dir, "extreme_returns_audit.csv")
         extreme_df[["date", "ticker", "adj_close", "return_pct", "explanation"]].to_csv(audit_path, index=False)
         print(f"Saved extreme returns audit to {audit_path} ({len(extreme_df)} rows)")
 
-    # 6. Point-in-Time Universe Coverage Audit
-    resolver = UniverseResolver(base_dir=base_dir)
+    # 7. Point-in-Time Universe Coverage Audit
     cov_start = resolver.calculate_survivorship_coverage("2015-01-02", kept_universe.keys())
     cov_mid = resolver.calculate_survivorship_coverage("2020-04-01", kept_universe.keys())
     cov_end = resolver.calculate_survivorship_coverage("2024-10-01", kept_universe.keys())
@@ -154,6 +146,7 @@ def run_stage1(base_dir=".", use_cache=True):
 
     print("\nStage 1 Data Engineering complete successfully!")
     return kept_universe
+
 
 if __name__ == "__main__":
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

@@ -1,3 +1,2 @@
 date,strategy,reason,fallback_action
-2020-03-31,S4,SLSQP non-convergence: Positive directional derivative for linesearch,Minimum-variance optimization fallback
-2020-04-30,S4,SLSQP non-convergence: Positive directional derivative for linesearch,Minimum-variance optimization fallback
+None,None,All SLSQP optimizations converged successfully,None
