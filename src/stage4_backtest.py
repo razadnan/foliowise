@@ -615,17 +615,22 @@ def run_stage4(base_dir="."):
     cost_df.to_csv(cost_path, index=False)
     print(f"Saved cost sensitivity to {cost_path}")
 
-    # 5. Charts: Equity Curves and Drawdowns
-    plt.figure(figsize=(14, 7))
+    # 5. Charts: Equity Curves and Drawdowns (Prop Trading Theme)
+    fig, ax = plt.subplots(figsize=(14, 7), facecolor="#030101")
+    ax.set_facecolor("#0F0E17")
+    for spine in ax.spines.values():
+        spine.set_color("#262338")
+    ax.tick_params(colors="#8E8A88", which="both")
+
     colors = {
-        "S0": "#4B5563",
-        "S1": "#0F766E",
-        "S2": "#2563EB",
-        "S3": "#D97706",
-        "S4": "#DC2626",
-        "S5": "#7C3AED",
-        "S6": "#059669",
-        "S7": "#DB2777"
+        "S0": "#8E8A88",  # Slate Gray (NIFTY 50 Benchmark)
+        "S1": "#00D084",  # Crisp Emerald Green (Equal Weight 1/N)
+        "S2": "#3E5D9E",  # Steel Blue (Min-Var)
+        "S3": "#B34420",  # Burnt Copper (Max Sharpe Historical)
+        "S4": "#DF1F06",  # Vibrant Electric Crimson Red (ML Predicted)
+        "S5": "#56160E",  # Deep Dark Crimson (Top-5 ML)
+        "S6": "#241D55",  # Deep Indigo (HRP)
+        "S7": "#B34420"   # Burnt Copper (Momentum)
     }
 
     for s in strategies:
@@ -633,56 +638,70 @@ def run_stage4(base_dir="."):
         cum_ret = (1.0 + s_df["net_ret"]).cumprod()
         dates = pd.to_datetime(s_df["date"])
         lw = 2.5 if s in ("S1", "S4", "S0") else 1.5
-        plt.plot(dates, cum_ret, label=f"{s}: {strategy_names[s]}", color=colors.get(s, "black"), linewidth=lw)
+        ax.plot(dates, cum_ret, label=f"{s}: {strategy_names[s]}", color=colors.get(s, "#D6D4D3"), linewidth=lw)
 
-    plt.title("Out-of-Sample Cumulative Equity Curves (2020-2026, Net of 20 bps Cost)", fontsize=13, fontweight="bold")
-    plt.xlabel("Date", fontsize=11)
-    plt.ylabel("Portfolio Value (Base = 1.0)", fontsize=11)
-    plt.grid(True, linestyle="--", alpha=0.5)
-    plt.legend(bbox_to_anchor=(1.02, 1), loc="upper left", fontsize=9)
+    ax.set_title("Out-of-Sample Cumulative Equity Curves (2020-2026, Net of 20 bps Cost)", fontsize=13, fontweight="bold", color="#F5F4F3")
+    ax.set_xlabel("Date", fontsize=11, color="#D6D4D3")
+    ax.set_ylabel("Portfolio Value (Base = 1.0)", fontsize=11, color="#D6D4D3")
+    ax.grid(True, linestyle="--", alpha=0.4, color="#262338")
+    leg = ax.legend(bbox_to_anchor=(1.02, 1), loc="upper left", fontsize=9, facecolor="#0F0E17", edgecolor="#262338")
+    for text in leg.get_texts():
+        text.set_color("#D6D4D3")
     plt.tight_layout()
     equity_path = os.path.join(results_dir, "equity_curves.png")
-    plt.savefig(equity_path, dpi=300)
+    plt.savefig(equity_path, dpi=300, facecolor=fig.get_facecolor(), edgecolor="none")
     plt.close()
     print(f"Saved equity curves to {equity_path}")
 
     # Drawdown chart
-    plt.figure(figsize=(14, 6))
+    fig, ax = plt.subplots(figsize=(14, 6), facecolor="#030101")
+    ax.set_facecolor("#0F0E17")
+    for spine in ax.spines.values():
+        spine.set_color("#262338")
+    ax.tick_params(colors="#8E8A88", which="both")
+
     for s in ["S0", "S1", "S4", "S6"]:
         s_df = daily_returns_df[daily_returns_df["strategy"] == s]
         cum_ret = (1.0 + s_df["net_ret"]).cumprod()
         cum_max = cum_ret.cummax()
         dd = (cum_ret - cum_max) / cum_max * 100.0
         dates = pd.to_datetime(s_df["date"])
-        plt.plot(dates, dd, label=f"{s}: {strategy_names[s]}", color=colors.get(s, "black"), linewidth=1.8)
+        ax.plot(dates, dd, label=f"{s}: {strategy_names[s]}", color=colors.get(s, "#D6D4D3"), linewidth=1.8)
 
-    plt.title("Portfolio Drawdown Over Time (%)", fontsize=13, fontweight="bold")
-    plt.xlabel("Date", fontsize=11)
-    plt.ylabel("Drawdown (%)", fontsize=11)
-    plt.grid(True, linestyle="--", alpha=0.5)
-    plt.legend(loc="lower left", fontsize=10)
+    ax.set_title("Portfolio Drawdown Over Time (%)", fontsize=13, fontweight="bold", color="#F5F4F3")
+    ax.set_xlabel("Date", fontsize=11, color="#D6D4D3")
+    ax.set_ylabel("Drawdown (%)", fontsize=11, color="#D6D4D3")
+    ax.grid(True, linestyle="--", alpha=0.4, color="#262338")
+    leg = ax.legend(loc="lower left", fontsize=10, facecolor="#0F0E17", edgecolor="#262338")
+    for text in leg.get_texts():
+        text.set_color("#D6D4D3")
     plt.tight_layout()
     dd_path = os.path.join(results_dir, "drawdown_chart.png")
-    plt.savefig(dd_path, dpi=300)
+    plt.savefig(dd_path, dpi=300, facecolor=fig.get_facecolor(), edgecolor="none")
     plt.close()
     print(f"Saved drawdown chart to {dd_path}")
 
-    # Weights over time plot
-    plt.figure(figsize=(14, 6))
+    # Weights over time plot (Prop Trading Theme)
+    fig, ax = plt.subplots(figsize=(14, 6), facecolor="#030101")
+    ax.set_facecolor("#0F0E17")
+    for spine in ax.spines.values():
+        spine.set_color("#262338")
+    ax.tick_params(colors="#8E8A88", which="both")
+
     w_s4_df = weights_df[weights_df["strategy"] == "S4"].copy()
     w_piv = w_s4_df.pivot(index="date", columns="ticker", values="weight").fillna(0.0)
-    plt.stackplot(pd.to_datetime(w_piv.index), w_piv.values.T, labels=w_piv.columns, alpha=0.85)
-    plt.title("S4 Max Sharpe (ML Blend) Allocation Weights Over Time", fontsize=13, fontweight="bold")
-    plt.xlabel("Date", fontsize=11)
-    plt.ylabel("Weight", fontsize=11)
-    plt.grid(True, linestyle="--", alpha=0.5)
+    ax.stackplot(pd.to_datetime(w_piv.index), w_piv.values.T, labels=w_piv.columns, alpha=0.85)
+    ax.set_title("S4 Max Sharpe (ML Blend) Allocation Weights Over Time", fontsize=13, fontweight="bold", color="#F5F4F3")
+    ax.set_xlabel("Date", fontsize=11, color="#D6D4D3")
+    ax.set_ylabel("Weight", fontsize=11, color="#D6D4D3")
+    ax.grid(True, linestyle="--", alpha=0.4, color="#262338")
     plt.tight_layout()
     w_plot_path = os.path.join(results_dir, "weights_over_time.png")
-    plt.savefig(w_plot_path, dpi=300)
+    plt.savefig(w_plot_path, dpi=300, facecolor=fig.get_facecolor(), edgecolor="none")
     plt.close()
     print(f"Saved weights over time plot to {w_plot_path}")
 
-    # 6. Efficient Frontier Plot (Phase 4)
+    # 6. Efficient Frontier Plot (Phase 4, Prop Trading Theme)
     print("Generating Markowitz Efficient Frontier...")
     hist_all = piv_returns.iloc[-504:]
     lw_cov = get_ledoit_wolf_cov(hist_all).values
@@ -704,23 +723,30 @@ def run_stage4(base_dir="."):
             frontier_vols.append(np.sqrt(res_ef.fun) * 100.0)
             frontier_rets.append(target_r * 100.0)
 
-    plt.figure(figsize=(9, 6))
+    fig, ax = plt.subplots(figsize=(9, 6), facecolor="#030101")
+    ax.set_facecolor("#0F0E17")
+    for spine in ax.spines.values():
+        spine.set_color("#262338")
+    ax.tick_params(colors="#8E8A88", which="both")
+
     if frontier_vols:
-        plt.plot(frontier_vols, frontier_rets, "b-", linewidth=2.5, label="Constrained Efficient Frontier (15% Cap)")
+        ax.plot(frontier_vols, frontier_rets, color="#3E5D9E", linewidth=2.5, label="Constrained Efficient Frontier (15% Cap)")
     
     # Plot strategy points
     for s in ["S1", "S2", "S3", "S4", "S6"]:
         m_row = metrics_df[metrics_df["strategy"] == s].iloc[0]
-        plt.scatter(m_row["vol"], m_row["cagr"], color=colors[s], s=90, zorder=5, label=f"{s} ({m_row['strategy_name'][:12]})")
+        ax.scatter(m_row["vol"], m_row["cagr"], color=colors[s], s=90, zorder=5, label=f"{s} ({m_row['strategy_name'][:12]})")
 
-    plt.title("Markowitz Efficient Frontier vs Realized Strategy Portfolios", fontsize=12, fontweight="bold")
-    plt.xlabel("Annualized Volatility (%)", fontsize=11)
-    plt.ylabel("Annualized Return (CAGR %)", fontsize=11)
-    plt.grid(True, linestyle="--", alpha=0.5)
-    plt.legend(loc="upper left", fontsize=9)
+    ax.set_title("Markowitz Efficient Frontier vs Realized Strategy Portfolios", fontsize=12, fontweight="bold", color="#F5F4F3")
+    ax.set_xlabel("Annualized Volatility (%)", fontsize=11, color="#D6D4D3")
+    ax.set_ylabel("Annualized Return (CAGR %)", fontsize=11, color="#D6D4D3")
+    ax.grid(True, linestyle="--", alpha=0.4, color="#262338")
+    leg = ax.legend(loc="upper left", fontsize=9, facecolor="#0F0E17", edgecolor="#262338")
+    for text in leg.get_texts():
+        text.set_color("#D6D4D3")
     plt.tight_layout()
     ef_path = os.path.join(results_dir, "efficient_frontier.png")
-    plt.savefig(ef_path, dpi=300)
+    plt.savefig(ef_path, dpi=300, facecolor=fig.get_facecolor(), edgecolor="none")
     plt.close()
     print(f"Saved efficient frontier plot to {ef_path}")
 

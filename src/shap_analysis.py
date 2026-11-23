@@ -53,17 +53,22 @@ def run_shap_analysis(model, X_sample, feature_names, output_dir="results"):
     shap_df.to_csv(csv_path, index=False)
     print(f"Saved SHAP importance table to {csv_path}")
 
-    # Plot summary bar chart
-    plt.figure(figsize=(10, 6))
-    plt.barh(shap_df["feature"][::-1], shap_df["mean_abs_shap"][::-1], color="#0F766E", edgecolor="black", alpha=0.85)
-    plt.title("TreeSHAP Feature Attribution (Mean |SHAP Value|)", fontsize=13, fontweight="bold")
-    plt.xlabel("Mean |SHAP Value| (Impact on 21-Day Return Forecast)", fontsize=11)
-    plt.ylabel("Feature", fontsize=11)
-    plt.grid(axis="x", linestyle="--", alpha=0.5)
+    # Plot summary bar chart (Prop Trading Theme)
+    fig, ax = plt.subplots(figsize=(10, 6), facecolor="#030101")
+    ax.set_facecolor("#0F0E17")
+    for spine in ax.spines.values():
+        spine.set_color("#262338")
+    ax.tick_params(colors="#8E8A88", which="both")
+
+    ax.barh(shap_df["feature"][::-1], shap_df["mean_abs_shap"][::-1], color="#DF1F06", edgecolor="#56160E", alpha=0.9)
+    ax.set_title("TreeSHAP Feature Attribution (Mean |SHAP Value|)", fontsize=13, fontweight="bold", color="#F5F4F3")
+    ax.set_xlabel("Mean |SHAP Value| (Impact on 21-Day Return Forecast)", fontsize=11, color="#D6D4D3")
+    ax.set_ylabel("Feature", fontsize=11, color="#D6D4D3")
+    ax.grid(axis="x", linestyle="--", alpha=0.4, color="#262338")
     plt.tight_layout()
 
     img_path = os.path.join(output_dir, "shap_summary.png")
-    plt.savefig(img_path, dpi=300)
+    plt.savefig(img_path, dpi=300, facecolor=fig.get_facecolor(), edgecolor="none")
     plt.close()
     print(f"Saved SHAP summary plot to {img_path}")
 

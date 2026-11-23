@@ -102,25 +102,32 @@ def run_stage1(base_dir=".", use_cache=True):
     qc_df.to_csv(qc_path, index=False)
     print(f"Saved comprehensive data quality summary to {qc_path} ({len(qc_df)} stocks)")
 
-    # 5. Normalized Price Plot
-    plt.figure(figsize=(12, 7))
+    # 5. Normalized Price Plot (Prop Trading Theme)
+    fig, ax = plt.subplots(figsize=(12, 7), facecolor="#030101")
+    ax.set_facecolor("#0F0E17")
+    for spine in ax.spines.values():
+        spine.set_color("#262338")
+    ax.tick_params(colors="#8E8A88", which="both")
+
     norm_piv = piv / piv.bfill().iloc[0] * 100.0
     # Plot top 10 liquid stocks for visual clarity
     for col in norm_piv.columns[:10]:
-        plt.plot(pd.to_datetime(norm_piv.index), norm_piv[col], alpha=0.6, label=kept_universe[col][0])
+        ax.plot(pd.to_datetime(norm_piv.index), norm_piv[col], alpha=0.5, label=kept_universe[col][0])
     
     idx_piv = index_clean.set_index("date")["adj_close"]
     idx_norm = idx_piv / idx_piv.iloc[0] * 100.0
-    plt.plot(pd.to_datetime(idx_norm.index), idx_norm, color="black", linewidth=2.5, label="NIFTY 50 (^NSEI)")
+    ax.plot(pd.to_datetime(idx_norm.index), idx_norm, color="#DF1F06", linewidth=2.5, label="NIFTY 50 (^NSEI)")
 
-    plt.title("Normalized Price Performance of Historical Equities (Base = 100, 2015 - 2026)", fontsize=13, fontweight="bold")
-    plt.xlabel("Date", fontsize=11)
-    plt.ylabel("Normalized Value", fontsize=11)
-    plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left", fontsize=8)
-    plt.grid(True, linestyle="--", alpha=0.5)
+    ax.set_title("Normalized Price Performance of Historical Equities (Base = 100, 2015 - 2026)", fontsize=13, fontweight="bold", color="#F5F4F3")
+    ax.set_xlabel("Date", fontsize=11, color="#D6D4D3")
+    ax.set_ylabel("Normalized Value", fontsize=11, color="#D6D4D3")
+    leg = ax.legend(bbox_to_anchor=(1.05, 1), loc="upper left", fontsize=8, facecolor="#0F0E17", edgecolor="#262338")
+    for text in leg.get_texts():
+        text.set_color("#D6D4D3")
+    ax.grid(True, linestyle="--", alpha=0.4, color="#262338")
     plt.tight_layout()
     plot_path = os.path.join(results_dir, "normalized_prices.png")
-    plt.savefig(plot_path, dpi=300)
+    plt.savefig(plot_path, dpi=300, facecolor=fig.get_facecolor(), edgecolor="none")
     plt.close()
     print(f"Saved normalized price plot to {plot_path}")
 

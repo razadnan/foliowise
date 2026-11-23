@@ -245,37 +245,50 @@ def run_stage3(base_dir="."):
     metrics_df.to_csv(metrics_path, index=False)
     print(f"Saved model metrics to {metrics_path}")
 
-    # 4. Decile/Quintile Calibration Plot
-    plt.figure(figsize=(9, 6))
+    # 4. Decile/Quintile Calibration Plot (Prop Trading Theme)
     xgb_preds = preds_df[preds_df["model"] == "XGBoost"].dropna(subset=["actual", "pred"]).copy()
     if not xgb_preds.empty:
+        fig, ax = plt.subplots(figsize=(9, 6), facecolor="#030101")
+        ax.set_facecolor("#0F0E17")
+        for spine in ax.spines.values():
+            spine.set_color("#262338")
+        ax.tick_params(colors="#8E8A88", which="both")
+
         xgb_preds["pred_q"] = pd.qcut(xgb_preds["pred"], q=5, labels=["Q1 (Low)", "Q2", "Q3", "Q4", "Q5 (High)"])
         calib = xgb_preds.groupby("pred_q")["actual"].mean()
-        plt.bar(range(len(calib)), calib.values, color="#1a56db", alpha=0.8, edgecolor="black")
-        plt.xticks(range(len(calib)), calib.index)
-        plt.axhline(0.5 if is_rank else 0.0, color="gray", linestyle="--", alpha=0.7)
-        plt.title("XGBoost Predicted Quintile vs. Realized Mean Return/Rank (2020–2026)", fontsize=12, fontweight="bold")
-        plt.xlabel("Predicted Quintile")
-        plt.ylabel("Mean Realized Outcome")
-        plt.grid(True, linestyle="--", alpha=0.4, axis="y")
+        ax.bar(range(len(calib)), calib.values, color="#DF1F06", alpha=0.9, edgecolor="#56160E")
+        ax.set_xticks(range(len(calib)))
+        ax.set_xticklabels(calib.index, color="#D6D4D3")
+        ax.axhline(0.5 if is_rank else 0.0, color="#8E8A88", linestyle="--", alpha=0.7)
+        ax.set_title("XGBoost Predicted Quintile vs. Realized Mean Return/Rank (2020–2026)", fontsize=12, fontweight="bold", color="#F5F4F3")
+        ax.set_xlabel("Predicted Quintile", color="#D6D4D3")
+        ax.set_ylabel("Mean Realized Outcome", color="#D6D4D3")
+        ax.grid(True, linestyle="--", alpha=0.4, axis="y", color="#262338")
         plt.tight_layout()
         calib_path = os.path.join(results_dir, "calibration_plot.png")
-        plt.savefig(calib_path, dpi=300)
+        plt.savefig(calib_path, dpi=300, facecolor=fig.get_facecolor(), edgecolor="none")
         plt.close()
         print(f"Saved calibration plot to {calib_path}")
 
-    # 5. Feature Importance Plot
+    # 5. Feature Importance Plot (Prop Trading Theme)
     if feature_importances_xgb:
         mean_fi_xgb = np.mean(feature_importances_xgb, axis=0)
         fi_df = pd.DataFrame({"feature": FEATURE_COLS, "importance": mean_fi_xgb}).sort_values("importance", ascending=True)
 
-        plt.figure(figsize=(10, 8))
-        plt.barh(fi_df["feature"], fi_df["importance"], color="#0284c7")
-        plt.title("XGBoost Mean Feature Importance (Walk-Forward 2020–2026)", fontsize=12, fontweight="bold")
-        plt.xlabel("Importance")
+        fig, ax = plt.subplots(figsize=(10, 8), facecolor="#030101")
+        ax.set_facecolor("#0F0E17")
+        for spine in ax.spines.values():
+            spine.set_color("#262338")
+        ax.tick_params(colors="#8E8A88", which="both")
+
+        ax.barh(fi_df["feature"], fi_df["importance"], color="#3E5D9E", edgecolor="#241D55")
+        ax.set_title("XGBoost Mean Feature Importance (Walk-Forward 2020–2026)", fontsize=12, fontweight="bold", color="#F5F4F3")
+        ax.set_xlabel("Importance", color="#D6D4D3")
+        ax.set_ylabel("Feature", color="#D6D4D3")
+        ax.grid(True, linestyle="--", alpha=0.4, axis="x", color="#262338")
         plt.tight_layout()
         fi_path = os.path.join(results_dir, "feature_importance.png")
-        plt.savefig(fi_path, dpi=300)
+        plt.savefig(fi_path, dpi=300, facecolor=fig.get_facecolor(), edgecolor="none")
         plt.close()
         print(f"Saved feature importance plot to {fi_path}")
 

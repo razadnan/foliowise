@@ -475,16 +475,21 @@ def run_experiments(base_dir: str = ".") -> dict:
     for _, row in bench_df.iterrows():
         print(f"{row['benchmark']:3s} | {row['description']:38s} | CAGR: {row['cagr']:5.2f}% | Vol: {row['ann_volatility']:5.2f}% | Sharpe: {row['sharpe_ratio']:5.2f} | MaxDD: {row['max_drawdown']:6.2f}% | Turn: {row['avg_monthly_turnover_pct']:5.2f}%")
 
-    # 6. Plot Equity Curves for E0 - E6
-    plt.figure(figsize=(14, 7))
+    # 6. Plot Equity Curves for E0 - E6 (Prop Trading Theme)
+    fig, ax = plt.subplots(figsize=(14, 7), facecolor="#030101")
+    ax.set_facecolor("#0F0E17")
+    for spine in ax.spines.values():
+        spine.set_color("#262338")
+    ax.tick_params(colors="#8E8A88", which="both")
+
     palette = {
-        "E0": "#0F766E", # Teal
-        "E1": "#9CA3AF", # Gray (Sample Markowitz)
-        "E2": "#3B82F6", # Blue
-        "E3": "#DC2626", # Red (XGBoost)
-        "E4": "#8B5CF6", # Purple (LSTM)
-        "E5": "#F59E0B", # Amber (Ensemble)
-        "E6": "#10B981"  # Emerald (Adaptive FolioWise)
+        "E0": "#00D084", # Crisp Emerald Green (1/N Benchmark)
+        "E1": "#8E8A88", # Slate Gray (Sample Markowitz)
+        "E2": "#3E5D9E", # Steel Blue (Ledoit-Wolf)
+        "E3": "#DF1F06", # Vibrant Electric Crimson Red (XGBoost)
+        "E4": "#241D55", # Deep Indigo Violet (LSTM)
+        "E5": "#B34420", # Burnt Copper (Ensemble)
+        "E6": "#56160E"  # Deep Dark Crimson (Adaptive FolioWise)
     }
 
     for eid in ladder_names:
@@ -493,46 +498,55 @@ def run_experiments(base_dir: str = ".") -> dict:
         cum_net = df_d["cum_net"]
         lw = 2.5 if eid in ("E0", "E3", "E6") else 1.5
         ls = "--" if eid in ("E1", "E4") else "-"
-        plt.plot(dates, cum_net, label=f"{eid}: {ladder_names[eid]}", color=palette[eid], linewidth=lw, linestyle=ls)
+        ax.plot(dates, cum_net, label=f"{eid}: {ladder_names[eid]}", color=palette[eid], linewidth=lw, linestyle=ls)
 
-    plt.title("SmartFolio Experiment Ladder (E0 - E6): Cumulative Out-of-Sample Equity Curves (2020-2026)", fontsize=13, fontweight="bold")
-    plt.xlabel("Date", fontsize=11)
-    plt.ylabel("Portfolio Value (Base = 100)", fontsize=11)
-    plt.grid(True, linestyle="--", alpha=0.5)
-    plt.legend(loc="upper left", fontsize=9)
+    ax.set_title("SmartFolio Experiment Ladder (E0 - E6): Cumulative Out-of-Sample Equity Curves (2020-2026)", fontsize=13, fontweight="bold", color="#F5F4F3")
+    ax.set_xlabel("Date", fontsize=11, color="#D6D4D3")
+    ax.set_ylabel("Portfolio Value (Base = 100)", fontsize=11, color="#D6D4D3")
+    ax.grid(True, linestyle="--", alpha=0.4, color="#262338")
+    leg = ax.legend(loc="upper left", fontsize=9, facecolor="#0F0E17", edgecolor="#262338")
+    for text in leg.get_texts():
+        text.set_color("#D6D4D3")
     plt.tight_layout()
     chart_path = os.path.join(exp_dir, "equity_curves_e0_e6.png")
-    plt.savefig(chart_path, dpi=300)
+    plt.savefig(chart_path, dpi=300, facecolor=fig.get_facecolor(), edgecolor="none")
     plt.close()
     print(f"Saved E0-E6 equity curve comparison to {chart_path}")
 
     # 6b. Plot Equity Curves for Benchmark Track (B1 - B4 vs E0, E3)
-    plt.figure(figsize=(14, 7))
+    fig, ax = plt.subplots(figsize=(14, 7), facecolor="#030101")
+    ax.set_facecolor("#0F0E17")
+    for spine in ax.spines.values():
+        spine.set_color("#262338")
+    ax.tick_params(colors="#8E8A88", which="both")
+
     bench_palette = {
-        "B1": "#4F46E5", # Indigo (HRP)
-        "B2": "#0284C7", # Light Blue (Min-Var)
-        "B3": "#059669", # Emerald (ERC)
-        "B4": "#D97706", # Amber (Momentum)
-        "E0": "#9CA3AF", # Gray reference (1/N)
-        "E3": "#DC2626"  # Red reference (XGBoost)
+        "B1": "#3E5D9E", # Steel Blue (HRP)
+        "B2": "#241D55", # Deep Indigo (Min-Var)
+        "B3": "#00D084", # Emerald Green (ERC)
+        "B4": "#B34420", # Burnt Copper (Momentum)
+        "E0": "#8E8A88", # Slate Gray reference (1/N)
+        "E3": "#DF1F06"  # Vibrant Crimson Red reference (XGBoost)
     }
 
     # Reference curves
-    plt.plot(pd.to_datetime(ladder_daily_dfs["E0"]["date"]), ladder_daily_dfs["E0"]["cum_net"], label="E0: 1/N Equal Weight (Reference)", color=bench_palette["E0"], linewidth=1.8, linestyle=":")
-    plt.plot(pd.to_datetime(ladder_daily_dfs["E3"]["date"]), ladder_daily_dfs["E3"]["cum_net"], label="E3: XGBoost Markowitz (ML Reference)", color=bench_palette["E3"], linewidth=1.8, linestyle="--")
+    ax.plot(pd.to_datetime(ladder_daily_dfs["E0"]["date"]), ladder_daily_dfs["E0"]["cum_net"], label="E0: 1/N Equal Weight (Reference)", color=bench_palette["E0"], linewidth=1.8, linestyle=":")
+    ax.plot(pd.to_datetime(ladder_daily_dfs["E3"]["date"]), ladder_daily_dfs["E3"]["cum_net"], label="E3: XGBoost Markowitz (ML Reference)", color=bench_palette["E3"], linewidth=1.8, linestyle="--")
 
     for bid in benchmark_names:
         df_b = bench_daily_dfs[bid]
-        plt.plot(pd.to_datetime(df_b["date"]), df_b["cum_net"], label=f"{bid}: {benchmark_names[bid]}", color=bench_palette[bid], linewidth=2.2)
+        ax.plot(pd.to_datetime(df_b["date"]), df_b["cum_net"], label=f"{bid}: {benchmark_names[bid]}", color=bench_palette[bid], linewidth=2.2)
 
-    plt.title("Portfolio Strategy Benchmark Track (B1 - B4 vs E0, E3 Reference): Cumulative Returns (2020-2026)", fontsize=13, fontweight="bold")
-    plt.xlabel("Date", fontsize=11)
-    plt.ylabel("Portfolio Value (Base = 100)", fontsize=11)
-    plt.grid(True, linestyle="--", alpha=0.5)
-    plt.legend(loc="upper left", fontsize=9)
+    ax.set_title("Portfolio Strategy Benchmark Track (B1 - B4 vs E0, E3 Reference): Cumulative Returns (2020-2026)", fontsize=13, fontweight="bold", color="#F5F4F3")
+    ax.set_xlabel("Date", fontsize=11, color="#D6D4D3")
+    ax.set_ylabel("Portfolio Value (Base = 100)", fontsize=11, color="#D6D4D3")
+    ax.grid(True, linestyle="--", alpha=0.4, color="#262338")
+    leg = ax.legend(loc="upper left", fontsize=9, facecolor="#0F0E17", edgecolor="#262338")
+    for text in leg.get_texts():
+        text.set_color("#D6D4D3")
     plt.tight_layout()
     bench_chart_path = os.path.join(exp_dir, "equity_curves_benchmarks.png")
-    plt.savefig(bench_chart_path, dpi=300)
+    plt.savefig(bench_chart_path, dpi=300, facecolor=fig.get_facecolor(), edgecolor="none")
     plt.close()
     print(f"Saved benchmark equity curve comparison to {bench_chart_path}")
 

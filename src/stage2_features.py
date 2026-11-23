@@ -132,8 +132,10 @@ def run_stage2(base_dir="."):
     desc_stats.to_csv(desc_path)
     print(f"Saved feature descriptive statistics to {desc_path}")
 
-    # 4. Correlation heatmap
-    plt.figure(figsize=(14, 11))
+    # 4. Correlation heatmap (Prop Trading Theme)
+    fig, ax = plt.subplots(figsize=(14, 11), facecolor="#030101")
+    ax.set_facecolor("#0F0E17")
+    ax.tick_params(colors="#8E8A88", which="both")
     corr = features_table[feat_cols + ["target_rank_20d"]].corr()
     mask = np.triu(np.ones_like(corr, dtype=bool))
     sns.heatmap(
@@ -144,13 +146,18 @@ def run_stage2(base_dir="."):
         center=0,
         mask=mask,
         linewidths=0.5,
+        linecolor="#262338",
         cbar_kws={"shrink": 0.8},
-        annot_kws={"size": 7}
+        annot_kws={"size": 7},
+        ax=ax
     )
-    plt.title("Feature & Target Correlation Heatmap (NIFTY 50 Universe)", fontsize=13, fontweight="bold")
+    cbar = ax.collections[0].colorbar
+    cbar.ax.yaxis.set_tick_params(color="#8E8A88")
+    plt.setp(plt.getp(cbar.ax.axes, 'yticklabels'), color='#D6D4D3')
+    ax.set_title("Feature & Target Correlation Heatmap (NIFTY 50 Universe)", fontsize=13, fontweight="bold", color="#F5F4F3")
     plt.tight_layout()
     corr_path = os.path.join(results_dir, "feature_correlation_heatmap.png")
-    plt.savefig(corr_path, dpi=300)
+    plt.savefig(corr_path, dpi=300, facecolor=fig.get_facecolor(), edgecolor="none")
     plt.close()
     print(f"Saved correlation heatmap to {corr_path}")
 
