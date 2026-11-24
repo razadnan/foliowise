@@ -103,7 +103,7 @@ function loadStockTable() {
     });
 }"""
 
-    pattern = re.compile(r"function loadStockTable\(\)\s*\{.*?\}\s*function drawEquityChart", re.DOTALL)
+    pattern = re.compile(r"(?:function renderStockRows\(stocks\)\s*\{.*?\}\s*)?function loadStockTable\(\)\s*\{.*?\}\s*function drawEquityChart", re.DOTALL)
     if pattern.search(html):
         html = pattern.sub(new_load_logic + "\n\nfunction drawEquityChart", html)
 
@@ -233,23 +233,11 @@ def main():
         fh.writelines(diff)
     n_changed = sum(1 for line in diff if line.startswith("+") or line.startswith("-"))
     print(f"Saved diff ({n_changed} changed lines): {DIFF_FILE}")
-    # --- Update dashboard.html if present ---
+    # --- Update dashboard.html & admin.html if present ---
     if _update_dashboard_html(DASHBOARD_HTML, payload["stocks"]):
         print(f"Updated: {DASHBOARD_HTML} with {len(payload['stocks'])} embedded stocks for offline/file:/// view.")
-
-    # --- Sync to workspace parent frontend directory if present ---
-    parent_frontend = PROJECT_ROOT.parent / "frontend"
-    if parent_frontend.exists() and parent_frontend != FRONTEND_DIR:
-        try:
-            import shutil
-            shutil.copy2(OUTPUT_HTML, parent_frontend / "index.html")
-            if DASHBOARD_HTML.exists():
-                shutil.copy2(DASHBOARD_HTML, parent_frontend / "dashboard.html")
-                shutil.copy2(DASHBOARD_HTML, FRONTEND_DIR / "admin.html")
-                shutil.copy2(DASHBOARD_HTML, parent_frontend / "admin.html")
-            print(f"Synchronized frontend build to parent workspace: {parent_frontend}")
-        except Exception as e:
-            print(f"Notice: parent frontend sync skipped ({e})")
+        import shutil
+        shutil.copy2(DASHBOARD_HTML, FRONTEND_DIR / "admin.html")
 
     print(
         f"Stock count: {len(payload['stocks'])} | "
