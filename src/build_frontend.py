@@ -237,6 +237,20 @@ def main():
     if _update_dashboard_html(DASHBOARD_HTML, payload["stocks"]):
         print(f"Updated: {DASHBOARD_HTML} with {len(payload['stocks'])} embedded stocks for offline/file:/// view.")
 
+    # --- Sync to workspace parent frontend directory if present ---
+    parent_frontend = PROJECT_ROOT.parent / "frontend"
+    if parent_frontend.exists() and parent_frontend != FRONTEND_DIR:
+        try:
+            import shutil
+            shutil.copy2(OUTPUT_HTML, parent_frontend / "index.html")
+            if DASHBOARD_HTML.exists():
+                shutil.copy2(DASHBOARD_HTML, parent_frontend / "dashboard.html")
+                shutil.copy2(DASHBOARD_HTML, FRONTEND_DIR / "admin.html")
+                shutil.copy2(DASHBOARD_HTML, parent_frontend / "admin.html")
+            print(f"Synchronized frontend build to parent workspace: {parent_frontend}")
+        except Exception as e:
+            print(f"Notice: parent frontend sync skipped ({e})")
+
     print(
         f"Stock count: {len(payload['stocks'])} | "
         f"NIFTY m={payload['nifty']['m']:.3f} v={payload['nifty']['v']:.3f} | "
