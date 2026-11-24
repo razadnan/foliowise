@@ -248,10 +248,12 @@
 - Uses heuristic scoring rule (not SLSQP) — this is explicitly declared on the page.
 - PDF print layout ("Save as PDF" button).
 
-**Developer Research Dashboard (`frontend/dashboard.html`):**
-- 5 tabs: Overview, Allocation, Performance vs NIFTY TRI, Costs & Turnover, Model Comparison.
-- Shows only real backtest outputs from `results/frontend.json`.
-- Cross-linked with Investor View ("For developers →" / "Investor view →" links).
+**Developer Research Dashboard / Admin Panel (`frontend/dashboard.html`):**
+- Styled with Coinora coral orange aesthetic and light/dark theme toggle.
+- 5 tabs: Overview & Strategy Ladder (E0–E6), Allocation & PIT Universe, Performance vs NIFTY, Costs & Turnover, Model Governance.
+- Interactive rebalance action with visual optimizer state, tab switching, and custom toast notification.
+- Visual access barrier with session persistence and transparent academic demo security disclosures.
+- Cross-linked with Investor View via header and sidebar navigation.
 
 **Single Source of Truth:** Both views read `results/frontend.json`; they cannot disagree after a rerun.
 

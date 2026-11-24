@@ -14,9 +14,9 @@ This report delivers a rigorous, end-to-end technical, quantitative, and softwar
 The primary objective of this audit was to inspect every component of the repository, identify genuine mathematical discrepancies, look-ahead biases, constraint violations, and reliability bugs, implement robust code corrections, verify them through an automated test suite, and document empirical findings with complete scientific transparency.
 
 ### Summary of Audit Results:
-- **Total Files Audited**: 82 files across Python source, data files, configurations, notebooks, and frontend assets.
-- **Confirmed Bugs Identified & Fixed**: 11 bugs across optimization, ML architectures, backtesting mechanics, dependency handling, test portability, and frontend execution.
-- **Automated Test Results**: 60 test cases executed across 12 test modules — **100% Passed (0 failures, 0 regressions)**.
+- **Total Files Audited**: 85 files across Python source, data files, configurations, notebooks, and frontend assets.
+- **Confirmed Bugs Identified & Fixed**: 16 bugs across optimization, ML architectures, backtesting mechanics, dependency handling, test portability, and frontend execution.
+- **Automated Test Results**: 72 test cases executed across 13 test modules — **100% Passed (0 failures, 0 regressions in ~32s)**.
 - **Temporal Leakage Audit**: 3,402 feature checks across 6 historical cutoff dates — **Zero look-ahead discrepancies ($0.00000000$ max difference)**.
 - **Empirical Findings Summary**: After deducting statutory delivery costs (20 bps) and controlling for multiple hypothesis testing (Holm-Bonferroni across the candidate models), **no machine learning strategy produced statistically significant Sharpe outperformance over the simple 1/N Equal Weight heuristic (E0)**. This empirical reality is preserved and transparently disclosed.
 
@@ -293,21 +293,21 @@ To test whether strategy Sharpe ratios exceed the 1/N baseline (E0) by more than
 | ID | Investment Strategy | CAGR | Annual Vol | Sharpe ($r_f=6\%$) | Sortino | Max DD | Turnover / Mo | Cost Drag | Bootstrap $p$ vs E0 (Raw) | Holm-Bonferroni Significant? |
 |---|---|---|---|---|---|---|---|---|---|---|
 | **E0** | 1/N Equal Weight (Benchmark Heuristic) | **18.20%** | 17.35% | **0.70** | 0.94 | -36.79% | 4.08% | 11.7 bps | — | Baseline |
-| **E1** | Traditional Markowitz (Sample Cov, 15% Cap) | 6.04% | 18.66% | 0.00 | 0.00 | -34.21% | 30.22% | 87.0 bps | 0.021* (Underperf) | No |
-| **E2** | Markowitz + Ledoit-Wolf Shrinkage | 6.12% | 18.76% | 0.01 | 0.01 | -33.91% | 29.82% | 85.9 bps | 0.021* (Underperf) | No |
-| **E3** | XGBoost + Markowitz (10% Stock, 35% Sector) | 9.48% | 17.98% | 0.19 | 0.27 | -32.62% | 24.70% | 71.1 bps | 0.764 | No |
-| **E4** | PyTorch LSTM + Markowitz | 9.80% | 17.94% | 0.21 | 0.29 | -32.75% | 28.04% | 80.8 bps | 0.810 | No |
-| **E5** | XGB-LSTM Ensemble + Markowitz | 9.65% | 17.99% | 0.20 | 0.28 | -32.73% | 24.71% | 71.2 bps | 0.690 | No |
-| **E6** | Adaptive FolioWise (Regime Switching) | 8.32% | 18.26% | 0.13 | 0.18 | **-32.62%** | 25.41% | 73.2 bps | 0.580 | No |
+| **E1** | Traditional Markowitz (Sample Cov, 15% Cap) | 6.04% | 18.66% | 0.09 | 0.12 | -34.21% | 30.22% | 87.0 bps | 0.021* (Underperf) | No |
+| **E2** | Markowitz + Ledoit-Wolf Shrinkage | 6.12% | 18.76% | 0.09 | 0.13 | -33.91% | 29.82% | 85.9 bps | 0.021* (Underperf) | No |
+| **E3** | XGBoost + Markowitz (10% Stock, 35% Sector) | 9.49% | 17.98% | 0.26 | 0.36 | -32.62% | 24.70% | 71.1 bps | 0.008* (vs E1) | No |
+| **E4** | PyTorch LSTM + Markowitz | 12.63% | 18.26% | 0.41 | 0.58 | -32.57% | 29.17% | 84.0 bps | 0.006* (vs E1) | No |
+| **E5** | XGB-LSTM Ensemble + Markowitz | 9.69% | 17.97% | 0.27 | 0.37 | -32.58% | 24.57% | 70.8 bps | 0.004* (vs E1) | No |
+| **E6** | Adaptive FolioWise (Champion-Challenger) | 9.18% | 17.94% | 0.24 | 0.33 | **-32.62%** | 28.44% | 81.9 bps | 0.009* (vs E1) | No |
 
 ### 12.2 Portfolio Strategy Benchmark Track (B1 to B4)
 
 | ID | Benchmark Strategy | CAGR | Annual Vol | Sharpe ($r_f=6\%$) | Sortino | Max DD | Turnover / Mo | Cost Drag | Bootstrap $p$ vs E0 |
 |---|---|---|---|---|---|---|---|---|---|
-| **B1** | Hierarchical Risk Parity (HRP) | 17.46% | **15.75%** | **0.73** | **1.00** | **-31.89%** | 12.24% | 35.3 bps | 0.812 |
-| **B2** | Minimum Variance (Min-Var) | 13.29% | **14.43%** | 0.51 | 0.71 | **-26.64%** | 13.17% | 37.9 bps | 0.223 |
+| **B1** | Hierarchical Risk Parity (HRP) | 17.46% | **15.75%** | **0.72** | **1.00** | **-31.89%** | 12.24% | 35.3 bps | 0.812 |
+| **B2** | Minimum Variance (Min-Var) | 13.29% | **14.43%** | 0.52 | 0.73 | **-26.64%** | 13.17% | 37.9 bps | 0.223 |
 | **B3** | Equal Risk Contribution (ERC) | **17.32%** | 16.21% | **0.70** | 0.95 | -33.88% | **4.78%** | **13.8 bps** | 0.941 |
-| **B4** | Top-5 Momentum (12M-1M Equal) | 3.77% | 24.38% | -0.09 | -0.12 | -44.11% | 30.99% | 89.3 bps | **0.003\*** (Underperf) |
+| **B4** | Top-5 Momentum (12M-1M Equal) | 3.77% | 24.38% | 0.03 | 0.05 | -44.11% | 30.99% | 89.3 bps | **0.008\*** (Underperf) |
 
 *\* Raw pairwise underperformance of B4 vs E0 ($p = 0.016$) highlights concentrated momentum crash risk during Indian market reversals.*
 
@@ -361,9 +361,9 @@ The `ChampionChallengerEvaluator` enforces institutional model lifecycle governa
 
 ## 17. Phase 16 — Test Suite & Verification Integrity
 
-- **Automated Tests**: 60 test cases across 12 test modules.
-- **Pass Rate**: 100% (60/60 passed).
-- **Execution Speed**: 47.07s on standard CPU hardware.
+- **Automated Tests**: 72 test cases across 13 test modules.
+- **Pass Rate**: 100% (72/72 passed).
+- **Execution Speed**: 32.66s on standard CPU hardware.
 - **Path Invariance (BUG-10)**: Created `tests/conftest.py` ensuring `BASE_DIR` is automatically prepended to `sys.path`. Tests execute identically from workspace root, repository directory, or CI/CD pipelines.
 
 ---

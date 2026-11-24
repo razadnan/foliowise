@@ -367,12 +367,12 @@ Automated Test Verification Matrix:
 7. tests/test_experiments.py             : 8/8 PASSED (Stationary bootstrap & benchmarks)
 8. tests/test_explainability.py          : 2/2 PASSED (Marginal risk, SHAP rationales)
 9. tests/test_features.py                : 4/4 PASSED (Technical indicators, 0-leakage)
-10. tests/test_fix_verifications.py      : 7/7 PASSED (BUG-01 to BUG-09 audit fixes)
+10. tests/test_fix_verifications.py      : 10/10 PASSED (BUG-01 to BUG-12 audit fixes)
 11. tests/test_metrics_and_frontend.py   : 9/9 PASSED (Metric math, JSON contracts)
 12. tests/test_models.py                 : 5/5 PASSED (Ridge, XGBoost, PyTorch, Ensemble)
 13. tests/test_optimizer.py              : 6/6 PASSED (Shrinkage, SLSQP, joint caps, ERC)
 ======================================================================================
-Total: 69 Passed in 42.56s (100% Verified)
+Total: 72 Passed in 32.66s (100% Verified)
 ```
 
 ---

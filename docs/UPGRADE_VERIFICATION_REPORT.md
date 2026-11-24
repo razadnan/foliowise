@@ -123,20 +123,23 @@ Stock allocations for the active strategy (E3) are decomposed into mathematicall
 
 ## 4. Test Suite & Quality Verification
 
-Full test suite execution confirms complete modular coverage:
+Full test suite execution confirms complete modular coverage across all 13 test suites:
 
 ```
 tests/test_adaptive.py: 2 passed
 tests/test_backtest.py: 5 passed
 tests/test_core.py: 6 passed
 tests/test_data.py: 8 passed
+tests/test_data_reconstruction.py: 6 passed
 tests/test_e2e.py: 1 passed
 tests/test_experiments.py: 8 passed
 tests/test_explainability.py: 2 passed
 tests/test_features.py: 4 passed
+tests/test_fix_verifications.py: 10 passed
+tests/test_metrics_and_frontend.py: 9 passed
 tests/test_models.py: 5 passed
 tests/test_optimizer.py: 6 passed
-============================== 47 passed in 39.99s ==============================
+============================== 72 passed in 32.66s ==============================
 ```
 
 ### Verification Checklist

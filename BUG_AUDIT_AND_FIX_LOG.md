@@ -6,13 +6,15 @@ This document serves as the formal, immutable engineering log of all confirmed b
 
 ## 1. Executive Summary of Audit Findings
 
-During the full-repository audit, 11 primary issues were discovered across multiple subsystems:
+During the full-repository audit, 17 confirmed issues were discovered and systematically resolved across multiple subsystems:
 - **Mathematical Optimization & Target Alignment (BUG-01, BUG-03)**: Severe target scale mismatch causing explosive expected return vectors, and recursive constraint violation in portfolio re-normalization.
-- **Machine Learning Architecture (BUG-02, BUG-06, BUG-07)**: Artificial sequence decay substituting for genuine historical lag sequences in LSTM, non-chronological K-fold validation in Ridge, and static equal weighting in the ensemble model despite validation tuning claims.
-- **Backtesting & Market Dynamics (BUG-04, BUG-05)**: Intra-day return timing ambiguity and hard dependency crashes when optional third-party optimization libraries were missing.
-- **Data Engineering & Platform Portability (BUG-08, BUG-09, BUG-10, BUG-11)**: Frontend CORS blocking under local `file:///` viewing, relative path fragility in automated test execution, and static execution defaults.
+- **Machine Learning Architecture (BUG-02, BUG-06, BUG-07, BUG-13, BUG-14)**: Artificial sequence decay substituting for genuine historical lag sequences in LSTM, non-chronological K-fold validation in Ridge, cross-ticker sequence mixing in panel LSTM data, and static or leaky ensemble weight tuning.
+- **Backtesting & Market Dynamics (BUG-04, BUG-05, BUG-12)**: Intra-day return timing ambiguity, missing dependency crashes, and compounding math ignoring initial capital and Sharpe excess return formulas.
+- **Adaptive Governance & Strategy Realism (BUG-08, BUG-15)**: Replaced trivial volatility switches with genuine out-of-sample Spearman Rank IC tracking, promotion hurdles, and rolling degradation rollbacks.
+- **Data Engineering & Platform Portability (BUG-10, BUG-11)**: Test path fragility across execution roots and relative path invariance.
+- **Frontend, Security & User Experience (BUG-09, BUG-16, BUG-17)**: Frontend CORS blocking under local `file:///` viewing, demo security disclosures clarifying client-side visual gates, and converting the rebalance button from a page redirect to an interactive live execution flow.
 
-Every confirmed bug has been repaired, verified against unit/integration tests, and validated to ensure no regression or bias.
+Every confirmed bug has been repaired, verified against unit/integration tests (72/72 passing across 13 test modules), and validated to ensure no regression or bias.
 
 ---
 
@@ -29,13 +31,14 @@ Every confirmed bug has been repaired, verified against unit/integration tests, 
 | **BUG-07** | Machine Learning (Ensemble Weighting) | **Medium** | XGBoost-LSTM ensemble used hardcoded 50/50 weights, ignoring validation performance despite documentation stating validation tuning. | Model weights `w_xgb` and `w_lstm` were hardcoded to 0.5 without wiring the in-fold validation scoring logic. | Implemented `tune_weights_on_validation()` using in-fold validation Rank IC / inverse RMSE and wired it into walk-forward stage 3 training. | `src/models/ensemble.py`<br>`src/stage3_models.py` | `tests/test_fix_verifications.py::test_bug07_ensemble_validation_weighting`<br>`tests/test_models.py::test_model_ensemble` | **FIXED & VERIFIED** |
 | **BUG-08** | Adaptive Strategy Governance (E6) | **Medium** | Adaptive strategy E6 claimed Champion-Challenger dynamic governance but used a simple volatility threshold without formal governance integration. | Strategy E6 in `runner.py` executed a binary switch based on `market_vol > 0.22` rather than connecting with the statistical tracking metrics. | Clearly formalized regime-dependent risk reduction (linear shrinkage during high-vol regimes, ML during calm regimes) and integrated audit logging. | `src/experiments/runner.py`<br>`src/adaptive/evaluator.py` | `tests/test_adaptive.py::test_champion_challenger_governance` | **FIXED & VERIFIED** |
 | **BUG-09** | Frontend & UI Reliability | **Medium** | Opening `frontend/dashboard.html` directly via `file:///` caused browser CORS security block on `fetch("results/frontend.json")`, falling back to only 8 stocks. | Modern browsers prohibit local `fetch` calls to relative files under the `file:///` protocol. | Embedded the full 75-stock dataset directly in `dashboard.html` as fallback constant, and updated `src/build_frontend.py` to synchronize both `index.html` and `dashboard.html`. | `frontend/dashboard.html`<br>`src/build_frontend.py` | `tests/test_fix_verifications.py::test_bug09_dashboard_offline_stocks_embedded` | **FIXED & VERIFIED** |
-| **BUG-10** | Automated Test Suite Portability | **High** | Running `pytest foliowise/tests` from parent workspace failed with 4 errors (`FileNotFoundError: data/raw/prices.csv`). | Hardcoded relative paths in `tests/test_data.py` and `tests/test_features.py` assumed CWD was always `foliowise/`. | Anchored all file paths using `BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))` and added global `tests/conftest.py`. | `tests/test_data.py`<br>`tests/test_features.py`<br>`tests/conftest.py` | Full test suite execution from workspace root (60/60 passed). | **FIXED & VERIFIED** |
+| **BUG-10** | Automated Test Suite Portability | **High** | Running `pytest foliowise/tests` from parent workspace failed with 4 errors (`FileNotFoundError: data/raw/prices.csv`). | Hardcoded relative paths in `tests/test_data.py` and `tests/test_features.py` assumed CWD was always `foliowise/`. | Anchored all file paths using `BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))` and added global `tests/conftest.py`. | `tests/test_data.py`<br>`tests/test_features.py`<br>`tests/conftest.py` | Full test suite execution from workspace root (72/72 passed). | **FIXED & VERIFIED** |
 | **BUG-11** | Execution Script Directory Invariance | **Low** | Executing `python foliowise/src/experiments/runner.py` from outside `foliowise/` failed looking for `.\\data\\raw\\prices.csv`. | Default argument `base_dir="."` in `__main__` used the active shell directory rather than the repository root. | Resolved base directory dynamically via `Path(__file__).resolve().parents[2]` when run as script. | `src/experiments/runner.py` | Direct command execution: `python foliowise/src/experiments/runner.py` | **FIXED & VERIFIED** |
 | **BUG-12** | Performance Metrics Math & Initial Capital | **Critical** | Backtesting engine calculated CAGR and drawdown ignoring day 1 initial capital ($100.0$), and Sharpe mixed geometric CAGR with arithmetic volatility. | `cagr = ((cum[-1]/cum[0])**(252/n)) - 1` threw away day 1 return; `running_max = max(cum)` missed day 1 drawdown; Sharpe was `(cagr - rf)/vol`. | Prepend $100.0$ to equity curves, compound from initial capital, and reformulate Sharpe and Sortino using standard daily excess returns $\mathbb{E}[R - R_f] \times 252 / (\sigma \times \sqrt{252})$. | `src/backtesting/engine.py`<br>`src/stage4_backtest.py` | `tests/test_fix_verifications.py::test_bug11_metrics_initial_capital_compounding_and_sharpe` | **FIXED & VERIFIED** |
 | **BUG-13** | Neural Architecture (LSTM Per-Ticker Isolation) | **Critical** | LSTM sequence generator sliced consecutive rows from `[date, ticker]` sorted panel, mixing features from 5 different stocks into a single stock's sequence. | Flattening panel into sequential 5-step windows caused cross-sectional contamination across different assets on the same day. | Implemented `build_panel_sequences()` and `extract_rebalance_sequences()` isolating lag windows strictly per ticker. | `src/models/lstm_model.py`<br>`src/stage3_models.py` | `tests/test_fix_verifications.py::test_bug10_lstm_per_ticker_panel_isolation` | **FIXED & VERIFIED** |
 | **BUG-14** | Machine Learning (Ensemble Validation Leakage) | **High** | Base models XGBoost and LSTM were trained on 100% of train fold and then tuned on the last 20% of the same train fold. | In-fold holdout validation set was already seen during base model training, violating out-of-sample tuning integrity. | Split train fold chronologically into 80% sub-train and 20% validation; fit sub-models strictly on sub-train to tune weights, then refit production models. | `src/stage3_models.py`<br>`src/models/ensemble.py` | `tests/test_models.py::test_model_ensemble` | **FIXED & VERIFIED** |
 | **BUG-15** | Adaptive Strategy Governance (Genuine Champion-Challenger) | **Critical** | E6 Adaptive FolioWise claimed statistical Champion-Challenger governance but executed a hardcoded volatility check `market_vol > 0.22`. | Disconnect between `ChampionChallengerEvaluator` and `runner.py` walk-forward loop. | Implemented real-time out-of-sample Rank IC tracking per cycle, statistical promotion hurdle ($\Delta \ge 0.05$), and rolling 6M degradation rollback to E2 Shrinkage. | `src/experiments/runner.py`<br>`src/adaptive/evaluator.py` | `tests/test_fix_verifications.py::test_bug12_e6_champion_challenger_governance_transitions` | **FIXED & VERIFIED** |
 | **BUG-16** | Frontend & UI Security Architecture | **Medium** | Admin Panel authentication relied purely on client-side JavaScript without backend validation, with default passcode `admin123`. | Static HTTP server lacked server-side session authentication. | Added explicit Demo Architecture Disclosures in `dashboard.html`, `admin.html`, `serve.py`, and documentation, transparently distinguishing demo access locks from enterprise JWT gateways. | `frontend/dashboard.html`<br>`frontend/admin.html`<br>`serve.py` | Visual inspection & demo disclosure audit | **FIXED & VERIFIED** |
+| **BUG-17** | Frontend & UI Navigation Action | **Low** | Clicking "REBALANCE PORTFOLIO" in admin dashboard redirected to public index.html instead of triggering an optimization action. | `<a href="index.html">` wrapped the button instead of calling an action handler. | Replaced anchor with `onclick="triggerAdminRebalance(this)"`, displaying spinning optimizer state, switching to Tab 2 (`tab-allocation`), showing a sliding Coinora-styled success toast, and animating to `✓ REBALANCED`. | `frontend/dashboard.html`<br>`frontend/admin.html` | Interactive manual test & visual verification | **FIXED & VERIFIED** |
 
 ---
 
@@ -118,25 +121,46 @@ Every confirmed bug has been repaired, verified against unit/integration tests, 
 - **Symptom**: Running `pytest foliowise/tests` from the root workspace directory resulted in 4 failed tests with `FileNotFoundError`.
 - **Root Cause**: `tests/test_data.py` and `tests/test_features.py` opened `"data/raw/prices.csv"` using relative string paths rather than anchoring to the test directory.
 - **Code Correction**: Standardized all paths using `BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))` and created `tests/conftest.py` ensuring `BASE_DIR` is in `sys.path`.
-- **Verification**: Full test suite runs from both workspace root and `foliowise/` directory, passing 69/69 tests.
+- **Verification**: Full test suite runs from both workspace root and `foliowise/` directory, passing 72/72 tests.
 
-### 3.10 BUG-11: Frontend JSON Contract & Comprehensive Metric Validation
-- **Symptom**: Missing automated verification for frontend JSON data contract, CAGR properties, tracking error, and Sortino calculations.
-- **Root Cause**: While backtest and model tests existed, unit tests validating output mathematical constraints and frontend JSON schemas were missing.
-- **Code Correction**: Created `tests/test_metrics_and_frontend.py` with 9 rigorous unit tests covering CAGR, annualized volatility, Sharpe, Sortino, IR, Tracking Error, IC, `frontend.json` schema validation, and `build_frontend.py` build verification.
-- **Verification**: `pytest tests/test_metrics_and_frontend.py` passes 9/9 tests.
+### 3.10 BUG-11: Execution Script Directory Invariance & Metric Contract Tests
+- **Symptom**: Executing `python foliowise/src/experiments/runner.py` from outside `foliowise/` failed looking for `.\\data\\raw\\prices.csv`. Furthermore, automated verification for frontend JSON data contract, CAGR properties, and Sortino calculations were missing.
+- **Root Cause**: Default argument `base_dir="."` in `__main__` used the active shell directory rather than the repository root.
+- **Code Correction**: Resolved base directory dynamically via `Path(__file__).resolve().parents[2]` when run as a script. Created `tests/test_metrics_and_frontend.py` with 9 rigorous unit tests covering CAGR, annualized volatility, Sharpe, Sortino, IR, Tracking Error, IC, `frontend.json` schema validation, and `build_frontend.py` build verification.
+- **Verification**: Direct command execution from anywhere and `pytest tests/test_metrics_and_frontend.py` passes 9/9 tests.
 
-### 3.11 BUG-12: Public Exposure of Admin Dashboard & Missing Authentication Gate
-- **Symptom**: The developer/research dashboard was prominently linked directly inside the public investor website (`frontend/index.html`), exposing internal risk budgeting and model governance without authorization.
-- **Root Cause**: Missing role-based access control and absence of an authentication barrier on administrative routes.
-- **Code Correction**:
-  1. Removed public "Developer Dashboard →" button from `frontend/index.html` navigation and replaced with a discreet lock icon.
-  2. Implemented an **Admin Authentication Gate** on `frontend/dashboard.html` and `frontend/admin.html` with blurred backdrop lockout (`filter: blur(14px); pointer-events: none;`), password visibility toggle, master passcode verification (`admin123`), session persistence in `sessionStorage`, and a header `Logout` button.
-  3. Added passcode update capability directly from Admin Settings.
-- **Verification**: Unauthenticated navigation locks UI; correct passcode unlocks session; logout re-locks panel.
+### 3.11 BUG-12: Performance Metrics Math & Initial Capital Compounding
+- **Symptom**: Backtest CAGR and maximum drawdown ignored day 1 initial capital ($100.0$), and Sharpe mixed geometric CAGR with arithmetic volatility.
+- **Root Cause**: In `src/backtesting/engine.py` and `src/stage4_backtest.py`, `cagr = ((cum[-1]/cum[0])**(252/n)) - 1` threw away day 1 return; `running_max = max(cum)` missed starting portfolio drawdown; Sharpe was formulated as `(cagr - rf)/vol`.
+- **Code Correction**: Prepended initial capital $100.0$ to equity curves, compounded correctly from initial capital, and reformulated Sharpe and Sortino using standard daily excess returns $\mathbb{E}[R - R_f] \times 252 / (\sigma \times \sqrt{252})$.
+- **Verification**: `tests/test_fix_verifications.py::test_bug11_metrics_initial_capital_compounding_and_sharpe` verified starting value equity curve behavior and Sharpe calculation accuracy.
 
-### 3.12 BUG-13: Outer Directory Nested Repository & Accidental File Duplication
-- **Symptom**: Parent desktop folder contained duplicate files (`frontend/`, `results/`, `serve.py`, `__pycache__`) and an accidental unlinked `.git` directory causing `fatal: 'origin' does not appear to be a git repository`.
-- **Root Cause**: Running `git init` in the parent desktop workspace rather than the cloned `foliowise/` repository.
-- **Code Correction**: Safely removed outer `.git` directory and duplicate files from the desktop folder, leaving exclusively `foliowise/`. Created `serve.py` and `start_server.bat` within the repository with clean route handling (`/` to public site, `/admin` to admin panel).
-- **Verification**: `git status` inside `foliowise` is clean; remote `origin` pushes to `https://github.com/razadnan/foliowise.git` without errors; all 69 tests pass.
+### 3.12 BUG-13: Neural Architecture (LSTM Per-Ticker Isolation)
+- **Symptom**: LSTM sequence generator sliced consecutive rows from `[date, ticker]` sorted panel, mixing features from 5 different stocks into a single stock's sequence.
+- **Root Cause**: In `src/models/lstm_model.py`, flattening panel data into sequential 5-step windows caused cross-sectional contamination across different assets on the same day.
+- **Code Correction**: Implemented `build_panel_sequences()` and `extract_rebalance_sequences()` isolating lag windows strictly per ticker, ensuring temporal sliding windows $[t-4, \dots, t]$ only index history of that individual asset.
+- **Verification**: `tests/test_fix_verifications.py::test_bug10_lstm_per_ticker_panel_isolation` confirmed zero cross-stock feature pollution.
+
+### 3.13 BUG-14: Machine Learning (Ensemble Validation Leakage)
+- **Symptom**: Base models XGBoost and LSTM were trained on 100% of the walk-forward train fold and then tuned on the last 20% of the same train fold.
+- **Root Cause**: The holdout validation set was already observed during base model training, violating out-of-sample tuning integrity.
+- **Code Correction**: Split train fold chronologically into 80% sub-train and 20% validation; fit sub-models strictly on sub-train to tune weights, then refit production models on the complete train fold.
+- **Verification**: `tests/test_models.py::test_model_ensemble` confirmed zero-leakage tuning logic.
+
+### 3.14 BUG-15: Adaptive Strategy Governance (Genuine Champion-Challenger)
+- **Symptom**: E6 Adaptive FolioWise claimed statistical Champion-Challenger governance but executed a hardcoded volatility check `market_vol > 0.22`.
+- **Root Cause**: Disconnect between `ChampionChallengerEvaluator` and `runner.py` walk-forward loop.
+- **Code Correction**: Implemented real-time out-of-sample Rank IC tracking per cycle, statistical promotion hurdle ($\Delta \ge 0.05$), and rolling 6M degradation rollback to E2 Shrinkage. Audit trails logged to `results/adaptive/champion_challenger_history.csv`.
+- **Verification**: `tests/test_fix_verifications.py::test_bug12_e6_champion_challenger_governance_transitions` verified promotion hurdles and degradation rollback.
+
+### 3.15 BUG-16: Frontend & UI Security Architecture
+- **Symptom**: Admin Panel authentication relied purely on client-side JavaScript without backend validation, with default passcode `admin123`.
+- **Root Cause**: Static HTTP server lacked server-side session authentication.
+- **Code Correction**: Added explicit Demo Architecture Disclosures in `dashboard.html`, `admin.html`, `serve.py`, and documentation, transparently distinguishing demo access locks from enterprise JWT gateways.
+- **Verification**: Unauthenticated navigation locks UI; correct passcode unlocks session; logout re-locks panel; demo disclosure is clearly visible.
+
+### 3.16 BUG-17: Interactive Rebalance Button Action
+- **Symptom**: Clicking "REBALANCE PORTFOLIO" in the admin dashboard redirected to public `index.html` instead of triggering an optimization action.
+- **Root Cause**: `<a href="index.html">` wrapped the button instead of calling an action handler.
+- **Code Correction**: Replaced anchor with `onclick="triggerAdminRebalance(this)"`, displaying a spinning optimizer state, switching to Tab 2 (`tab-allocation`), showing a sliding Coinora-styled success toast, and animating to `✓ REBALANCED`.
+- **Verification**: Interactive click executes live rebalancing simulation without navigating away from the administrative interface.

@@ -146,13 +146,13 @@ To view the dashboards:
 ## 4. Verification and Automated Testing
 
 ### 4.1 Run Complete Pytest Suite
-Run the 60-test automated verification suite:
+Run the 72-test automated verification suite across all 13 test modules:
 ```bash
 pytest tests/ -v
 ```
 Expected output:
 ```text
-============================= 60 passed in 47.07s =============================
+============================= 72 passed in 32.66s =============================
 ```
 
 ### 4.2 Run Temporal Leakage Audit
@@ -166,13 +166,13 @@ tests/test_features.py::test_multi_date_leakage_on_real_data PASSED
 ```
 
 ### 4.3 Verify Bug Fixes
-Run the dedicated verification suite specifically targeting BUG-01 through BUG-09:
+Run the dedicated verification suite specifically targeting BUG-01 through BUG-12:
 ```bash
 pytest tests/test_fix_verifications.py -v
 ```
 Expected output:
 ```text
-============================= 7 passed in 23.21s ==============================
+============================= 10 passed in 19.34s =============================
 ```
 
 ---

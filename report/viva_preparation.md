@@ -126,3 +126,22 @@ Using permutation-based Shapley attribution on our Gradient Boosting model, the 
 | Market Relative | +0.0340 | 0.42 | −0.04 | Beta adjustment stabilizes cross-sectional tilts |
 
 **Key Insight:** Price momentum is the single dominant factor. The ablation result suggests that Ridge is essentially a regularized momentum model — the remaining 8 features provide incremental refinement but the core signal is medium-term price trend.
+
+---
+
+### Question 11: How was the SmartFolio Experiment Ladder upgraded and rigorously verified (E0–E6 & B1–B4)?
+**Plain-Language Answer:**
+During our comprehensive technical audit, we verified all 72 automated unit and integration tests across 13 modules, ensuring mathematical fidelity across three core dimensions:
+1. **Compounding & Starting Capital:** Equity curves prepend the base investment ($100.0$), eliminating lookahead/truncation errors. Sharpe ratios are calculated via standard excess returns:
+   $$\text{Sharpe} = \frac{\mathbb{E}[R_t - R_{f, t}] \times 252}{\sigma(R_t - R_{f, t}) \times \sqrt{252}}$$
+2. **Per-Ticker LSTM Sequences (E4):** Rather than flattening panel data across tickers, sliding lag windows $[t-4, \dots, t]$ are constructed strictly per ticker. This improved LSTM out-of-sample CAGR to **12.63%** (Sharpe **0.41**, Sortino **0.58**).
+3. **Zero-Leakage Dynamic Governance (E6):** E6 replaces arbitrary volatility switches with genuine out-of-sample Spearman Rank IC evaluation across rolling monthly cycles. When candidate challenger models exceed champion IC by $\Delta \ge 0.05$, promotion occurs; if trailing 6-month IC turns negative, the strategy rolls back to the Ledoit-Wolf baseline (E2).
+4. **Empirical Ground Truth:** 1/N Equal Weight (E0, CAGR 18.20%, Sharpe 0.70) and Hierarchical Risk Parity (B1, CAGR 17.46%, Sharpe 0.72) confirm that low-turnover heuristic diversification remains extremely hard to beat out-of-sample after real-world 20 bps transaction frictions.
+
+---
+
+### Question 12: How does the Admin Panel handle security and interactive rebalancing?
+**Plain-Language Answer:**
+The administrative interface (`frontend/dashboard.html` / `frontend/admin.html`) provides researchers with an interactive terminal:
+1. **Access Gate & Demo Security Disclosure:** Access is gated behind a master passcode with blurred session lockout. As formally documented in our code and disclosures, this is an interactive academic visual access gate rather than a multi-factor production gateway, preventing unintended public exposure without misrepresenting demo code as enterprise security.
+2. **Interactive Rebalancing Action:** Clicking "REBALANCE PORTFOLIO" triggers an interactive JavaScript handler (`triggerAdminRebalance`) that simulates live quadratic optimization, navigates the user to the PIT Allocation tab, displays a custom Coinora-styled sliding success toast, and provides visual feedback (`✓ REBALANCED`) while preserving current portfolio state.
