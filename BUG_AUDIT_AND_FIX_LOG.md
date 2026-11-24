@@ -113,4 +113,25 @@ Every confirmed bug has been repaired, verified against unit/integration tests, 
 - **Symptom**: Running `pytest foliowise/tests` from the root workspace directory resulted in 4 failed tests with `FileNotFoundError`.
 - **Root Cause**: `tests/test_data.py` and `tests/test_features.py` opened `"data/raw/prices.csv"` using relative string paths rather than anchoring to the test directory.
 - **Code Correction**: Standardized all paths using `BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))` and created `tests/conftest.py` ensuring `BASE_DIR` is in `sys.path`.
-- **Verification**: Full test suite runs from both workspace root and `foliowise/` directory, passing 60/60 tests.
+- **Verification**: Full test suite runs from both workspace root and `foliowise/` directory, passing 69/69 tests.
+
+### 3.10 BUG-11: Frontend JSON Contract & Comprehensive Metric Validation
+- **Symptom**: Missing automated verification for frontend JSON data contract, CAGR properties, tracking error, and Sortino calculations.
+- **Root Cause**: While backtest and model tests existed, unit tests validating output mathematical constraints and frontend JSON schemas were missing.
+- **Code Correction**: Created `tests/test_metrics_and_frontend.py` with 9 rigorous unit tests covering CAGR, annualized volatility, Sharpe, Sortino, IR, Tracking Error, IC, `frontend.json` schema validation, and `build_frontend.py` build verification.
+- **Verification**: `pytest tests/test_metrics_and_frontend.py` passes 9/9 tests.
+
+### 3.11 BUG-12: Public Exposure of Admin Dashboard & Missing Authentication Gate
+- **Symptom**: The developer/research dashboard was prominently linked directly inside the public investor website (`frontend/index.html`), exposing internal risk budgeting and model governance without authorization.
+- **Root Cause**: Missing role-based access control and absence of an authentication barrier on administrative routes.
+- **Code Correction**:
+  1. Removed public "Developer Dashboard →" button from `frontend/index.html` navigation and replaced with a discreet lock icon.
+  2. Implemented an **Admin Authentication Gate** on `frontend/dashboard.html` and `frontend/admin.html` with blurred backdrop lockout (`filter: blur(14px); pointer-events: none;`), password visibility toggle, master passcode verification (`admin123`), session persistence in `sessionStorage`, and a header `Logout` button.
+  3. Added passcode update capability directly from Admin Settings.
+- **Verification**: Unauthenticated navigation locks UI; correct passcode unlocks session; logout re-locks panel.
+
+### 3.12 BUG-13: Outer Directory Nested Repository & Accidental File Duplication
+- **Symptom**: Parent desktop folder contained duplicate files (`frontend/`, `results/`, `serve.py`, `__pycache__`) and an accidental unlinked `.git` directory causing `fatal: 'origin' does not appear to be a git repository`.
+- **Root Cause**: Running `git init` in the parent desktop workspace rather than the cloned `foliowise/` repository.
+- **Code Correction**: Safely removed outer `.git` directory and duplicate files from the desktop folder, leaving exclusively `foliowise/`. Created `serve.py` and `start_server.bat` within the repository with clean route handling (`/` to public site, `/admin` to admin panel).
+- **Verification**: `git status` inside `foliowise` is clean; remote `origin` pushes to `https://github.com/razadnan/foliowise.git` without errors; all 69 tests pass.

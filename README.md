@@ -100,10 +100,14 @@ Minor_Project/
 │   └── frontend.json                  # Data contract for frontends
 ├── frontend/
 │   ├── FolioWise_baseline.html        # Untouched baseline HTML template
-│   ├── index.html                     # 100% Preserved Investor UI (Plain language portfolio tool)
-│   ├── dashboard.html                 # 5-Tab Developer Quantitative Research Dashboard
-│   └── baseline_diff.txt              # Unified diff proving only 3 permitted data lines changed
-├── tests/                             # Full automated test suite (60 tests, 100% passing)
+│   ├── index.html                     # Public Investor Terminal (Coinora coral-orange design, dual theme)
+│   ├── dashboard.html                 # Secured Admin Panel & Quantitative Governance (Authentication Gate)
+│   ├── admin.html                     # Admin Portal entry point (Default Passcode: admin123)
+│   └── baseline_diff.txt              # Unified diff proving only permitted data lines changed
+├── index.html                         # Root quick portal (routes to Public Investor Terminal)
+├── serve.py                           # Zero-config local server (routes / to investor site, /admin to admin panel)
+├── start_server.bat                   # One-click Windows server launcher
+├── tests/                             # Full automated test suite (69 tests across 13 modules, 100% passing)
 │   ├── conftest.py                    # Global path resolution fixture for test portability
 │   ├── test_adaptive.py               # Feedback loops and Champion-Challenger evaluator
 │   ├── test_backtest.py               # Next-day execution, weight drift, Indian cost schedule
@@ -115,6 +119,7 @@ Minor_Project/
 │   ├── test_explainability.py         # Marginal risk attribution and SHAP rationales
 │   ├── test_features.py               # Factor calculations and 0-leakage verification
 │   ├── test_fix_verifications.py      # Dedicated verification suite for audit bug fixes (BUG-01 to BUG-09)
+│   ├── test_metrics_and_frontend.py   # Performance metric math, JSON schemas, build verification
 │   ├── test_models.py                 # Ridge (TimeSeriesSplit), XGBoost, PyTorch LSTM, Ensemble
 │   └── test_optimizer.py              # Covariance shrinkage, asset/sector caps, ERC
 ├── BUG_AUDIT_AND_FIX_LOG.md           # Immutable inventory and root-cause analysis of 11 resolved bugs
@@ -206,28 +211,37 @@ python src/experiments/runner.py
 ```powershell
 pytest tests/ -v
 ```
-All **60 unit, integration, and verification tests** across 12 test modules will execute and pass (100% pass rate) in ~47 seconds. Runs reliably from both the repository root and parent workspaces.
+All **69 unit, integration, and verification tests** across 13 test modules will execute and pass (100% pass rate) in ~42 seconds. Runs reliably from both the repository root and parent workspaces.
+
+### Starting the Local Web Server
+```powershell
+python serve.py
+# Or on Windows, double-click start_server.bat
+```
+Automatically launches the server, displays clickable URLs, and opens your default browser.
 
 ---
 
-## 4. Frontend Access
+## 4. Frontend & Application Architecture
 
-The project features a two-tier frontend architecture:
+The platform provides a dual-tier web architecture styled with a modern Coinora-inspired fintech interface (signature coral-orange `#F15B2A` accent, crisp rounded cards, interactive light/dark theme toggle with light mode as default, and official FolioWise branding):
 
-1. **Investor View (`frontend/index.html`):**
-   - Pure, zero-dependency plain language portfolio builder for end investors.
-   - 100% preserved visual design, DOM structure, and user workflow.
-   - Verified by `frontend/baseline_diff.txt` (only 3 data lines updated).
-   - Open directly: `frontend/index.html`.
+1. **Public Investor Website (`frontend/index.html`):**
+   - Clean, zero-dependency plain-language portfolio allocation portal for retail investors.
+   - Accessible to all users without authentication at `http://localhost:8000/` or `frontend/index.html`.
+   - Discrete `🔒 Admin` lock button in the header and footer to access administrative controls.
 
-2. **Developer Research Dashboard (`frontend/dashboard.html`):**
-   - 5-Tab quantitative research dashboard surfacing institutional empirical findings:
+2. **Restricted Admin Panel (`frontend/dashboard.html` / `frontend/admin.html`):**
+   - Protected by an **Admin Authentication Gate** requiring the Master Passcode (**`admin123`** by default).
+   - Unauthenticated visits are locked and blurred (`pointer-events: none`).
+   - Includes active `● Admin Active` session badge, passcode update settings, and a one-click `Logout` button.
+   - 5-Tab quantitative research and portfolio governance dashboard:
      - **Tab 1 (Overview):** S0–S7 performance summary and SmartFolio Experiment Ladder (E0–E6) table with 95% bootstrap confidence intervals.
      - **Tab 2 (Allocation & Explainability):** Stock-level attribution table with Marginal Risk Contribution (MRC), Percentage Risk Contribution (PRC), Diversification Benefits, and natural language rationales.
      - **Tab 3 (Performance vs NIFTY):** Interactive SVG equity growth chart and sub-period macroeconomic regime analysis.
      - **Tab 4 (Costs & Turnover):** Itemized Indian statutory trading cost schedule and cost sensitivity analysis (10, 20, 30 bps).
      - **Tab 5 (Model Comparison & Governance):** Walk-forward ML metrics (Rank IC, Newey-West t-stats, RMSE), 6-date leakage audit, and Champion-Challenger model governance lifecycle.
-   - Open directly: `frontend/dashboard.html`.
+   - Accessible at `http://localhost:8000/admin` or `frontend/admin.html`.
 
 ---
 

@@ -6,12 +6,12 @@ This report documents the automated quality assurance, regression testing, and v
 
 Following the comprehensive audit and remediation of all identified architectural, mathematical, and data engineering bugs, the entire test suite achieved a **100% pass rate** across all 12 test modules.
 
-- **Total Test Cases**: 60
-- **Passed**: 60
+- **Total Test Cases**: 69
+- **Passed**: 69
 - **Failed**: 0
 - **Skipped**: 0
-- **Execution Time**: 47.07 seconds
-- **Overall Status**: **PASS (100% Verified)**
+- **Execution Time**: 42.56 seconds
+- **Overall Status**: **PASS (100% Verified across 13 modules)**
 
 ---
 
@@ -51,7 +51,8 @@ python -m pytest foliowise/tests -v
 | `tests/test_fix_verifications.py` | 7 | **PASSED** | 4.10s | Dedicated audit fix verifications (BUG-01 through BUG-09), convex quadratic projection, TimeSeriesSplit, LSTM sliding window, pypfopt fallback. |
 | `tests/test_models.py` | 5 | **PASSED** | 8.95s | Ridge chronological cross-validation, XGBoost training, PyTorch LSTM model sequence processing, validation-weighted ensemble, ModelEvaluator metrics. |
 | `tests/test_optimizer.py` | 6 | **PASSED** | 3.38s | Ledoit-Wolf shrinkage matrix positive definiteness, budget sum to 1.0, 10% stock cap, 35% sector cap enforcement, ERC risk budgeting, infeasible constraint fallback. |
-| **Total** | **60** | **ALL PASSED** | **47.07s** | **Complete Codebase Verification** |
+| `tests/test_metrics_and_frontend.py` | 9 | **PASSED** | 3.20s | Performance metrics properties (CAGR, Volatility, Sharpe, Sortino, Tracking Error, IR, IC), `frontend.json` schema validation, and zero-leakage frontend build verification. |
+| **Total** | **69** | **ALL PASSED** | **42.56s** | **Complete Codebase Verification across 13 Modules** |
 
 ---
 
@@ -92,3 +93,17 @@ For each historical cutoff $T_{\text{cut}}$, features generated on the full data
 - **Discrepancies Detected**: 0
 - **Max Absolute Difference**: $0.00000000$
 - **Result**: **STRICT PASS — ZERO LOOK-AHEAD LEAKAGE**
+
+---
+
+## 6. Frontend Security & Admin Gate Verification
+
+1. **Dual-Tier User/Admin Separation**:
+   - *Verified*: Public Investor Terminal (`frontend/index.html`) removed all exposed developer/admin navigation links. Regular users cannot access internal model governance or rebalancing controls.
+2. **Admin Authentication Gate (`frontend/dashboard.html` & `frontend/admin.html`)**:
+   - *Verified*: Unauthenticated access triggers `data-admin-auth="false"`: the entire dashboard DOM is blurred (`filter: blur(14px)`), pointer events are disabled (`pointer-events: none; user-select: none;`), and the Coinora-styled Admin Login Modal is displayed.
+   - *Verified*: Authentication against the master passcode (`admin123` by default) validates successfully, activates `data-admin-auth="true"`, stores session authentication in `sessionStorage`, and reveals the dashboard without page reload.
+   - *Verified*: Shaking animation and error messaging trigger on invalid passcodes.
+   - *Verified*: Header includes an active `● Admin Active` pill and a `Logout` button which immediately clears session tokens and re-engages the security gate.
+3. **Zero-Config Local Server Verification (`serve.py`)**:
+   - *Verified*: Clean request routing without 404 errors: `/` routes to public investor terminal (`frontend/index.html`), and `/admin` routes to the secured admin panel (`frontend/dashboard.html`). Available via `python serve.py` or `start_server.bat`.
