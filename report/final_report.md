@@ -6,7 +6,7 @@
 **Target Benchmark:** NIFTY 50 Total Return Index (`NIFTYBEES.NS` ETF Proxy) & Price Index (`^NSEI`)  
 **Data Horizon:** January 2015 – November 2026 (2,921 Trading Days)  
 **Out-of-Sample Walk-Forward Period:** January 2020 – November 2026 (83 Monthly Rebalance Cycles)  
-**Automated Test Suite Status:** 69 Passed / 0 Failed (100% Pass Rate across 13 Modules)  
+**Automated Test Suite Status:** 72 Passed / 0 Failed (100% Pass Rate across 13 Modules)  
 
 ---
 
@@ -22,31 +22,32 @@ Classical Modern Portfolio Theory (Markowitz, 1952) suffers from extreme sensiti
 5. **Realistic Institutional Backtesting:** Strict next-day ($T+1$) market open execution, end-of-day continuous weight drift, and Indian statutory trading costs (flat 20 bps base rate and 32.3 bps statutory delivery schedule).
 6. **Rigorous Statistical Verification:** Politis & Romano (1994) stationary block bootstrap hypothesis testing ($N = 1,000$) to evaluate the statistical significance of Sharpe ratio differentials.
 7. **Explainable Attribution & Governance:** Marginal Risk Contribution (MRC), Percentage Risk Contribution (PRC), Permutation TreeSHAP factor importance, and an automated Champion-Challenger model governance engine.
-8. **Modern Dual-Tier Application UI:** A Coinora-inspired fintech user interface with signature coral-orange styling (`#F15B2A`), light/dark theme toggle (default light), a zero-dependency public Investor Terminal, and a restricted Admin Panel secured by an authentication gate.
+8. **Modern Dual-Tier Application UI:** A Coinora-inspired fintech user interface with signature coral-orange styling (`#F15B2A`), light/dark theme toggle (default light), a zero-dependency public Investor Terminal, and a restricted Admin Panel secured by an authentication gate with transparent demo architecture disclosure.
 
 ### Key Empirical Findings
 
 | Experiment / Strategy | Architecture / Method | CAGR (%) | Annual Vol (%) | Sharpe Ratio | Sortino | Max DD (%) | Monthly Turnover (%) | vs E0 95% Bootstrap CI | Empirical p-value |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **E0 (Benchmark)** | 1/N Equal Weight | **18.20%** | 17.35% | **0.70** | 0.94 | -36.79% | 4.08% | Benchmark | — |
-| **E1** | Traditional Sample Markowitz | 6.04% | 18.66% | 0.00 | 0.00 | -34.21% | 30.22% | [-1.172, -0.155] | **0.021\*** |
-| **E2** | Markowitz + Ledoit-Wolf Shrinkage | 6.12% | 18.76% | 0.01 | 0.01 | -33.91% | 29.82% | [-1.153, -0.157] | **0.021\*** |
-| **E3** | XGBoost + Markowitz (Caps + Reg) | **15.97%** | 15.40% | **0.65** | 0.91 | **-26.51%** | 29.42% | [-0.461, +0.299] | 0.764 |
-| **E4** | PyTorch LSTM Sequence Model | 8.61% | 16.83% | 0.15 | 0.21 | -34.11% | 42.00% | [-0.858, -0.145] | **0.011\*** |
-| **E5** | XGB-LSTM Ensemble + Markowitz | 12.02% | 17.53% | 0.34 | 0.48 | -31.87% | 58.74% | [-0.696, +0.007] | 0.093 |
-| **E6** | Adaptive FolioWise (Champion-Challenger)| 10.82% | 15.55% | 0.31 | 0.44 | **-26.51%** | 26.91% | [-0.860, +0.078] | 0.170 |
-| **B1 (Risk Parity)**| Hierarchical Risk Parity (HRP) | **17.46%** | **15.75%** | **0.73** | **1.00** | **-31.89%** | 12.24% | [-0.173, +0.211] | 0.812 |
-| **B2 (Low Vol)** | Minimum Variance (Min-Var) | 13.29% | **14.43%** | 0.51 | 0.71 | **-26.64%** | 13.17% | [-0.482, +0.102] | 0.223 |
-| **B3 (Risk Budget)**| Equal Risk Contribution (ERC) | **17.32%** | 16.21% | **0.70** | 0.95 | -33.88% | **4.78%** | [-0.106, +0.089] | 0.941 |
-| **B4 (Momentum)** | Top-5 Momentum (12M-1M Equal) | 3.77% | 24.38% | -0.09 | -0.12 | -44.11% | 30.99% | [-1.261, -0.278] | **0.003\*** |
+| **E1** | Traditional Sample Markowitz | 6.04% | 18.66% | 0.09 | 0.12 | -34.21% | 30.22% | [-1.172, -0.155] | **0.021\*** |
+| **E2** | Markowitz + Ledoit-Wolf Shrinkage | 6.12% | 18.76% | 0.09 | 0.13 | -33.91% | 29.82% | [-1.153, -0.157] | **0.021\*** |
+| **E3** | XGBoost + Markowitz (Caps + Reg) | 9.49% | 17.98% | 0.26 | 0.36 | **-32.62%** | 24.70% | [-0.929, -0.054] | **0.053** |
+| **E4** | PyTorch LSTM Sequence Model | **12.63%** | 18.26% | **0.41** | **0.58** | **-32.57%** | 29.17% | [-0.725, +0.055] | 0.159 |
+| **E5** | XGB-LSTM Ensemble + Markowitz | 9.69% | 17.97% | 0.27 | 0.37 | **-32.58%** | 24.57% | [-0.919, -0.045] | **0.058** |
+| **E6** | Adaptive FolioWise (Champion-Challenger)| 9.18% | 17.94% | 0.24 | 0.33 | **-32.62%** | 28.44% | [-0.952, -0.047] | **0.050** |
+| **B1 (Risk Parity)**| Hierarchical Risk Parity (HRP) | **17.46%** | **15.75%** | **0.72** | **1.00** | **-31.89%** | 12.24% | [-0.153, +0.164] | 0.859 |
+| **B2 (Low Vol)** | Minimum Variance (Min-Var) | 13.29% | **14.43%** | 0.52 | 0.73 | **-26.64%** | 13.17% | [-0.607, +0.178] | 0.346 |
+| **B3 (Risk Budget)**| Equal Risk Contribution (ERC) | **17.32%** | 16.21% | **0.70** | 0.95 | -33.88% | **4.78%** | [-0.113, +0.083] | 0.858 |
+| **B4 (Momentum)** | Top-5 Momentum (12M-1M Equal) | 3.77% | 24.38% | 0.03 | 0.04 | -44.11% | 30.99% | [-1.192, -0.224] | **0.008\*** |
 
 \* *Statistically significant difference vs E0 at $\alpha = 0.05$.*
 
 ### Critical Research Takeaways
 1. **Confirmation of the DeMiguel (2009) Puzzle:** Naive 1/N Equal Weighting (E0) delivers high risk-adjusted returns (Sharpe 0.70, CAGR 18.20%) due to zero estimation error, contrarian rebalancing premia, and very low turnover (4.08%).
-2. **The Failure of Unconstrained Markowitz:** Classic sample Markowitz (E1) collapsed to Sharpe 0.00 ($p = 0.021$), statistically significantly inferior to 1/N. Sample covariance and mean estimation error severely degrade active portfolios.
-3. **Machine Learning Controls Tail Risk:** E3 (XGBoost with $10\%$ asset, $35\%$ sector caps, and Ledoit-Wolf shrinkage) achieved **15.97% CAGR** net of all trading friction, compressing maximum drawdown by **1,028 bps** relative to Equal Weight (-26.51% vs -36.79%) while outperforming traditional Markowitz by **+56 bps in Sharpe ratio ($p = 0.033$)**.
-4. **Heuristic & Risk-Parity Strength:** Hierarchical Risk Parity (B1, Sharpe 0.73) and Equal Risk Contribution (B3, Sharpe 0.70) matched or exceeded 1/N without return estimation risk, demonstrating the value of robust graph-theoretic risk allocation.
+2. **The Failure of Unconstrained Markowitz:** Classic sample Markowitz (E1) collapsed to Sharpe 0.09 ($p = 0.021$), statistically significantly inferior to 1/N. Sample covariance and mean estimation error severely degrade active portfolios.
+3. **Machine Learning Tail-Risk Compression:** All constrained machine learning strategies (E3–E6) compress maximum portfolio drawdown by **over 417 to 422 bps** compared to Equal Weight (-32.57% to -32.62% vs -36.79%) while outperforming traditional Markowitz statistically significantly ($p < 0.01$).
+4. **Per-Ticker Temporal Neural Alpha (E4 LSTM):** When trained on genuine per-ticker temporal lag windows rather than cross-sectional arrays, PyTorch LSTM achieved **12.63% CAGR** and a **0.41 Sharpe Ratio**, generating $+32\text{ bps}$ higher Sharpe than traditional Markowitz ($p = 0.006^*$).
+5. **Heuristic & Risk-Parity Strength:** Hierarchical Risk Parity (B1, Sharpe 0.72) and Equal Risk Contribution (B3, Sharpe 0.70) matched 1/N without return estimation risk, demonstrating the value of robust graph-theoretic risk allocation.
 
 ---
 
@@ -243,12 +244,12 @@ Subject to strict institutional constraints:
 Experiment Ladder Cumulative Performance (2020 – 2026 OOS):
 --------------------------------------------------------------------------------------
 E0 (Equal Weight)      : CAGR +18.20% | Sharpe 0.70 | Max DD -36.79% | Vol 17.35%
-E3 (XGBoost Markowitz) : CAGR +15.97% | Sharpe 0.65 | Max DD -26.51% | Vol 15.40%
-E5 (Ensemble Markowitz): CAGR +12.02% | Sharpe 0.34 | Max DD -31.87% | Vol 17.53%
-E6 (Adaptive Gov.)     : CAGR +10.82% | Sharpe 0.31 | Max DD -26.51% | Vol 15.55%
-E4 (PyTorch LSTM)      : CAGR +8.61%  | Sharpe 0.15 | Max DD -34.11% | Vol 16.83%
-E2 (Ledoit-Wolf Mark.) : CAGR +6.12%  | Sharpe 0.01 | Max DD -33.91% | Vol 18.76%
-E1 (Sample Markowitz)  : CAGR +6.04%  | Sharpe 0.00 | Max DD -34.21% | Vol 18.66%
+E4 (PyTorch LSTM)      : CAGR +12.63% | Sharpe 0.41 | Max DD -32.57% | Vol 18.26%
+E5 (Ensemble Markowitz): CAGR +9.69%  | Sharpe 0.27 | Max DD -32.58% | Vol 17.97%
+E3 (XGBoost Markowitz) : CAGR +9.49%  | Sharpe 0.26 | Max DD -32.62% | Vol 17.98%
+E6 (Adaptive Gov.)     : CAGR +9.18%  | Sharpe 0.24 | Max DD -32.62% | Vol 17.94%
+E2 (Ledoit-Wolf Mark.) : CAGR +6.12%  | Sharpe 0.09 | Max DD -33.91% | Vol 18.76%
+E1 (Sample Markowitz)  : CAGR +6.04%  | Sharpe 0.09 | Max DD -34.21% | Vol 18.66%
 --------------------------------------------------------------------------------------
 ```
 
@@ -256,20 +257,25 @@ E1 (Sample Markowitz)  : CAGR +6.04%  | Sharpe 0.00 | Max DD -34.21% | Vol 18.66
 Following Politis and Romano (1994), we evaluate the statistical significance of Sharpe ratio differences using stationary block bootstrap resampling ($N = 1,000$ resamples with average block length $L = 21$ trading days):
 
 1. **E1 (Sample Markowitz) vs E0 (Equal Weight):**
-   - Observed $\Delta \text{Sharpe} = -0.70$
+   - Observed $\Delta \text{Sharpe} = -0.619$
    - 95% Confidence Interval: $[-1.172, -0.155]$
    - **p-value = 0.021 (Statistically Significant)**
    - *Conclusion:* Unregularized Markowitz is statistically significantly inferior to naive equal weighting.
 2. **E3 (XGBoost Markowitz) vs E1 (Sample Markowitz):**
-   - Observed $\Delta \text{Sharpe} = +0.56$
-   - 95% Confidence Interval: $[+0.048, +1.025]$
-   - **p-value = 0.033 (Statistically Significant)**
-   - *Conclusion:* Machine learning signals combined with concentration caps and Ledoit-Wolf shrinkage significantly improve mean-variance optimization.
-3. **E3 (XGBoost Markowitz) vs E0 (Equal Weight):**
-   - Observed $\Delta \text{Sharpe} = -0.05$
-   - 95% Confidence Interval: $[-0.461, +0.299]$
-   - **p-value = 0.764 (Not Significant)**
-   - *Conclusion:* While E3 produces equivalent risk-adjusted returns to 1/N, it achieves this with **1,028 bps lower maximum drawdown** (-26.51% vs -36.79%) and lower volatility (15.40% vs 17.35%).
+   - Observed $\Delta \text{Sharpe} = +0.175$
+   - 95% Confidence Interval: $[+0.050, +0.313]$
+   - **p-value = 0.008 (Statistically Significant)**
+   - *Conclusion:* Machine learning expected returns with convex concentration caps and Ledoit-Wolf shrinkage significantly outperform traditional Markowitz.
+3. **E4 (PyTorch LSTM) vs E1 (Sample Markowitz):**
+   - Observed $\Delta \text{Sharpe} = +0.328$
+   - 95% Confidence Interval: $[+0.108, +0.566]$
+   - **p-value = 0.006 (Statistically Significant)**
+   - *Conclusion:* Processing genuine per-ticker temporal lag sequences provides significant predictive alpha over unregularized mean-variance baselines.
+4. **E6 (Adaptive FolioWise) vs E1 (Sample Markowitz):**
+   - Observed $\Delta \text{Sharpe} = +0.159$
+   - 95% Confidence Interval: $[+0.049, +0.282]$
+   - **p-value = 0.009 (Statistically Significant)**
+   - *Conclusion:* Statistical Champion-Challenger governance with safety rollbacks to E2 Shrinkage provides robust, statistically significant outperformance over traditional Markowitz.
 
 ---
 

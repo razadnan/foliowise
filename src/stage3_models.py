@@ -33,6 +33,7 @@ import warnings
 import numpy as np
 import pandas as pd
 from typing import Dict, List, Tuple
+from scipy import stats
 from sklearn.ensemble import RandomForestRegressor
 import matplotlib
 matplotlib.use("Agg")
@@ -45,7 +46,7 @@ if BASE_DIR not in sys.path:
 
 from src.models.ridge import RidgeModel
 from src.models.xgboost_model import XGBoostModel
-from src.models.lstm_model import LSTMModel
+from src.models.lstm_model import LSTMModel, build_panel_sequences, extract_rebalance_sequences
 from src.models.ensemble import ModelEnsemble
 from src.models.evaluator import ModelEvaluator
 from src.shap_analysis import run_shap_analysis
@@ -150,9 +151,10 @@ def run_stage3(base_dir="."):
         feature_importances_xgb.append(xgb.model.feature_importances_)
         last_xgb = xgb.model
 
-        # 5. PyTorch LSTM Challenger
+        # 5. PyTorch LSTM Challenger (Trained on per-ticker chronological sequences)
+        X_train_seq = build_panel_sequences(train_data, FEATURE_COLS, seq_len=model_configs["lstm"]["seq_len"])
         lstm = LSTMModel(
-            input_dim=X_train.shape[1],
+            input_dim=len(FEATURE_COLS),
             seq_len=model_configs["lstm"]["seq_len"],
             hidden_dim=model_configs["lstm"]["hidden_dim"],
             num_layers=model_configs["lstm"]["num_layers"],
@@ -160,15 +162,46 @@ def run_stage3(base_dir="."):
             epochs=model_configs["lstm"]["epochs"],
             batch_size=model_configs["lstm"]["batch_size"],
             random_state=RANDOM_SEED
-        ).fit(X_train, y_train)
+        ).fit(X_train_seq, y_train)
 
-        # 6. XGBoost-LSTM Ensemble (Validation-Tuned on in-fold holdout)
-        val_split = max(1, int(len(X_train) * 0.80))
-        X_val_tr = X_train[val_split:]
-        y_val_tr = y_train[val_split:]
-        ensemble = ModelEnsemble(weight_xgb=0.5, weight_lstm=0.5, model_xgb=xgb, model_lstm=lstm)
-        w_x, w_l = ensemble.tune_weights_on_validation(X_val_tr, y_val_tr)
-        print(f"Validation-tuned Ensemble weights: XGBoost={w_x:.3f}, LSTM={w_l:.3f}")
+        # 6. XGBoost-LSTM Ensemble (Validation-Tuned on strictly pre-split in-fold holdout to prevent leakage)
+        unique_train_dates = sorted(train_data["date"].unique())
+        val_date_idx = int(len(unique_train_dates) * 0.80)
+        split_date = unique_train_dates[val_date_idx]
+
+        subtrain_df = train_data[train_data["date"] < split_date].copy().reset_index(drop=True)
+        val_df = train_data[train_data["date"] >= split_date].copy().reset_index(drop=True)
+
+        # Fit sub-models on strictly pre-split data
+        sub_xgb = XGBoostModel(**model_configs["xgboost"]).fit(
+            subtrain_df[FEATURE_COLS].values, subtrain_df[target_col].values
+        )
+        sub_lstm_seq = build_panel_sequences(subtrain_df, FEATURE_COLS, seq_len=model_configs["lstm"]["seq_len"])
+        sub_lstm = LSTMModel(
+            input_dim=len(FEATURE_COLS),
+            seq_len=model_configs["lstm"]["seq_len"],
+            hidden_dim=model_configs["lstm"]["hidden_dim"],
+            num_layers=model_configs["lstm"]["num_layers"],
+            learning_rate=model_configs["lstm"]["learning_rate"],
+            epochs=model_configs["lstm"]["epochs"],
+            batch_size=model_configs["lstm"]["batch_size"],
+            random_state=RANDOM_SEED
+        ).fit(sub_lstm_seq, subtrain_df[target_col].values)
+
+        # Validation sequence generation from history up to validation dates
+        val_seq = build_panel_sequences(val_df, FEATURE_COLS, seq_len=model_configs["lstm"]["seq_len"])
+        val_xgb_pred = sub_xgb.predict(val_df[FEATURE_COLS].values)
+        val_lstm_pred = sub_lstm.predict(val_seq)
+
+        ic_xgb, _ = stats.spearmanr(val_xgb_pred, val_df[target_col].values)
+        ic_lstm, _ = stats.spearmanr(val_lstm_pred, val_df[target_col].values)
+        ic_xgb = max(0.001, float(ic_xgb) if not np.isnan(ic_xgb) else 0.001)
+        ic_lstm = max(0.001, float(ic_lstm) if not np.isnan(ic_lstm) else 0.001)
+        w_x = float(ic_xgb / (ic_xgb + ic_lstm))
+        w_l = float(ic_lstm / (ic_xgb + ic_lstm))
+        print(f"Leakage-free Validation-tuned Ensemble weights: XGBoost={w_x:.3f}, LSTM={w_l:.3f}")
+
+        ensemble = ModelEnsemble(weight_xgb=w_x, weight_lstm=w_l, model_xgb=xgb, model_lstm=lstm)
 
         # Generate Out-of-Sample Predictions
         for rebal_date in test_dates_year:
@@ -181,6 +214,15 @@ def run_stage3(base_dir="."):
             tickers = date_df["ticker"].values
             last_X_test = X_test
 
+            # Extract per-ticker sequences for LSTM leading up to rebalance date
+            X_test_seq = extract_rebalance_sequences(
+                df_history=df,
+                rebalance_date=rebal_date,
+                tickers=tickers,
+                feature_cols=FEATURE_COLS,
+                seq_len=model_configs["lstm"]["seq_len"]
+            )
+
             # Predictions
             pred_naive = np.array([ticker_means.get(t, overall_mean) for t in tickers])
             mom_vals = date_df["f_mom_126_21"].fillna(0.0).values
@@ -189,8 +231,8 @@ def run_stage3(base_dir="."):
             pred_ridge = ridge.predict(X_test)
             pred_rf = rf.predict(X_test)
             pred_xgb = xgb.predict(X_test)
-            pred_lstm = lstm.predict(X_test)
-            pred_ens = ensemble.predict(X_test)
+            pred_lstm = lstm.predict(X_test_seq)
+            pred_ens = ensemble.predict(X_test, X_seq=X_test_seq)
 
             date_str = rebal_date.strftime("%Y-%m-%d")
 

@@ -172,6 +172,8 @@ class BacktestEngine:
     def calculate_metrics(self, df_daily: pd.DataFrame, strategy_name: str) -> Dict[str, Any]:
         """
         Compute standard institutional metrics for strategy.
+        Incorporates Day 1 return into compounding, standard daily-excess Sharpe,
+        downside-deviation Sortino, and initial capital drawdown.
         """
         net_rets = df_daily["net_return"].values
         gross_rets = df_daily["gross_return"].values
@@ -180,21 +182,32 @@ class BacktestEngine:
             return {"strategy": strategy_name}
 
         cum_net = df_daily["cum_net"].values
-        total_ret = (cum_net[-1] / cum_net[0]) - 1.0
-        cagr = ((cum_net[-1] / cum_net[0]) ** (252.0 / n_days)) - 1.0
+        initial_capital = 100.0
+        total_ret = (cum_net[-1] / initial_capital) - 1.0
+        cagr = ((cum_net[-1] / initial_capital) ** (252.0 / n_days)) - 1.0
         ann_vol = float(np.std(net_rets, ddof=1) * np.sqrt(252))
 
-        # Sharpe ratio
-        sharpe = (cagr - self.rf) / ann_vol if ann_vol > 0 else 0.0
+        # Sharpe ratio: annualized daily excess returns over annualized volatility
+        daily_rf = self.rf / 252.0
+        excess_daily = net_rets - daily_rf
+        ann_excess = float(np.mean(excess_daily) * 252.0)
+        if ann_vol > 1e-7:
+            sharpe = float(ann_excess / ann_vol)
+        else:
+            sharpe = 99.9 if ann_excess > 0 else 0.0
 
-        # Sortino ratio
-        downside_diff = np.minimum(0.0, net_rets - (self.rf / 252.0))
-        downside_dev = np.sqrt(np.mean(downside_diff ** 2)) * np.sqrt(252)
-        sortino = (cagr - self.rf) / downside_dev if downside_dev > 0 else 0.0
+        # Sortino ratio: annualized daily excess returns over annualized downside deviation
+        downside_diff = np.minimum(0.0, excess_daily)
+        downside_dev = float(np.sqrt(np.mean(downside_diff ** 2)) * np.sqrt(252))
+        if downside_dev > 1e-7:
+            sortino = float(ann_excess / downside_dev)
+        else:
+            sortino = 99.9 if ann_excess > 0 else 0.0
 
-        # Drawdown
-        running_max = np.maximum.accumulate(cum_net)
-        drawdowns = (cum_net - running_max) / running_max
+        # Drawdown: Include initial capital to capture day 1 drawdowns
+        cum_with_start = np.insert(cum_net, 0, initial_capital)
+        running_max = np.maximum.accumulate(cum_with_start)
+        drawdowns = (cum_with_start - running_max) / running_max
         max_dd = float(np.min(drawdowns))
         calmar = cagr / abs(max_dd) if max_dd < 0 else 0.0
 
@@ -202,7 +215,7 @@ class BacktestEngine:
         turnovers = df_daily[df_daily["turnover"] > 0]["turnover"]
         avg_turnover = float(turnovers.mean() * 100.0) if len(turnovers) > 0 else 0.0
         cum_gross = df_daily["cum_gross"].iloc[-1]
-        cagr_gross = ((cum_gross / 100.0) ** (252.0 / n_days)) - 1.0
+        cagr_gross = ((cum_gross / initial_capital) ** (252.0 / n_days)) - 1.0
         annual_cost_drag_bps = float((cagr_gross - cagr) * 10000.0)
 
         return {

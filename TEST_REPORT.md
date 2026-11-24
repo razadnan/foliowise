@@ -6,11 +6,11 @@ This report documents the automated quality assurance, regression testing, and v
 
 Following the comprehensive audit and remediation of all identified architectural, mathematical, and data engineering bugs, the entire test suite achieved a **100% pass rate** across all 12 test modules.
 
-- **Total Test Cases**: 69
-- **Passed**: 69
+- **Total Test Cases**: 72
+- **Passed**: 72
 - **Failed**: 0
 - **Skipped**: 0
-- **Execution Time**: 42.56 seconds
+- **Execution Time**: 35.94 seconds
 - **Overall Status**: **PASS (100% Verified across 13 modules)**
 
 ---
@@ -32,7 +32,7 @@ Following the comprehensive audit and remediation of all identified architectura
 
 ### Command Executed:
 ```bash
-python -m pytest foliowise/tests -v
+python -m pytest tests -v
 ```
 
 ### Module Results:
@@ -48,11 +48,11 @@ python -m pytest foliowise/tests -v
 | `tests/test_experiments.py` | 8 | **PASSED** | 3.90s | Annualized Sharpe computation, stationary block bootstrap index generator, bootstrap identical vs superior series, HRP, Min-Var, ERC, and Momentum benchmarks. |
 | `tests/test_explainability.py` | 2 | **PASSED** | 1.55s | Allocation explainability engine, marginal risk contributions, factor driver identification, JSON export. |
 | `tests/test_features.py` | 4 | **PASSED** | 8.20s | Technical indicator calculations (RSI, MACD, MA ratios, ROC), standardized rank target properties, multi-date historical truncation leakage test (3 cutoffs), deliberate leakage detection. |
-| `tests/test_fix_verifications.py` | 7 | **PASSED** | 4.10s | Dedicated audit fix verifications (BUG-01 through BUG-09), convex quadratic projection, TimeSeriesSplit, LSTM sliding window, pypfopt fallback. |
+| `tests/test_fix_verifications.py` | 10 | **PASSED** | 4.50s | Dedicated audit fix verifications (BUG-01 to BUG-12): convex quadratic projection, TimeSeriesSplit, LSTM per-ticker sliding window, pypfopt fallback, initial capital compounding, Champion-Challenger transitions. |
 | `tests/test_models.py` | 5 | **PASSED** | 8.95s | Ridge chronological cross-validation, XGBoost training, PyTorch LSTM model sequence processing, validation-weighted ensemble, ModelEvaluator metrics. |
 | `tests/test_optimizer.py` | 6 | **PASSED** | 3.38s | Ledoit-Wolf shrinkage matrix positive definiteness, budget sum to 1.0, 10% stock cap, 35% sector cap enforcement, ERC risk budgeting, infeasible constraint fallback. |
 | `tests/test_metrics_and_frontend.py` | 9 | **PASSED** | 3.20s | Performance metrics properties (CAGR, Volatility, Sharpe, Sortino, Tracking Error, IR, IC), `frontend.json` schema validation, and zero-leakage frontend build verification. |
-| **Total** | **69** | **ALL PASSED** | **42.56s** | **Complete Codebase Verification across 13 Modules** |
+| **Total** | **72** | **ALL PASSED** | **35.94s** | **Complete Codebase Verification across 13 Modules** |
 
 ---
 

@@ -459,15 +459,15 @@
   "last_data_date": "2026-11-13",
   "test_summary": {
     "test_period": "2020-01 to 2026-11",
-    "benchmark_sharpe": 0.41,
-    "equal_weight_sharpe": 0.66,
-    "ml_strategy_sharpe": -0.4,
-    "ml_max_drawdown": -27.18,
+    "benchmark_sharpe": 0.45,
+    "equal_weight_sharpe": 0.69,
+    "ml_strategy_sharpe": 0.11,
+    "ml_max_drawdown": -33.56,
     "base_transaction_cost": "0.2%",
     "cost_sensitivity": {
-      "s4_sharpe_at_0.1pct": 0.48,
-      "s4_sharpe_at_0.2pct": -0.4,
-      "s4_sharpe_at_0.3pct": 0.43
+      "s4_sharpe_at_0.1pct": 0.12,
+      "s4_sharpe_at_0.2pct": 0.11,
+      "s4_sharpe_at_0.3pct": 0.09
     }
   }
 }

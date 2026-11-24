@@ -83,7 +83,8 @@ def main():
     print(f"  • Admin Panel (Protected) : {admin_url} (or /admin)")
     print(f"  • Default Home            : {root_url}")
     print("-" * 64)
-    print(" Admin Master Key: admin123 (Default - can be changed in settings)")
+    print(" Admin Access Gate: Client-Side Demo Lock (Passcode: admin123)")
+    print(" Architecture Note: Academic/local presentation mode; see docs for production JWT auth.")
     print(" Press Ctrl+C in this terminal to stop the server.")
     print("=" * 64)
 

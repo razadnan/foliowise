@@ -203,3 +203,94 @@ def test_bug09_dashboard_offline_stocks_embedded():
     assert "const EMBEDDED_STOCKS =" in html
     assert "Reliance Industries" in html
     assert "renderStockRows(EMBEDDED_STOCKS)" in html
+
+
+def test_bug10_lstm_per_ticker_panel_isolation():
+    """Verify LSTM panel sequence generator constructs sequences strictly per ticker without cross-talk."""
+    from src.models.lstm_model import build_panel_sequences, extract_rebalance_sequences
+
+    # Create dummy panel with 2 tickers and distinct values
+    df_panel = pd.DataFrame({
+        "date": pd.date_range("2024-01-01", periods=10, freq="B").tolist() * 2,
+        "ticker": ["TICK_A"] * 10 + ["TICK_B"] * 10,
+        "f_val": [10.0 + i for i in range(10)] + [100.0 + i for i in range(10)]
+    })
+    # Interleave to simulate real sorted [date, ticker] panel
+    df_panel = df_panel.sort_values(["date", "ticker"]).reset_index(drop=True)
+
+    seqs = build_panel_sequences(df_panel, feature_cols=["f_val"], seq_len=3)
+    assert seqs.shape == (20, 3, 1)
+
+    # For TICK_A rows, all values in the sequence must be around 10.x, NEVER >= 100
+    for idx, row in df_panel.iterrows():
+        tk = row["ticker"]
+        seq_vals = seqs[idx].flatten()
+        if tk == "TICK_A":
+            assert (seq_vals < 50.0).all(), f"Leakage: TICK_A sequence contains values >= 50: {seq_vals}"
+        else:
+            assert (seq_vals >= 90.0).all(), f"Leakage: TICK_B sequence contains values < 90: {seq_vals}"
+
+    # Verify extract_rebalance_sequences for a specific date
+    rebal_dt = pd.Timestamp("2024-01-05")
+    rebal_seq = extract_rebalance_sequences(df_panel, rebal_dt, ["TICK_A", "TICK_B"], ["f_val"], seq_len=3)
+    assert rebal_seq.shape == (2, 3, 1)
+    assert (rebal_seq[0] < 50.0).all()
+    assert (rebal_seq[1] >= 90.0).all()
+
+
+def test_bug11_metrics_initial_capital_compounding_and_sharpe():
+    """Verify BacktestEngine.calculate_metrics accounts for day 1 return from initial capital."""
+    from src.backtesting.engine import BacktestEngine
+    engine = BacktestEngine(rf=0.06)
+
+    # Day 0: +10% return. Day 1: 0% return. Total return should be +10%, not 0%!
+    df_daily = pd.DataFrame({
+        "date": pd.date_range("2024-01-01", periods=2, freq="B"),
+        "strategy": "Test",
+        "gross_return": [0.10, 0.0],
+        "net_return": [0.10, 0.0],
+        "turnover": [1.0, 0.0],
+        "cost": [0.0, 0.0],
+        "cum_gross": [110.0, 110.0],
+        "cum_net": [110.0, 110.0]
+    })
+
+    metrics = engine.calculate_metrics(df_daily, "Test")
+    # In old bug: cum_net[-1]/cum_net[0] - 1.0 = 110/110 - 1 = 0.0%!
+    # In fixed code: cum_net[-1]/100.0 - 1.0 > 0
+    assert metrics["cagr"] > 0.0
+
+    # Test Day 1 loss drawdown detection from initial capital
+    df_loss = pd.DataFrame({
+        "date": pd.date_range("2024-01-01", periods=2, freq="B"),
+        "strategy": "TestLoss",
+        "gross_return": [-0.15, 0.0],
+        "net_return": [-0.15, 0.0],
+        "turnover": [1.0, 0.0],
+        "cost": [0.0, 0.0],
+        "cum_gross": [85.0, 85.0],
+        "cum_net": [85.0, 85.0]
+    })
+    loss_metrics = engine.calculate_metrics(df_loss, "TestLoss")
+    # Max drawdown must capture the -15% drop from base 100
+    assert loss_metrics["max_drawdown"] == pytest.approx(-15.0, abs=0.1)
+
+
+def test_bug12_e6_champion_challenger_governance_transitions():
+    """Verify Champion-Challenger governance triggers promotions and rollbacks correctly."""
+    from src.adaptive.evaluator import ChampionChallengerEvaluator
+    evaluator = ChampionChallengerEvaluator(min_observation_periods=3, promotion_hurdle=0.05, ic_degradation_threshold=0.0)
+
+    # 1. Degradation test: Champion Ridge drops below 0 IC -> triggers demotion
+    records = [
+        {"model": "Ridge", "signal_date": "2024-01-31", "rank_ic": -0.05, "rmse": 0.4},
+        {"model": "Ridge", "signal_date": "2024-02-29", "rank_ic": -0.04, "rmse": 0.4},
+        {"model": "Ridge", "signal_date": "2024-03-31", "rank_ic": -0.06, "rmse": 0.4},
+        {"model": "Ridge", "signal_date": "2024-04-30", "rank_ic": -0.08, "rmse": 0.4},
+        {"model": "Ridge", "signal_date": "2024-05-31", "rank_ic": -0.05, "rmse": 0.4},
+        {"model": "Ridge", "signal_date": "2024-06-30", "rank_ic": -0.07, "rmse": 0.4},
+    ]
+    df_roll = pd.DataFrame(records)
+    hist_df, report = evaluator.evaluate_model_governance(df_roll, pd.DataFrame())
+    assert report["total_demotions_or_alerts"] >= 1
+    assert "DEMOTION_TRIGGERED" in hist_df.iloc[-1]["governance_event"]

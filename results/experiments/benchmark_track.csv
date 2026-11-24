@@ -1,5 +1,5 @@
 benchmark,description,cagr,ann_volatility,sharpe_ratio,sortino_ratio,max_drawdown,calmar_ratio,avg_monthly_turnover_pct,annual_cost_drag_bps
-B1,Hierarchical Risk Parity (HRP),17.46,15.75,0.728,0.996,-31.89,0.548,12.24,35.4
-B2,Minimum Variance (Min-Var),13.29,14.43,0.505,0.707,-26.64,0.499,13.17,36.8
-B3,Equal Risk Contribution (ERC),17.32,16.21,0.699,0.947,-33.88,0.511,4.78,13.8
-B4,Momentum Top-5 (12M-1M Equal Weight),3.77,24.38,-0.092,-0.122,-44.11,0.085,30.99,79.5
+B1,Hierarchical Risk Parity (HRP),17.46,15.75,0.721,0.986,-31.89,0.548,12.24,35.4
+B2,Minimum Variance (Min-Var),13.29,14.43,0.522,0.729,-26.64,0.499,13.17,36.8
+B3,Equal Risk Contribution (ERC),17.32,16.21,0.698,0.945,-33.88,0.511,4.78,13.8
+B4,Momentum Top-5 (12M-1M Equal Weight),3.77,24.38,0.029,0.039,-44.11,0.085,30.99,79.5

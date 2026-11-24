@@ -38,16 +38,18 @@ class ModelEnsemble:
     def tune_weights_on_validation(
         self,
         X_val: np.ndarray,
-        y_val: np.ndarray
+        y_val: np.ndarray,
+        X_val_seq: Optional[np.ndarray] = None
     ) -> Tuple[float, float]:
         """
         Tune ensemble weights using in-fold chronological validation performance on fitted models.
+        Supports both 2D tabular features and optional 3D sequence inputs for LSTM.
         """
         if self.xgb is None or self.lstm is None:
             return self.w_xgb, self.w_lstm
 
         pred_xgb_val = self.xgb.predict(X_val)
-        pred_lstm_val = self.lstm.predict(X_val)
+        pred_lstm_val = self.lstm.predict(X_val_seq if X_val_seq is not None else X_val)
 
         ic_xgb, _ = stats.spearmanr(pred_xgb_val, y_val)
         ic_lstm, _ = stats.spearmanr(pred_lstm_val, y_val)
@@ -102,15 +104,16 @@ class ModelEnsemble:
 
         return self.w_xgb, self.w_lstm
 
-    def predict(self, X: np.ndarray) -> np.ndarray:
+    def predict(self, X: np.ndarray, X_seq: Optional[np.ndarray] = None) -> np.ndarray:
         """
         Compute weighted ensemble prediction: w_xgb * pred_xgb + w_lstm * pred_lstm.
+        Supports passing tabular X for XGBoost and 3D sequence X_seq for LSTM.
         """
         if self.xgb is None or self.lstm is None:
             raise RuntimeError("Ensemble models must be initialized and fitted before predict.")
 
         p_xgb = self.xgb.predict(X)
-        p_lstm = self.lstm.predict(X)
+        p_lstm = self.lstm.predict(X_seq if X_seq is not None else X)
         total_w = self.w_xgb + self.w_lstm
         if total_w <= 0:
             return 0.5 * p_xgb + 0.5 * p_lstm

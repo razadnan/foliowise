@@ -469,12 +469,19 @@ def run_stage4(base_dir="."):
         total_days = len(ret_series)
         years = total_days / 252.0
         cagr = (cum_ret.iloc[-1] ** (1.0 / years)) - 1.0
-        ann_vol = ret_series.std() * np.sqrt(252.0)
-        sharpe = (cagr - RISK_FREE_RATE) / ann_vol if ann_vol > 0 else 0.0
+        ann_vol = float(ret_series.std() * np.sqrt(252.0))
+        
+        # Standard annualized excess return over annualized volatility
+        daily_rf = RISK_FREE_RATE / 252.0
+        excess_rets = ret_series - daily_rf
+        ann_excess = float(excess_rets.mean() * 252.0)
+        sharpe = (ann_excess / ann_vol) if ann_vol > 1e-7 else (99.9 if ann_excess > 0 else 0.0)
 
-        cum_max = cum_ret.cummax()
-        drawdown = (cum_ret - cum_max) / cum_max
-        max_dd = drawdown.min()
+        # Include starting capital in drawdown calculation
+        cum_with_start = np.insert(cum_ret.values, 0, 1.0)
+        cum_max = np.maximum.accumulate(cum_with_start)
+        drawdown = (cum_with_start - cum_max) / cum_max
+        max_dd = float(np.min(drawdown))
         calmar = cagr / abs(max_dd) if abs(max_dd) > 0 else 0.0
 
         # One-way turnover percentage

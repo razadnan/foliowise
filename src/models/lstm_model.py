@@ -28,6 +28,77 @@ def set_seed(seed: int = 42):
     torch.manual_seed(seed)
 
 
+def build_panel_sequences(
+    df: pd.DataFrame,
+    feature_cols: List[str],
+    seq_len: int = 5,
+    ticker_col: str = "ticker",
+    date_col: str = "date"
+) -> np.ndarray:
+    """
+    Construct genuine per-ticker temporal sliding sequences of shape (N, seq_len, F).
+    Guarantees that every historical step in the sequence belongs to the same asset,
+    strictly preventing cross-sectional stock mixing.
+    """
+    N = len(df)
+    F = len(feature_cols)
+    out_seqs = np.zeros((N, seq_len, F), dtype=np.float32)
+
+    df_indexed = df.reset_index(drop=True)
+    for _, group in df_indexed.groupby(ticker_col):
+        sorted_group = group.sort_values(date_col)
+        grp_features = sorted_group[feature_cols].values
+        orig_indices = sorted_group.index.values
+
+        K = len(grp_features)
+        for i in range(K):
+            start = max(0, i - seq_len + 1)
+            hist = grp_features[start : i + 1]
+            pad_len = seq_len - len(hist)
+            target_idx = orig_indices[i]
+            if pad_len > 0:
+                pad = np.repeat(grp_features[start : start + 1], pad_len, axis=0)
+                out_seqs[target_idx] = np.vstack([pad, hist])
+            else:
+                out_seqs[target_idx] = hist
+
+    return out_seqs
+
+
+def extract_rebalance_sequences(
+    df_history: pd.DataFrame,
+    rebalance_date: pd.Timestamp,
+    tickers: List[str],
+    feature_cols: List[str],
+    seq_len: int = 5,
+    ticker_col: str = "ticker",
+    date_col: str = "date"
+) -> np.ndarray:
+    """
+    Construct per-ticker 3D input (len(tickers), seq_len, F) for inference on rebalance date.
+    Extracts the trailing seq_len observations for each requested ticker up to rebalance_date.
+    """
+    F = len(feature_cols)
+    M = len(tickers)
+    out_seqs = np.zeros((M, seq_len, F), dtype=np.float32)
+
+    hist_sub = df_history[df_history[date_col] <= rebalance_date]
+
+    for idx, tk in enumerate(tickers):
+        tk_data = hist_sub[hist_sub[ticker_col] == tk].sort_values(date_col)
+        if len(tk_data) == 0:
+            continue
+        vals = tk_data[feature_cols].tail(seq_len).values
+        pad_len = seq_len - len(vals)
+        if pad_len > 0:
+            pad = np.repeat(vals[0:1], pad_len, axis=0)
+            out_seqs[idx] = np.vstack([pad, vals])
+        else:
+            out_seqs[idx] = vals
+
+    return out_seqs
+
+
 class PyTorchLSTMNet(nn.Module):
     """
     Compact LSTM neural network for financial return prediction.

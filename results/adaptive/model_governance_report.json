@@ -1,49 +1,19 @@
 {
-  "evaluation_cycles": 81,
-  "final_active_champion": "Random_Forest",
-  "total_promotions": 3,
-  "total_demotions_or_alerts": 36,
+  "evaluation_cycles": 6,
+  "final_active_champion": "Ridge",
+  "total_promotions": 0,
+  "total_demotions_or_alerts": 1,
   "guardrails": {
-    "min_observation_periods": 12,
-    "promotion_hurdle_ic": 0.1,
+    "min_observation_periods": 3,
+    "promotion_hurdle_ic": 0.05,
     "ic_degradation_floor": 0.0,
     "max_drawdown_floor": 0.35
   },
   "model_lifecycle_status": {
-    "LSTM": {
-      "total_cycles_evaluated": 81,
-      "cumulative_mean_ic": -0.0166,
-      "status": "CHALLENGER"
-    },
-    "Momentum": {
-      "total_cycles_evaluated": 81,
-      "cumulative_mean_ic": -0.0165,
-      "status": "CHALLENGER"
-    },
-    "Naive": {
-      "total_cycles_evaluated": 81,
-      "cumulative_mean_ic": -0.0339,
-      "status": "CHALLENGER"
-    },
-    "Random_Forest": {
-      "total_cycles_evaluated": 81,
-      "cumulative_mean_ic": 0.0041,
-      "status": "CHAMPION"
-    },
     "Ridge": {
-      "total_cycles_evaluated": 81,
-      "cumulative_mean_ic": 0.0223,
-      "status": "CHALLENGER"
-    },
-    "XGB_LSTM_Ensemble": {
-      "total_cycles_evaluated": 81,
-      "cumulative_mean_ic": -0.0131,
-      "status": "CHALLENGER"
-    },
-    "XGBoost": {
-      "total_cycles_evaluated": 81,
-      "cumulative_mean_ic": -0.0,
-      "status": "CHALLENGER"
+      "total_cycles_evaluated": 6,
+      "cumulative_mean_ic": -0.0583,
+      "status": "CHAMPION"
     }
   }
 }

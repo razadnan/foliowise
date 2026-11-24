@@ -26,6 +26,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 
 import numpy as np
 import pandas as pd
+from scipy import stats
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -162,10 +163,14 @@ def run_experiments(base_dir: str = ".") -> dict:
     prev_w_e5 = None
     prev_w_e6 = None
 
-    # Track trailing performance of E3 vs E2 for E6 adaptive switching
-    e6_trailing_scores = {"XGBoost": 0.0, "Shrinkage": 0.0}
+    # Dynamic Champion-Challenger state tracking for E6 Adaptive FolioWise
+    candidate_models = ["Ridge", "XGBoost", "LSTM", "XGB_LSTM_Ensemble"]
+    active_champion = "Ridge"
+    in_fallback = False
+    e6_governance_trail = []
+    model_realized_ic_history = {m: [] for m in candidate_models}
 
-    for rebal_date in rebalance_dates:
+    for idx, rebal_date in enumerate(rebalance_dates):
         date_str = rebal_date.strftime("%Y-%m-%d")
         pit_constituents = resolver.get_constituents(rebal_date, use_ticker=True, resolve_aliases=True)
         eligible_tickers = [
@@ -269,15 +274,90 @@ def run_experiments(base_dir: str = ".") -> dict:
         experiment_weights["E5"][rebal_date] = w_e5
         prev_w_e5 = w_e5
 
-        # E6: Adaptive FolioWise (Champion-Challenger Engine)
-        market_vol = float(hist_returns.mean(axis=1).std() * np.sqrt(252))
-        if market_vol > 0.22:
+        # E6: Adaptive FolioWise (Champion-Challenger Engine with Statistical Guardrails)
+        event = "MAINTAIN_CHAMPION"
+        challenger_considered = None
+        delta_hurdle = 0.0
+
+        # Step 1: Realized IC evaluation from preceding cycle (t-1 to t)
+        if idx > 0:
+            prev_rebal_date = rebalance_dates[idx - 1]
+            try:
+                ret_series = (piv_prices.loc[rebal_date, eligible_tickers] / piv_prices.loc[prev_rebal_date, eligible_tickers]) - 1.0
+                for m in candidate_models:
+                    if m in model_preds and prev_rebal_date in model_preds[m].index:
+                        m_p = model_preds[m].loc[prev_rebal_date].reindex(eligible_tickers).dropna()
+                        valid_idx = m_p.index.intersection(ret_series.dropna().index)
+                        if len(valid_idx) >= 10:
+                            ic_res, _ = stats.spearmanr(m_p.loc[valid_idx], ret_series.loc[valid_idx])
+                            ic_val = float(ic_res) if not np.isnan(ic_res) else 0.0
+                            model_realized_ic_history[m].append(ic_val)
+            except Exception:
+                pass
+
+        # Step 2: Degradation & Rollback Guardrail (6-month trailing IC < 0.0 triggers safety rollback)
+        champ_ic_hist = model_realized_ic_history[active_champion]
+        if len(champ_ic_hist) >= 3:
+            trailing_6m_ic = float(np.mean(champ_ic_hist[-6:]))
+            if trailing_6m_ic < 0.0:
+                in_fallback = True
+                event = f"ROLLBACK_TRIGGERED: Champion {active_champion} 6M trailing IC ({trailing_6m_ic:.3f}) < 0.0 -> Fallback to E2 Shrinkage"
+            else:
+                in_fallback = False
+
+        # Step 3: Statistical Promotion Guardrail (Challenger must exceed Champion by >= 0.05 IC hurdle)
+        if len(champ_ic_hist) >= 6 and not in_fallback:
+            champ_mean_ic = float(np.mean(champ_ic_hist[-6:]))
+            best_challenger = None
+            best_challenger_ic = -999.0
+            for cand in ["XGBoost", "LSTM", "XGB_LSTM_Ensemble"]:
+                if cand != active_champion and len(model_realized_ic_history[cand]) >= 6:
+                    cand_mean_ic = float(np.mean(model_realized_ic_history[cand][-6:]))
+                    if cand_mean_ic > best_challenger_ic:
+                        best_challenger_ic = cand_mean_ic
+                        best_challenger = cand
+            if best_challenger is not None:
+                challenger_considered = best_challenger
+                delta_hurdle = best_challenger_ic - champ_mean_ic
+                if delta_hurdle >= 0.05:
+                    event = f"PROMOTION_EXECUTED: {best_challenger} (+{delta_hurdle:.3f} IC hurdle) promoted over {active_champion}"
+                    active_champion = best_challenger
+
+        # Step 4: Allocate portfolio weights
+        if in_fallback:
             w_e6 = w_e2.copy()
+            alloc_source = "E2_Shrinkage_Fallback"
         else:
-            w_e6 = w_e3.copy()
+            mu_champ = get_ml_expected_returns(active_champion)
+            w_e6 = optimizer.optimize_max_sharpe(
+                expected_returns=mu_champ,
+                cov_matrix=lw_cov,
+                tickers=eligible_tickers,
+                stock_cap=0.10,
+                sector_cap=0.35,
+                sector_mapping=sector_mapping,
+                previous_weights=prev_w_e6,
+                turnover_penalty_lambda=0.05,
+                date_str=date_str,
+                strategy_name="E6_Adaptive_FolioWise"
+            )
+            alloc_source = f"{active_champion}_MaxSharpe"
 
         experiment_weights["E6"][rebal_date] = w_e6
         prev_w_e6 = w_e6
+
+        active_ic_disp = champ_ic_hist[-1] if champ_ic_hist else 0.0
+        e6_governance_trail.append({
+            "date": date_str,
+            "cycle": idx + 1,
+            "active_champion": active_champion,
+            "active_champion_ic": round(active_ic_disp, 4),
+            "allocation_source": alloc_source,
+            "in_fallback": in_fallback,
+            "challenger_considered": challenger_considered,
+            "hurdle_diff": round(delta_hurdle, 4),
+            "governance_event": event
+        })
 
         # --- Benchmark Track Construction (B1 - B4) ---
         # B1: Hierarchical Risk Parity (HRP)
@@ -456,6 +536,14 @@ def run_experiments(base_dir: str = ".") -> dict:
     ladder_path = os.path.join(exp_dir, "experiment_ladder.csv")
     ladder_df.to_csv(ladder_path, index=False)
     print(f"Saved experiment ladder metrics to {ladder_path}")
+
+    # Save E6 Champion-Challenger Governance History
+    adaptive_dir = os.path.join(results_dir, "adaptive")
+    os.makedirs(adaptive_dir, exist_ok=True)
+    gov_df = pd.DataFrame(e6_governance_trail)
+    gov_path = os.path.join(adaptive_dir, "champion_challenger_history.csv")
+    gov_df.to_csv(gov_path, index=False)
+    print(f"Saved E6 Champion-Challenger governance history to {gov_path}")
 
     bench_df = pd.DataFrame(bench_metrics)
     bench_col_order = ["benchmark", "description", "cagr", "ann_volatility", "sharpe_ratio", "sortino_ratio", "max_drawdown", "calmar_ratio", "avg_monthly_turnover_pct", "annual_cost_drag_bps"]

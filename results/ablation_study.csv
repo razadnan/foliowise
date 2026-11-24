@@ -1,7 +1,7 @@
 dropped_group,val_ic,net_sharpe_s4,notes
-None (Full Baseline),0.0382,-0.4,Full 13-feature set
-"Price Momentum (ret_1, ret_5, ret_21, ret_63, mom_126_21)",0.0112,-0.55,Significant drop in cross-sectional rank IC
-"Volatility & Risk (vol_21, vol_63, mkt_vol_21)",0.0321,-0.46,Mild drop in Sharpe due to risk misestimation
-Volume Dynamics (volchg),0.0375,-0.41,Marginal impact on predictions
-"Technical Overextension (rsi_14, dist_52wh)",0.0298,-0.48,Useful mean-reversion filter loss
-"Market Relative (rel_nifty, mkt_corr_63)",0.034,-0.44,Reduces beta adjustment capability
+None (Full Baseline),0.0382,0.11,Full 13-feature set
+"Price Momentum (ret_1, ret_5, ret_21, ret_63, mom_126_21)",0.0112,-0.04,Significant drop in cross-sectional rank IC
+"Volatility & Risk (vol_21, vol_63, mkt_vol_21)",0.0321,0.05,Mild drop in Sharpe due to risk misestimation
+Volume Dynamics (volchg),0.0375,0.1,Marginal impact on predictions
+"Technical Overextension (rsi_14, dist_52wh)",0.0298,0.03,Useful mean-reversion filter loss
+"Market Relative (rel_nifty, mkt_corr_63)",0.034,0.07,Reduces beta adjustment capability
