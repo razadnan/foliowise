@@ -154,8 +154,23 @@ flowchart TD
     Stage1 --> Stage2 --> Stage3 --> Stage4 --> Stage5
 ```
 
-### 2.2 Entity-Relationship (ER / ERP) Database Schema
-To support high-frequency analytics, multi-model scoring, portfolio attribution, and compliance auditing, FolioWise organizes all operational state into an institutional relational schema.
+### 2.2 Conceptual High-Level ER Diagram (Domain Relationships)
+At the highest architectural layer, FolioWise organizes the quantitative portfolio management lifecycle into seven interacting operational domains: Market Data, Feature Engineering, Machine Learning, Risk Budgeting, Convex Optimization, Trade Execution, and Autonomous Governance.
+
+```mermaid
+erDiagram
+    MARKET_DATA_DOMAIN ||--o{ FEATURE_ENGINEERING_DOMAIN : "supplies historical inputs"
+    FEATURE_ENGINEERING_DOMAIN ||--o{ MACHINE_LEARNING_DOMAIN : "feeds predictive factors"
+    MACHINE_LEARNING_DOMAIN ||--o{ OPTIMIZATION_DOMAIN : "provides expected alpha"
+    MARKET_DATA_DOMAIN ||--o{ OPTIMIZATION_DOMAIN : "provides covariance matrix"
+    OPTIMIZATION_DOMAIN ||--o{ EXECUTION_DOMAIN : "emits target allocations"
+    EXECUTION_DOMAIN ||--o{ PERFORMANCE_AUDIT_DOMAIN : "logs trade friction"
+    MACHINE_LEARNING_DOMAIN ||--o{ GOVERNANCE_DOMAIN : "evaluates out-of-sample IC"
+    GOVERNANCE_DOMAIN ||--o{ OPTIMIZATION_DOMAIN : "triggers model switches or rollback"
+```
+
+### 2.3 Detailed Logical Relational ER Diagram (Full Database Schema)
+To support high-frequency analytics, multi-model scoring, portfolio attribution, and compliance auditing, FolioWise organizes all operational state into an institutional relational schema across 10 core tables:
 
 ```mermaid
 erDiagram
@@ -275,6 +290,83 @@ erDiagram
         string decision_verdict "RETAINED / PROMOTED / ROLLBACK"
         string rationale "Formal Governance Rationale"
     }
+```
+
+### 2.4 Data Flow Diagram (DFD Level 0: Context Level)
+The Context-Level Data Flow Diagram (DFD Level 0) models the boundary of FolioWise, illustrating external inputs (NSE feeds, SEBI regulatory circulars) and deliverables consumed by retail investors and quantitative researchers.
+
+```mermaid
+flowchart LR
+    NSE["National Stock Exchange of India (NSE)"] -->|Raw Daily Ticks & Circulars| Engine["FolioWise Quantitative Optimization Engine"]
+    SEBI["SEBI Statutory Levies (STT, Stamp Duty)"] -->|Regulatory Tax Rules| Engine
+    Engine -->|Optimized Weights & Factor Attributions| Admin["Quantitative Researcher / Admin Terminal"]
+    Engine -->|Risk Metrics & Honest Performance Card| Investor["Public Investor Portal"]
+```
+
+### 2.5 Data Flow Diagram (DFD Level 1: Operational Decomposition)
+The Level 1 Data Flow Diagram details the transformation of market data across five sequential functional processes and five persistent data stores:
+
+```mermaid
+flowchart TD
+    P1["Process 1.0: PIT Universe & Data Acquisition"] -->|Clean Prices & TRI Index| D1[("Store D1: Raw & Clean Market Data")]
+    D1 --> P2["Process 2.0: Causal Factor Engineering"]
+    P2 -->|21 Leak-Free Factors & Targets| D2[("Store D2: Processed Features & Ranks")]
+    D2 --> P3["Process 3.0: Walk-Forward ML Training"]
+    P3 -->|Out-of-Sample Predictions| D3[("Store D3: Model Forecasts")]
+    D1 --> P4["Process 4.0: Ledoit-Wolf Shrinkage & Optimization"]
+    D3 --> P4
+    P4 -->|Simplex Weights & Risk Budgets| D4[("Store D4: Portfolio Allocations")]
+    D4 --> P5["Process 5.0: Cost Modeling & Next-Day Execution"]
+    D1 --> P5
+    P5 -->|Daily Net Returns & Turnover| D5[("Store D5: Performance & Governance Logs")]
+    D5 --> P6["Process 6.0: Frontend Synchronization & UI Serving"]
+```
+
+### 2.6 Autonomous Model Governance State Transition Diagram (Champion-Challenger Lifecycle)
+FolioWise implements dynamic model lifecycle governance. The following state machine illustrates the life cycle of machine learning algorithms from candidate validation to champion promotion, degradation detection, and safety rollback to Ledoit-Wolf shrinkage:
+
+```mermaid
+stateDiagram-v2
+    [*] --> ModelCandidate : "Initialize Architecture (Ridge, XGB, LSTM)"
+    ModelCandidate --> ChallengerTesting : "Generate Walk-Forward Predictions"
+    ChallengerTesting --> EvaluationCheck : "Accumulate Minimum 12 Monthly Cycles"
+    
+    EvaluationCheck --> ChallengerTesting : "IC Hurdle Delta < +0.05 (Retain Active Champion)"
+    EvaluationCheck --> PromotedChampion : "IC Hurdle Delta >= +0.05 & Newey-West t > 1.96"
+    
+    PromotedChampion --> ActiveMonitoring : "Deploy for Active Monthly Portfolio Optimization"
+    ActiveMonitoring --> PromotedChampion : "Trailing 6M IC >= 0.0 & Drawdown <= 30%"
+    ActiveMonitoring --> DegradedState : "Trailing 6M IC < 0.0 OR Drawdown > 30%"
+    
+    DegradedState --> RollbackToLedoitWolf : "Trigger Emergency Rollback to E2 Baseline"
+    RollbackToLedoitWolf --> ChallengerTesting : "Cooldown Period & Model Recalibration"
+```
+
+### 2.7 System Component Architecture & Multi-Format Storage Layout
+FolioWise employs a tiered hybrid architecture balancing relational integrity with high-performance columnar data access for vector mathematics:
+
+```mermaid
+flowchart TD
+    subgraph ClientTier["Client Tier (Dual-View Presentation)"]
+        UI_Inv["Investor Terminal (index.html)<br>• Transparent Performance Cards<br>• Plain-English Risk Glossary<br>• PDF Print Layout"]
+        UI_Adm["Admin Dashboard (dashboard.html)<br>• Coinora Coral Theme & Dark Mode<br>• Interactive Rebalancing Console<br>• Strategy Ladder (E0-E6) & B1-B4<br>• Live Model Governance Audit"]
+        AuthGate["Visual Admin Gate<br>• Blurred Backdrop Lockout<br>• Master Passcode Check<br>• Academic Demo Security Disclosure"]
+        UI_Adm --> AuthGate
+    end
+
+    subgraph ServiceTier["Backend Service & Routing Tier (serve.py)"]
+        Server["Custom Python HTTP Server<br>• Port 8000 Binding<br>• Dynamic Path Translation<br>• Route: / (Investor) & /admin (Dashboard)"]
+        BuildFE["build_frontend.py<br>• Offline Stock Embedding<br>• JSON Synchronization"]
+    end
+
+    subgraph StorageTier["Hybrid Storage Tier (Relational & Columnar)"]
+        JSON["results/frontend.json<br>(Single Source of Truth)"]
+        SQLite[("foliowise.db (SQLite Relational Store)<br>• Audit Logs & Reconstitutions")]
+        Parquet[("Parquet Columnar Vector Store<br>• features.parquet (Fast Matrix Math)<br>• prices.parquet (SIMD Accelerated)")]
+    end
+
+    ClientTier --> ServiceTier
+    ServiceTier --> StorageTier
 ```
 
 ---
